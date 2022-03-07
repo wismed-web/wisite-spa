@@ -1,0 +1,310 @@
+<template>
+    <el-row class="tac" style="margin-bottom: 0px;">
+        <el-col :span="3" style="background-color: #565B67;">
+            <el-row style="height: 68px;margin: 0px;">
+                <div style="color:white;width: 100%;line-height: 68px;font-size: 18px;font-weight: bold;">Wisite</div>
+            </el-row>
+            <el-menu
+                    active-text-color="#ffd04b"
+                    background-color="#4A4E58"
+                    class="el-menu-vertical-demo"
+                    default-active="2"
+                    text-color="#fff"
+                    @open="handleOpen"
+                    @close="handleClose"
+                    :style="{ height: `${elementHeight}px` }"
+            >
+<!--                <el-sub-menu index="1">-->
+<!--                    <template #title>-->
+<!--                        <el-icon><location /></el-icon>-->
+<!--                        <span>Navigator One</span>-->
+<!--                    </template>-->
+<!--                    <el-menu-item-group title="Group One">-->
+<!--                        <el-menu-item index="1-1">item one</el-menu-item>-->
+<!--                        <el-menu-item index="1-2">item one</el-menu-item>-->
+<!--                    </el-menu-item-group>-->
+<!--                    <el-menu-item-group title="Group Two">-->
+<!--                        <el-menu-item index="1-3">item three</el-menu-item>-->
+<!--                    </el-menu-item-group>-->
+<!--                    <el-sub-menu index="1-4">-->
+<!--                        <template #title>item four</template>-->
+<!--                        <el-menu-item index="1-4-1">item one</el-menu-item>-->
+<!--                    </el-sub-menu>-->
+<!--                </el-sub-menu>-->
+<!--                <el-menu-item index="2">-->
+<!--                    <el-icon><icon-menu /></el-icon>-->
+<!--                    <span>Navigator Two</span>-->
+<!--                </el-menu-item>-->
+<!--                <el-menu-item index="3" disabled>-->
+<!--                    <el-icon><document /></el-icon>-->
+<!--                    <span>Navigator Three</span>-->
+<!--                </el-menu-item>-->
+                <el-menu-item index="1">
+                    <el-icon><setting /></el-icon>
+                    <span>Profile</span>
+                </el-menu-item>
+            </el-menu>
+        </el-col>
+        <el-col :span="21">
+            <el-row style="height: 68px;margin: 0px;background-color: white;text-align: right;">
+                <el-col :span="1" :offset="23" style="padding:7px;">
+                    <el-avatar :size="50" :src="circleUrl" @click="showAvatar">
+
+                    </el-avatar>
+                </el-col>
+            </el-row>
+            <el-row :style="{ height: `${elementHeight}px`, padding: '10px', marginBottom: '0px'}">
+                <el-row :style="{ height: `${innerHeight}px`, backgroundColor: 'white', width: '100%'}"></el-row>
+            </el-row>
+        </el-col>
+    </el-row>
+    <el-dialog v-model="showAvatarFlag" title="Upload Avatar">
+        <el-form>
+            <el-form-item>
+                <el-upload
+                        class="avatar-uploader"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload"
+                        >
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                    <el-icon v-else class="avatar-uploader-icon"><plus/></el-icon>
+                </el-upload>
+            </el-form-item>
+            <el-form-item>
+                <vue-picture-cropper
+                        :boxStyle="{
+                          width: '100%',
+                          height: '100%',
+                          backgroundColor: '#f8f8f8',
+                          margin: 'auto'
+                        }"
+                        :img="pic"
+                        :options="{
+                          viewMode: 1,
+                          dragMode: 'crop',
+                          aspectRatio: 16 / 9,
+                          preview: preview,
+                        }"
+                        @ready="ready"
+                />
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="showAvatarFlag = false">Close</el-button>
+            </span>
+        </template>
+    </el-dialog>
+</template>
+
+<script>
+    import apiUtil from '../util/apiUtil'
+    import {Setting,} from '@element-plus/icons-vue'
+    import { ElUpload } from 'element-plus'
+    import { Plus } from '@element-plus/icons-vue'
+    import VuePictureCropper, { cropper } from 'vue-picture-cropper'
+    console.log(cropper)
+    export default {
+        name: "Home",
+        components: {
+            // Location,
+            // Document,
+            // IconMenu,
+            Setting,
+            VuePictureCropper,
+            ElUpload,
+            Plus
+        },
+        props:['Name'],
+        beforeCreate () {
+            document.querySelector('body').setAttribute('style', 'margin:0px;background:none;display:block;background-color:#EBEDF0')
+
+        },
+        beforeUnmount () {
+            document.querySelector('body').removeAttribute('style')
+        },
+        data() {
+            return {
+                elementHeight: 50,
+                innerHeight: 30,
+                showAvatarFlag: false,
+                image: null
+            }
+        },
+        methods: {
+            handleOpen () {
+
+            },
+            showAvatar () {
+                this.showAvatarFlag = true
+            },
+            beforeAvatarUpload (file) {
+                let This = this
+                console.log(typeof file)
+                if (!/\.(jpg|jpeg|png|JPG|PNG)$/.test(file.name)) {
+                    apiUtil.message.error('support image type:jpeg、jpg、png')
+                    return false
+                }
+                //转化为blob
+                let reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onload = (e) => {
+                    let data
+                    if (typeof e.target.result === 'object') {
+                        data = window.URL.createObjectURL(new Blob([e.target.result]))
+                    } else {
+                        data = e.target.result
+                    }
+                    This.image = data
+                }
+            },
+            selectImg (e) {
+                let file = e.target.files[0]
+                if (!/\.(jpg|jpeg|png|JPG|PNG)$/.test(e.target.value)) {
+                    this.$message({
+                        message: '图片类型要求：jpeg、jpg、png',
+                        type: "error"
+                    });
+                    return false
+                }
+                //转化为blob
+                let reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onload = (e) => {
+                    let data
+                    if (typeof e.target.result === 'object') {
+                        data = window.URL.createObjectURL(new Blob([e.target.result]))
+                    } else {
+                        data = e.target.result
+                    }
+                    this.option.img = data
+                }
+            },
+            //上传图片
+            uploadImg () {
+                // let _this = this;
+                // let base64 = cropper.getDataURL()
+                // let blob = cropper.getBlob()
+                // let formData = new FormData();
+                // formData.append('file',data,"DX.jpg")
+                // //调用axios上传
+                // apiUtil.post(apiUtil.urls.file.upload, formData)
+                //     .then(res => {
+                //         apiUtil.message.success("Upload success")
+                //     }).catch(error => {
+                //     console.log(error)
+                //     apiUtil.message.error(error)
+                // })
+            }
+        },
+        mounted:function () {
+            this.$nextTick(() => {
+                this.elementHeight = window.innerHeight - 68
+                this.innerHeight = this.elementHeight - 20
+                let context = this;
+                window.onresize = () => {
+                    context.elementHeight = window.innerHeight - 68
+                    context.innerHeight = context.elementHeight - 20
+                }
+            })
+
+        }
+    }
+</script>
+
+<style scoped lang="scss">
+    .cropper-content{
+        display: flex;
+        display: -webkit-flex;
+        justify-content: flex-end;
+        .cropper-box{
+            flex: 1;
+            width: 100%;
+            .cropper{
+                width: auto;
+                height: 300px;
+            }
+        }
+
+        .show-preview{
+            flex: 1;
+            -webkit-flex: 1;
+            display: flex;
+            display: -webkit-flex;
+            justify-content: center;
+            .preview{
+                overflow: hidden;
+                border:1px solid #67c23a;
+                background: #cccccc;
+            }
+        }
+    }
+    .footer-btn{
+        margin-top: 30px;
+        display: flex;
+        display: -webkit-flex;
+        justify-content: flex-end;
+        .scope-btn{
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+            padding-right: 10px;
+        }
+        .upload-btn{
+            flex: 1;
+            -webkit-flex: 1;
+            display: flex;
+            display: -webkit-flex;
+            justify-content: center;
+        }
+        .btn {
+            outline: none;
+            display: inline-block;
+            line-height: 1;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-appearance: none;
+            text-align: center;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            outline: 0;
+            -webkit-transition: .1s;
+            transition: .1s;
+            font-weight: 500;
+            padding: 8px 15px;
+            font-size: 12px;
+            border-radius: 3px;
+            color: #fff;
+            background-color: #409EFF;
+            border-color: #409EFF;
+            margin-right: 10px;
+        }
+    }
+    .el-menu-vertical-demo {
+        border: 0px;
+    }
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409eff;
+    }
+    .el-icon.avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
+    }
+</style>
