@@ -8,6 +8,8 @@
                     active-text-color="#ffd04b"
                     background-color="#4A4E58"
                     class="el-menu-vertical-demo"
+                    unique-opened="true"
+                    router="true"
                     default-active="2"
                     text-color="#fff"
                     @open="handleOpen"
@@ -39,9 +41,9 @@
 <!--                    <el-icon><document /></el-icon>-->
 <!--                    <span>Navigator Three</span>-->
 <!--                </el-menu-item>-->
-                <el-menu-item index="1">
-                    <el-icon><setting /></el-icon>
-                    <span>Profile</span>
+                <el-menu-item index="/home/profile">
+                    <el-icon><setting/></el-icon>
+                    <span>设置</span>
                 </el-menu-item>
             </el-menu>
         </el-col>
@@ -54,49 +56,11 @@
                 </el-col>
             </el-row>
             <el-row :style="{ height: `${elementHeight}px`, padding: '10px', marginBottom: '0px'}">
-                <el-row :style="{ height: `${innerHeight}px`, backgroundColor: 'white', width: '100%'}"></el-row>
+                <router-view></router-view>
             </el-row>
         </el-col>
     </el-row>
-    <el-dialog v-model="showAvatarFlag" title="Upload Avatar">
-        <el-form>
-            <el-form-item>
-                <el-upload
-                        class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload"
-                        >
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                    <el-icon v-else class="avatar-uploader-icon"><plus/></el-icon>
-                </el-upload>
-            </el-form-item>
-            <el-form-item>
-                <vue-picture-cropper
-                        :boxStyle="{
-                          width: '100%',
-                          height: '100%',
-                          backgroundColor: '#f8f8f8',
-                          margin: 'auto'
-                        }"
-                        :img="pic"
-                        :options="{
-                          viewMode: 1,
-                          dragMode: 'crop',
-                          aspectRatio: 16 / 9,
-                          preview: preview,
-                        }"
-                        @ready="ready"
-                />
-            </el-form-item>
-        </el-form>
-        <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="showAvatarFlag = false">Close</el-button>
-            </span>
-        </template>
-    </el-dialog>
+
 </template>
 
 <script>
@@ -106,6 +70,9 @@
     import { Plus } from '@element-plus/icons-vue'
     import VuePictureCropper, { cropper } from 'vue-picture-cropper'
     console.log(cropper)
+    console.log(Plus)
+    console.log(VuePictureCropper)
+    console.log(ElUpload)
     export default {
         name: "Home",
         components: {
@@ -113,9 +80,9 @@
             // Document,
             // IconMenu,
             Setting,
-            VuePictureCropper,
-            ElUpload,
-            Plus
+            // VuePictureCropper,
+            // ElUpload,
+            // Plus
         },
         props:['Name'],
         beforeCreate () {
@@ -130,7 +97,8 @@
                 elementHeight: 50,
                 innerHeight: 30,
                 showAvatarFlag: false,
-                image: null
+                image: null,
+                pic: null
             }
         },
         methods: {
@@ -142,22 +110,16 @@
             },
             beforeAvatarUpload (file) {
                 let This = this
-                console.log(typeof file)
+                console.log(file)
                 if (!/\.(jpg|jpeg|png|JPG|PNG)$/.test(file.name)) {
                     apiUtil.message.error('support image type:jpeg、jpg、png')
                     return false
                 }
                 //转化为blob
                 let reader = new FileReader()
-                reader.readAsDataURL(file)
-                reader.onload = (e) => {
-                    let data
-                    if (typeof e.target.result === 'object') {
-                        data = window.URL.createObjectURL(new Blob([e.target.result]))
-                    } else {
-                        data = e.target.result
-                    }
-                    This.image = data
+                reader.readAsDataURL(file.raw)
+                reader.onload = () => {
+                    This.pic = String(reader.result)
                 }
             },
             selectImg (e) {

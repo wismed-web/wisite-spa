@@ -2,6 +2,7 @@ import { createRouter,createWebHashHistory} from 'vue-router'
 const login = () => import('../components/Login')
 const home = () => import('../components/Home')
 const register = () => import('../components/Register')
+const profile = () => import('../components/Profile')
 
 const routes = [
     {
@@ -25,6 +26,13 @@ const routes = [
         meta: {
             requireAuth: true
         },
+        children: [
+            {
+                name: 'profile',
+                path: 'profile',
+                component: profile
+            }
+        ]
     }
 ]
 
