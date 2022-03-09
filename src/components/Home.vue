@@ -14,33 +14,7 @@
                     text-color="#fff"
                     @open="handleOpen"
                     @close="handleClose"
-                    :style="{ height: `${elementHeight}px` }"
-            >
-<!--                <el-sub-menu index="1">-->
-<!--                    <template #title>-->
-<!--                        <el-icon><location /></el-icon>-->
-<!--                        <span>Navigator One</span>-->
-<!--                    </template>-->
-<!--                    <el-menu-item-group title="Group One">-->
-<!--                        <el-menu-item index="1-1">item one</el-menu-item>-->
-<!--                        <el-menu-item index="1-2">item one</el-menu-item>-->
-<!--                    </el-menu-item-group>-->
-<!--                    <el-menu-item-group title="Group Two">-->
-<!--                        <el-menu-item index="1-3">item three</el-menu-item>-->
-<!--                    </el-menu-item-group>-->
-<!--                    <el-sub-menu index="1-4">-->
-<!--                        <template #title>item four</template>-->
-<!--                        <el-menu-item index="1-4-1">item one</el-menu-item>-->
-<!--                    </el-sub-menu>-->
-<!--                </el-sub-menu>-->
-<!--                <el-menu-item index="2">-->
-<!--                    <el-icon><icon-menu /></el-icon>-->
-<!--                    <span>Navigator Two</span>-->
-<!--                </el-menu-item>-->
-<!--                <el-menu-item index="3" disabled>-->
-<!--                    <el-icon><document /></el-icon>-->
-<!--                    <span>Navigator Three</span>-->
-<!--                </el-menu-item>-->
+                    :style="{ height: `${elementHeight}px` }">
                 <el-menu-item index="/home/profile">
                     <el-icon><setting/></el-icon>
                     <span>设置</span>
@@ -50,12 +24,12 @@
         <el-col :span="21">
             <el-row style="height: 68px;margin: 0px;background-color: white;text-align: right;">
                 <el-col :span="1" :offset="23" style="padding:7px;">
-                    <el-avatar :size="50" :src="circleUrl" @click="showAvatar">
+                    <el-avatar :size="50" :src="profile.avatar">
 
                     </el-avatar>
                 </el-col>
             </el-row>
-            <el-row :style="{ height: `${elementHeight}px`, padding: '10px', marginBottom: '0px'}">
+            <el-row :style="{ padding: '10px', marginBottom: '0px'}">
                 <router-view></router-view>
             </el-row>
         </el-col>
@@ -98,7 +72,9 @@
                 innerHeight: 30,
                 showAvatarFlag: false,
                 image: null,
-                pic: null
+                pic: null,
+                profile: {
+                }
             }
         },
         methods: {
@@ -144,22 +120,6 @@
                     this.option.img = data
                 }
             },
-            //上传图片
-            uploadImg () {
-                // let _this = this;
-                // let base64 = cropper.getDataURL()
-                // let blob = cropper.getBlob()
-                // let formData = new FormData();
-                // formData.append('file',data,"DX.jpg")
-                // //调用axios上传
-                // apiUtil.post(apiUtil.urls.file.upload, formData)
-                //     .then(res => {
-                //         apiUtil.message.success("Upload success")
-                //     }).catch(error => {
-                //     console.log(error)
-                //     apiUtil.message.error(error)
-                // })
-            }
         },
         mounted:function () {
             this.$nextTick(() => {
@@ -171,7 +131,13 @@
                     context.innerHeight = context.elementHeight - 20
                 }
             })
-
+            let _this = this
+            apiUtil.api.get(apiUtil.urls.user.profile)
+                .then(res => {
+                    _this.profile = res
+                }).catch(error => {
+                apiUtil.message.error(error)
+            })
         }
     }
 </script>

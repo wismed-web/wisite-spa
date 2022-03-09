@@ -1,19 +1,8 @@
 import axios from 'axios'
+import router from "../router";
 import { ElMessage } from 'element-plus'
 let baseUrl = 'http://127.0.0.1:1323/api'
-axios.defaults.baseURL = baseUrl
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.transformRequest = [function (data) {
-  let ret = ''
-  for (let it in data) {
-    ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-  }
-  return ret
-}]
-// Vue.prototype.$axios = axios
-export default {
+const api = {
   urls: {
     baseApiUrl: baseUrl,
     admin: {
@@ -51,6 +40,31 @@ export default {
     put (url, data) {
       return this.ajax(url, 'put', data)
     },
+    upload (url, formData) {
+      return new Promise((resolve, reject) => {
+        axios.post(url,formData,{
+          headers:
+              {
+                "Content-Type": "multipart/form-data;charset=UTF-8"
+              },
+          transformRequest: [function (data) {
+            return data
+          }]
+        }).then(response => {
+          if (response.status === 200) {
+            resolve(response.data)
+          } else {
+            reject('Network Error')
+          }
+        }).catch(error => {
+          if (error.response) {
+            reject(error.response.data)
+          } else {
+            reject(error.message)
+          }
+        })
+      })
+    },
     ajax (url, method, data) {
       return new Promise((resolve, reject) => {
         axios.request({
@@ -59,7 +73,6 @@ export default {
           data: data
         }).then(response => {
           if (response.status === 200) {
-            console.log(response.data)
             resolve(response.data)
           } else {
             reject('Network Error')
@@ -90,6 +103,12 @@ export default {
         // let upperLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         // let lowerLetter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
       }
+    },
+    getToken() {
+      return localStorage.getItem('accessToken')
+    },
+    setToken(token){
+      localStorage.setItem('accessToken', token)
     }
   },
   message: {
@@ -113,3 +132,36 @@ export default {
     }
   }
 }
+axios.defaults.baseURL = baseUrl
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.transformRequest = [function (data) {
+  let ret = ''
+  for (let it in data) {
+    ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+  }
+  return ret
+}]
+axios.interceptors.request.use(config => {
+  config.headers.Authorization = api.util.getToken()
+  return config
+})
+axios.interceptors.response.use(res => {
+      console.log(res)
+      if (res.status === 200) {
+        return res
+      } else if (res.status !== 400) {
+        if('jwt' in res.data){
+          router.push('/')
+        }
+        return res
+      } else {
+        return res
+      }
+    },
+    error => {
+      return Promise.reject(error)
+    }
+)
+// Vue.prototype.$axios = axios
+export default api

@@ -8,14 +8,17 @@
         <el-row>
             <el-col :span="16">
                 <el-form label-position="right"
-                         label-width="100px">
-                    <el-form-item label="用户名">
+                         label-width="100px"
+                         :rules="rules"
+                         :model="profile"
+                         ref="profileForm">
+                    <el-form-item label="用户名" prop="uname">
                         <el-input v-model="profile.uname" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="真实姓名">
+                    <el-form-item label="真实姓名" prop="name">
                         <el-input v-model="profile.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="邮箱">
+                    <el-form-item label="邮箱" prop="email">
                         <el-input v-model="profile.email" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="手机号">
@@ -24,8 +27,21 @@
                     <el-form-item label="注册时间">
                         <el-input v-model="profile.regtime" disabled></el-input>
                     </el-form-item>
+                    <el-form-item label="地址">
+                        <el-input v-model="profile.addr" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="性别">
+                        <el-select v-model="profile.gender" placeholder="--请选择--" style="width:100%;">
+                            <el-option
+                                    v-for="item in genders"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm(ruleFormRef)">更新</el-button>
+                        <el-button type="primary" @click="updateProfile('profileForm')" round style="width:100%;">更新</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -151,8 +167,32 @@
                 image: null,
                 pic: null,
                 imageUrl: null,
-                avatarFile: null
+                avatarFile: null,
+                genders: [
+                    {value: '男', lable: '男'},
+                    {value: '女', lable: '女'}
+                ],
+                rules: {
+                    uname: [
+                        { required: true, message: '请输入用户名', trigger: 'blur' },
+                    ],
+                    email: [
+                        { required: true, message: '请输入邮箱', trigger: 'blur' }
+                    ],
+                    name: [
+                        {required: true, message: '请输入真实姓名', trigger: 'blur' }
+                    ],
+                }
             }
+        },
+        mounted(){
+            let _this = this
+            apiUtil.api.get(apiUtil.urls.user.profile)
+                .then(res => {
+                    _this.profile = res
+                }).catch(error => {
+                apiUtil.message.error(error)
+            })
         },
         methods: {
             handleClose(tag) {
@@ -227,19 +267,26 @@
                 this.imageUrl = this.profile.avatar = base64
             },
             //上传图片
-            uploadImg () {
-                // let _this = this;
-                // let base64 = cropper.getDataURL()
-                // let blob = cropper.getBlob()
-                // let formData = new FormData();
-                // formData.append('file',data,"header.jpg")
-                // //调用axios上传
-                // apiUtil.post(apiUtil.urls.file.upload, formData)
-                //     .then(res => {
-                //         apiUtil.message.success("上传成功")
-                //     }).catch(error => {
-                //     apiUtil.message.error(error)
-                // })
+            updateProfile (formName) {
+                let _this = this
+                _this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let formData = new FormData()
+                        for(let key in _this.profile){
+                            formData.append(key, _this.profile[key])
+                        }
+                        formData.append('avatar', _this.avatarFile)
+                        apiUtil.api.upload(apiUtil.urls.user.setprofile, formData)
+                            .then(res => {
+                                console.log(res)
+                                apiUtil.message.success("更新成功")
+                            }).catch(error => {
+                            apiUtil.message.error(error)
+                        })
+                    } else {
+                        return false
+                    }
+                })
             }
         }
     }

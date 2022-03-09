@@ -2,7 +2,7 @@
     <el-form style="margin:0 auto;background-color: #fff;width: 380px;padding: 42px;margin-top:100px;">
         <el-form-item>
             <div style="font-weight: bold;">
-                <h1>Sign in to Wisite</h1>
+                <h1>登录</h1>
             </div>
         </el-form-item>
         <el-form-item>
@@ -10,7 +10,7 @@
                     v-model="uname"
                     class="w-50 m-2"
                     size="large"
-                    placeholder="Username or Email"
+                    placeholder="用户名或邮箱"
             />
         </el-form-item>
         <el-form-item style="margin-bottom: 10px;">
@@ -19,20 +19,20 @@
                     size="large"
                     type="password"
                     class="w-50 m-2"
-                    placeholder="Password"/>
+                    placeholder="密码"/>
         </el-form-item>
         <el-form-item style="margin-bottom: 0px;">
-            <router-link :to="{name: 'register'}">Forgot password?</router-link>
+            <router-link :to="{name: 'register'}">忘记密码?</router-link>
         </el-form-item>
         <el-form-item style="height: 32px;">
             <span style="color:red;font-size: 12px;width:100%;">{{loginInfo}}</span>
         </el-form-item>
         <el-form-item>
-            <el-button type="danger" round v-on:click="login" size="large" style="font-size: 16px;width:100%;">Sign in</el-button>
+            <el-button type="danger" round v-on:click="login" size="large" style="font-size: 16px;width:100%;">登录</el-button>
         </el-form-item>
         <el-form-item>
             <div style="font-size: 12px;width:100%;">
-                Don't have an account?&nbsp;&nbsp;<router-link :to="{name: 'register'}" style="color:red;">Sign up</router-link>
+                还没有帐号?&nbsp;&nbsp;<router-link :to="{name: 'register'}" style="color:red;">注册</router-link>
             </div>
         </el-form-item>
     </el-form>
@@ -40,7 +40,6 @@
 
 <script>
     import apiUtil from '../util/apiUtil'
-
     export default {
         name: "Login",
         components: {},
@@ -59,21 +58,28 @@
         },
         methods: {
             login(event) {
+                let _this = this
                 console.log(event)
-                if (!this.uname) {
-                    this.loginInfo = "Please enter username or email"
+                if (!_this.uname) {
+                    _this.loginInfo = "请输入用户名或邮箱"
                     return
                 }
-                if (!this.pwd) {
-                    this.loginInfo = "Please enter password"
+                if (!_this.pwd) {
+                    _this.loginInfo = "请输入密码"
                     return
                 }
-                this.loginInfo = null
-                apiUtil.api.post(apiUtil.urls.sign.signin, {uname: this.uname, pwd: this.pwd})
+                _this.loginInfo = null
+                apiUtil.api.post(apiUtil.urls.sign.signin, {uname: _this.uname, pwd: _this.pwd})
                     .then(data => {
-                        apiUtil.message.success('Login success')
-                        this.$store.dispatch('setToken', data.token)
-                        this.$router.push('/home')
+                        apiUtil.message.success('登录成功')
+                        _this.$store.dispatch('setToken', data.auth)
+                        apiUtil.util.setToken(data.auth)
+                        let redirect = _this.$route.query.redirect
+                        if(redirect){
+                            _this.$router.push(redirect)
+                        }else{
+                            _this.$router.push('/home')
+                        }
                     })
                     .catch(error => {
                         console.log(error)
