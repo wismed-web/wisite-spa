@@ -22,7 +22,7 @@
                     placeholder="密码"/>
         </el-form-item>
         <el-form-item style="margin-bottom: 0px;">
-            <router-link :to="{name: 'register'}">忘记密码?</router-link>
+            <router-link :to="{name: 'register'}" style="color:red;">忘记密码?</router-link>
         </el-form-item>
         <el-form-item style="height: 32px;">
             <span style="color:red;font-size: 12px;width:100%;">{{loginInfo}}</span>

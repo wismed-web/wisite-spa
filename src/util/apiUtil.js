@@ -2,6 +2,40 @@ import axios from 'axios'
 import router from "../router";
 import { ElMessage } from 'element-plus'
 let baseUrl = 'http://127.0.0.1:1323/api'
+axios.defaults.baseURL = baseUrl
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.transformRequest = [function (data) {
+  let ret = ''
+  for (let it in data) {
+    ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+  }
+  return ret
+}]
+axios.interceptors.request.use(config => {
+  config.headers.Authorization = api.util.getToken()
+  return config
+})
+axios.interceptors.response.use(res => {
+      console.log(res)
+      if (res.status === 200) {
+        return res
+      } else if (res.status !== 400) {
+        if('invalid or expired jwt' === res.data){
+          router.push('/login')
+          return
+        }
+        return res
+      }else if (res.status === 401) {
+        router.push('/login')
+      } else {
+        return res
+      }
+    },
+    error => {
+      return Promise.reject(error)
+    }
+)
 const api = {
   urls: {
     baseApiUrl: baseUrl,
@@ -58,6 +92,10 @@ const api = {
           }
         }).catch(error => {
           if (error.response) {
+            if(error.response.status === 401) {
+              router.push('/login')
+              return
+            }
             reject(error.response.data)
           } else {
             reject(error.message)
@@ -79,6 +117,10 @@ const api = {
           }
         }).catch(error => {
           if (error.response) {
+            if(error.response.status === 401) {
+              router.push('/login')
+              return
+            }
             reject(error.response.data)
           } else {
             reject(error.message)
@@ -132,36 +174,6 @@ const api = {
     }
   }
 }
-axios.defaults.baseURL = baseUrl
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.transformRequest = [function (data) {
-  let ret = ''
-  for (let it in data) {
-    ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-  }
-  return ret
-}]
-axios.interceptors.request.use(config => {
-  config.headers.Authorization = api.util.getToken()
-  return config
-})
-axios.interceptors.response.use(res => {
-      console.log(res)
-      if (res.status === 200) {
-        return res
-      } else if (res.status !== 400) {
-        if('jwt' in res.data){
-          router.push('/')
-        }
-        return res
-      } else {
-        return res
-      }
-    },
-    error => {
-      return Promise.reject(error)
-    }
-)
+
 // Vue.prototype.$axios = axios
 export default api

@@ -47,7 +47,7 @@
             </el-col>
             <el-col :span="8">
                 <div class="block">
-                    <el-avatar shape="square" :size="150" :src="profile.avatar" @click="showAvatarFlag=true">
+                    <el-avatar shape="square" :size="150" :src="avatarBase64" @click="showAvatarFlag=true">
 
                     </el-avatar>
                 </div>
@@ -87,6 +87,10 @@
 <!--                    <el-icon class="avatar-uploader-icon"><plus/></el-icon>-->
                     <el-button type="primary" round>选择文件</el-button>
                 </el-upload>
+                &nbsp;&nbsp;
+                &nbsp;&nbsp;
+                <el-button @click="cropperImage" round>裁剪</el-button>
+                <el-button @click="cropperConfirm" round>更新</el-button>
             </el-form-item>
             <el-form-item>
 
@@ -119,8 +123,7 @@
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="cropperImage" round>裁剪</el-button>
-                <el-button @click="cropperConfirm" round>确认</el-button>
+                <el-button @click="this.showAvatarFlag == false" round>关闭</el-button>
             </span>
         </template>
     </el-dialog>
@@ -185,6 +188,11 @@
                 }
             }
         },
+        computed:{
+            avatarBase64() {
+                return 'data:'+this.profile.avatartype+';base64,' + this.profile.Avatar
+            }
+        },
         mounted(){
             let _this = this
             apiUtil.api.get(apiUtil.urls.user.profile)
@@ -224,6 +232,20 @@
                 })
                 this.avatarFile = file
                 this.showAvatarFlag = false
+                let _this = this
+                let formData = new FormData()
+                formData.append('note', '')
+                formData.append('group0', '')
+                formData.append('group1', '')
+                formData.append('group2', '')
+                formData.append('file', _this.avatarFile)
+                apiUtil.api.upload(apiUtil.urls.file.upload, formData)
+                    .then(res => {
+                        console.log(res)
+                        apiUtil.message.success("更新成功")
+                    }).catch(error => {
+                    apiUtil.message.error(error)
+                })
             },
             beforeAvatarUpload (file) {
                 let This = this
