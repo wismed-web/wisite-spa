@@ -28,7 +28,7 @@
             <span style="color:red;font-size: 12px;width:100%;">{{loginInfo}}</span>
         </el-form-item>
         <el-form-item>
-            <el-button type="danger" round v-on:click="login" size="large" style="font-size: 16px;width:100%;">登录</el-button>
+            <el-button type="danger" :loading="loading" round v-on:click="login" size="large" style="font-size: 16px;width:100%;">登录</el-button>
         </el-form-item>
         <el-form-item>
             <div style="font-size: 12px;width:100%;">
@@ -47,7 +47,8 @@
             return {
                 uname: null,
                 pwd: null,
-                loginInfo: null
+                loginInfo: null,
+                loading: false
             }
         },
         beforeCreate () {
@@ -59,6 +60,7 @@
         methods: {
             login(event) {
                 let _this = this
+                _this.loading = true
                 console.log(event)
                 if (!_this.uname) {
                     _this.loginInfo = "请输入用户名或邮箱"
@@ -71,6 +73,7 @@
                 _this.loginInfo = null
                 apiUtil.api.post(apiUtil.urls.sign.signin, {uname: _this.uname, pwd: _this.pwd})
                     .then(data => {
+                        _this.loading = false
                         apiUtil.message.success('登录成功')
                         _this.$store.dispatch('setToken', data.auth)
                         apiUtil.util.setToken(data.auth)
@@ -80,9 +83,8 @@
                         }else{
                             _this.$router.push('/home')
                         }
-                    })
-                    .catch(error => {
-                        console.log(error)
+                    }).catch(error => {
+                        _this.loading = false
                         apiUtil.message.error(error)
                     })
 

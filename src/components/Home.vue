@@ -23,11 +23,11 @@
         </el-col>
         <el-col :span="21">
             <el-row style="height: 68px;margin: 0px;background-color: white;text-align: right;">
-                <el-col :span="1" :offset="23" style="padding:7px;">
-                    <el-avatar :size="50" :src="profile.avatar">
+<!--                <el-col :span="1" :offset="23" style="padding:7px;">-->
+<!--                    <el-avatar :size="50" :src="profile.avatar">-->
 
-                    </el-avatar>
-                </el-col>
+<!--                    </el-avatar>-->
+<!--                </el-col>-->
             </el-row>
             <el-row :style="{ padding: '10px', marginBottom: '0px'}">
                 <router-view></router-view>
@@ -39,24 +39,12 @@
 
 <script>
     import apiUtil from '../util/apiUtil'
-    import {Setting,} from '@element-plus/icons-vue'
-    import { ElUpload } from 'element-plus'
-    import { Plus } from '@element-plus/icons-vue'
-    import VuePictureCropper, { cropper } from 'vue-picture-cropper'
-    console.log(cropper)
-    console.log(Plus)
-    console.log(VuePictureCropper)
-    console.log(ElUpload)
+    import {Setting} from '@element-plus/icons-vue'
+
     export default {
         name: "Home",
         components: {
-            // Location,
-            // Document,
-            // IconMenu,
             Setting,
-            // VuePictureCropper,
-            // ElUpload,
-            // Plus
         },
         props:['Name'],
         beforeCreate () {
@@ -79,7 +67,7 @@
         },
         methods: {
             handleOpen () {
-
+                console.log('handleOpen.')
             },
             showAvatar () {
                 this.showAvatarFlag = true

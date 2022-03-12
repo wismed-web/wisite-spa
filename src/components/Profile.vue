@@ -16,7 +16,7 @@
                         <el-input v-model="profile.uname" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="真实姓名" prop="name">
-                        <el-input v-model="profile.name"></el-input>
+                        <el-input v-model="profile.name" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱" prop="email">
                         <el-input v-model="profile.email" disabled></el-input>
@@ -41,7 +41,8 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="updateProfile('profileForm')" round style="width:100%;">更新</el-button>
+                        <el-button type="primary" @click="updateProfile('profileForm')" style="width:100%;"
+                                   :loading="loading">更新</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -51,7 +52,7 @@
 
                     </el-avatar>
                 </div>
-                <div class="block" style="text-align: left;padding:5px;">
+                <div class="block" style="text-align: left;padding:5px;height: 185px;padding-left:28px;">
                     <el-tag
                             :key="tag"
                             v-for="tag in tags"
@@ -72,6 +73,9 @@
                     </el-input>
                     <el-button v-else class="button-new-tag" size="small" @click="showInput">添加标签</el-button>
                 </div>
+                <div>
+                    <el-button @click="logout" round type="danger">退出登录</el-button>
+                </div>
             </el-col>
         </el-row>
     </el-card>
@@ -84,11 +88,8 @@
                         :auto-upload="false"
                         :on-success="handleAvatarSuccess"
                         :on-change="beforeAvatarUpload">
-<!--                    <el-icon class="avatar-uploader-icon"><plus/></el-icon>-->
                     <el-button type="primary" round>选择文件</el-button>
                 </el-upload>
-                &nbsp;&nbsp;
-                &nbsp;&nbsp;
                 <el-button @click="cropperImage" round>裁剪</el-button>
                 <el-button @click="cropperConfirm" round>更新</el-button>
             </el-form-item>
@@ -142,6 +143,7 @@
         },
         data() {
             return {
+                loading: false,
                 profile: {
                     "active": "T",
                     "uname": "admin",
@@ -172,8 +174,8 @@
                 imageUrl: null,
                 avatarFile: null,
                 genders: [
-                    {value: '男', lable: '男'},
-                    {value: '女', lable: '女'}
+                    {value: 'M', label: '男'},
+                    {value: 'F', label: '女'}
                 ],
                 rules: {
                     uname: [
@@ -198,16 +200,32 @@
             apiUtil.api.get(apiUtil.urls.user.profile)
                 .then(res => {
                     _this.profile = res
+                    _this.tags = []
+                    if(res.tags){
+                        _this.tags = res.tags.split(',')
+                    }
                 }).catch(error => {
                 apiUtil.message.error(error)
             })
         },
         methods: {
+            logout () {
+                let _this = this
+                apiUtil.api.get(apiUtil.urls.sign.signout)
+                    .then(res => {
+                        console.log(res)
+                        apiUtil.message.success('退出成功')
+                        apiUtil.util.clearToken()
+                        _this.$router.push('/login')
+                    }).catch(error => {
+                    apiUtil.message.error('退出失败，失败原因:'+error)
+                })
+            },
             handleClose(tag) {
                 this.tags.splice(this.tags.indexOf(tag), 1)
             },
             showInput() {
-                this.addTagFlag = true;
+                this.addTagFlag = true
                 this.$nextTick(() => {
                     this.$refs.saveTagInput.$refs.input.focus()
                 })
@@ -244,12 +262,11 @@
                         console.log(res)
                         apiUtil.message.success("更新成功")
                     }).catch(error => {
-                    apiUtil.message.error(error)
+                        apiUtil.message.error(error)
                 })
             },
             beforeAvatarUpload (file) {
                 let This = this
-                console.log(file)
                 if (!/\.(jpg|jpeg|png|JPG|PNG)$/.test(file.name)) {
                     apiUtil.message.error('support image type:jpeg、jpg、png')
                     return false
@@ -291,21 +308,29 @@
             //上传图片
             updateProfile (formName) {
                 let _this = this
+                _this.loading = true
                 _this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let formData = new FormData()
                         for(let key in _this.profile){
-                            formData.append(key, _this.profile[key])
+                            if(key === 'tags'){
+                                formData.append('tags', this.tags.join(','))
+                            }else{
+                                formData.append(key, _this.profile[key])
+                            }
                         }
                         formData.append('avatar', _this.avatarFile)
                         apiUtil.api.upload(apiUtil.urls.user.setprofile, formData)
                             .then(res => {
+                                _this.loading = false
                                 console.log(res)
                                 apiUtil.message.success("更新成功")
                             }).catch(error => {
-                            apiUtil.message.error(error)
+                                apiUtil.message.error(error)
+                                _this.loading = false
                         })
                     } else {
+                        _this.loading = false
                         return false
                     }
                 })
@@ -373,6 +398,20 @@
         width: 90px;
         margin-left: 10px;
         vertical-align: bottom;
+    }
+    .el-button .custom-loading .circular {
+        margin-right: 6px;
+        width: 18px;
+        height: 18px;
+        animation: loading-rotate 2s linear infinite;
+    }
+    .el-button .custom-loading .circular .path {
+        animation: loading-dash 1.5s ease-in-out infinite;
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: 0;
+        stroke-width: 2;
+        stroke: var(--el-button-text-color);
+        stroke-linecap: round;
     }
 
 </style>

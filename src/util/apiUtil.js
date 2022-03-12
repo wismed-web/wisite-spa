@@ -50,7 +50,7 @@ const api = {
       upload: '/file/upload',
     },
     sign: {
-      signout: '/sign-out',
+      signout: '/sign-out/',
       signin: '/sign/in',
       new: '/sign/new',
       verifyEmail: '/sign/verify-email',
@@ -121,6 +121,12 @@ const api = {
               router.push('/login')
               return
             }
+            if(error.response.status === 400) {
+              if(error.response.data && error.response.data.message && error.response.data.message === 'missing or malformed jwt') {
+                router.push('/login')
+                return
+              }
+            }
             reject(error.response.data)
           } else {
             reject(error.message)
@@ -148,6 +154,9 @@ const api = {
     },
     getToken() {
       return localStorage.getItem('accessToken')
+    },
+    clearToken() {
+      return localStorage.setItem('accessToken', null)
     },
     setToken(token){
       localStorage.setItem('accessToken', token)
