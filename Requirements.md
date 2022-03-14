@@ -11,5 +11,5 @@ requirements
    2. 此auth字符串为访问其他API的用户JWT凭据。
    3. 登陆不成功，则返回400及失败原因字符串。
 4. 登陆成功后界面：参考 <https://webix.com/demos/admin-app/#!/main/forms>
-   1. 左侧导航窗口，Profile选项。
-   2. 内容实现风格参考网址的顶部logo区域和'Profile information'区域。
+   1. 实现左侧导航窗口，添加Profile选项。
+   2. 内容区域实现风格模仿参考网址的顶部logo区域和'Profile information'区域。
