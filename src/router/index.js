@@ -3,6 +3,7 @@ const login = () => import('../components/Login')
 const home = () => import('../components/Home')
 const register = () => import('../components/Register')
 const profile = () => import('../components/Profile')
+const verify = () => import('../components/Verify')
 
 const routes = [
     {
@@ -18,6 +19,11 @@ const routes = [
         path: '/register',
         name: 'register',
         component: register
+    },
+    {
+        path: '/verify',
+        name: 'verify',
+        component: verify
     },
     {
         path: '/home',

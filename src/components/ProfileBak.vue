@@ -48,21 +48,11 @@
             </el-col>
             <el-col :span="8">
                 <div class="block">
-                    <el-avatar shape="square" :size="150" :src="avatarBase64">
+                    <el-avatar shape="square" :size="150" :src="avatarBase64" @click="showAvatarFlag=true">
 
                     </el-avatar>
                 </div>
-                <div>
-                    <el-upload
-                            class="avatar-uploader"
-                            :show-file-list="false"
-                            :auto-upload="false"
-                            :on-success="handleAvatarSuccess"
-                            :on-change="beforeAvatarUpload">
-                        <el-button type="primary" round>选择文件</el-button>
-                    </el-upload>
-                </div>
-                <div class="block" style="text-align: left;padding:5px;height: 155px;padding-left:28px;">
+                <div class="block" style="text-align: left;padding:5px;height: 185px;padding-left:28px;">
                     <el-tag
                             :key="tag"
                             v-for="tag in tags"
@@ -89,55 +79,55 @@
             </el-col>
         </el-row>
     </el-card>
-<!--    <el-dialog v-model="showAvatarFlag" title="更新头像">-->
-<!--        <el-form>-->
-<!--            <el-form-item>-->
-<!--                <el-upload-->
-<!--                        class="avatar-uploader"-->
-<!--                        :show-file-list="false"-->
-<!--                        :auto-upload="false"-->
-<!--                        :on-success="handleAvatarSuccess"-->
-<!--                        :on-change="beforeAvatarUpload">-->
-<!--                    <el-button type="primary" round>选择文件</el-button>-->
-<!--                </el-upload>-->
-<!--&lt;!&ndash;                <el-button @click="cropperImage" round>裁剪</el-button>&ndash;&gt;-->
-<!--&lt;!&ndash;                <el-button @click="cropperConfirm" round>更新</el-button>&ndash;&gt;-->
-<!--            </el-form-item>-->
-<!--&lt;!&ndash;            <el-form-item>&ndash;&gt;-->
+    <el-dialog v-model="showAvatarFlag" title="更新头像">
+        <el-form>
+            <el-form-item>
+                <el-upload
+                        class="avatar-uploader"
+                        :show-file-list="false"
+                        :auto-upload="false"
+                        :on-success="handleAvatarSuccess"
+                        :on-change="beforeAvatarUpload">
+                    <el-button type="primary" round>选择文件</el-button>
+                </el-upload>
+                <el-button @click="cropperImage" round>裁剪</el-button>
+                <el-button @click="cropperConfirm" round>更新</el-button>
+            </el-form-item>
+            <el-form-item>
 
-<!--&lt;!&ndash;            </el-form-item>&ndash;&gt;-->
-<!--&lt;!&ndash;            <el-form-item>&ndash;&gt;-->
-<!--&lt;!&ndash;                <el-row>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <el-col :span="10">&ndash;&gt;-->
-<!--&lt;!&ndash;                        <vue-picture-cropper&ndash;&gt;-->
-<!--&lt;!&ndash;                        :boxStyle="{&ndash;&gt;-->
-<!--&lt;!&ndash;                          width: '400px',&ndash;&gt;-->
-<!--&lt;!&ndash;                          height: '400px',&ndash;&gt;-->
-<!--&lt;!&ndash;                          backgroundColor: '#f8f8f8',&ndash;&gt;-->
-<!--&lt;!&ndash;                          margin: 'auto'&ndash;&gt;-->
-<!--&lt;!&ndash;                        }"&ndash;&gt;-->
-<!--&lt;!&ndash;                        :img="pic"&ndash;&gt;-->
-<!--&lt;!&ndash;                        :options="{&ndash;&gt;-->
-<!--&lt;!&ndash;                          viewMode: 1,&ndash;&gt;-->
-<!--&lt;!&ndash;                          dragMode: 'crop',&ndash;&gt;-->
-<!--&lt;!&ndash;                          aspectRatio: 1,&ndash;&gt;-->
-<!--&lt;!&ndash;                          preview: preview,&ndash;&gt;-->
-<!--&lt;!&ndash;                        }"&ndash;&gt;-->
-<!--&lt;!&ndash;                        @ready="ready"&ndash;&gt;-->
-<!--&lt;!&ndash;                        />&ndash;&gt;-->
-<!--&lt;!&ndash;                    </el-col>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <el-col :span="10" :offset="3">&ndash;&gt;-->
-<!--&lt;!&ndash;                        <img v-if="imageUrl" width="400" height="400" :src="imageUrl" class="avatar" />&ndash;&gt;-->
-<!--&lt;!&ndash;                    </el-col>&ndash;&gt;-->
-<!--&lt;!&ndash;                </el-row>&ndash;&gt;-->
-<!--&lt;!&ndash;            </el-form-item>&ndash;&gt;-->
-<!--        </el-form>-->
-<!--        <template #footer>-->
-<!--            <span class="dialog-footer">-->
-<!--                <el-button @click="showAvatarFlag == false" round>关闭</el-button>-->
-<!--            </span>-->
-<!--        </template>-->
-<!--    </el-dialog>-->
+            </el-form-item>
+            <el-form-item>
+                <el-row>
+                    <el-col :span="10">
+                        <vue-picture-cropper
+                        :boxStyle="{
+                          width: '400px',
+                          height: '400px',
+                          backgroundColor: '#f8f8f8',
+                          margin: 'auto'
+                        }"
+                        :img="pic"
+                        :options="{
+                          viewMode: 1,
+                          dragMode: 'crop',
+                          aspectRatio: 1,
+                          preview: preview,
+                        }"
+                        @ready="ready"
+                        />
+                    </el-col>
+                    <el-col :span="10" :offset="3">
+                        <img v-if="imageUrl" width="400" height="400" :src="imageUrl" class="avatar" />
+                    </el-col>
+                </el-row>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="this.showAvatarFlag == false" round>关闭</el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 
 <script>
@@ -145,12 +135,11 @@
     import VuePictureCropper, { cropper } from 'vue-picture-cropper'
     import apiUtil from "../util/apiUtil";
     console.log(cropper)
-    console.log(VuePictureCropper)
     export default {
-        name: "Profile",
+        name: "ProfileBak",
         components: {
             ElUpload,
-            // VuePictureCropper,
+            VuePictureCropper,
         },
         data() {
             return {
@@ -185,8 +174,8 @@
                 imageUrl: null,
                 avatarFile: null,
                 genders: [
-                    {value: 'F', label: '男'},
-                    {value: 'M', label: '女'}
+                    {value: 'M', label: '男'},
+                    {value: 'F', label: '女'}
                 ],
                 rules: {
                     uname: [
@@ -203,7 +192,7 @@
         },
         computed:{
             avatarBase64() {
-                return 'data:'+this.profile.avatartype+';base64,' + this.profile.avatar
+                return 'data:'+this.profile.avatartype+';base64,' + this.profile.Avatar
             }
         },
         mounted(){
@@ -261,20 +250,20 @@
                 })
                 this.avatarFile = file
                 this.showAvatarFlag = false
-                // let _this = this
-                // let formData = new FormData()
-                // formData.append('note', '')
-                // formData.append('group0', '')
-                // formData.append('group1', '')
-                // formData.append('group2', '')
-                // formData.append('file', _this.avatarFile)
-                // apiUtil.api.upload(apiUtil.urls.file.upload, formData)
-                //     .then(res => {
-                //         console.log(res)
-                //         apiUtil.message.success("更新成功")
-                //     }).catch(error => {
-                //         apiUtil.message.error(error)
-                // })
+                let _this = this
+                let formData = new FormData()
+                formData.append('note', '')
+                formData.append('group0', '')
+                formData.append('group1', '')
+                formData.append('group2', '')
+                formData.append('file', _this.avatarFile)
+                apiUtil.api.upload(apiUtil.urls.file.upload, formData)
+                    .then(res => {
+                        console.log(res)
+                        apiUtil.message.success("更新成功")
+                    }).catch(error => {
+                        apiUtil.message.error(error)
+                })
             },
             beforeAvatarUpload (file) {
                 let This = this
@@ -285,12 +274,8 @@
                 //转化为blob
                 let reader = new FileReader()
                 reader.readAsDataURL(file.raw)
-                This.avatarFile = file
                 reader.onload = () => {
                     This.pic = String(reader.result)
-                    // This.avatarBase64 = This.pic
-                    This.profile.avatartype = file.name.substring(file.name.lastIndexOf('.')+1, file.name.length)
-                    This.profile.avatar=This.pic.substring(This.pic.indexOf(',')+1)
                 }
             },
             selectImg (e) {
@@ -330,12 +315,11 @@
                         for(let key in _this.profile){
                             if(key === 'tags'){
                                 formData.append('tags', this.tags.join(','))
-                            }else if(key === 'avatar'){
-                                formData.append('avatar', _this.avatarFile)
                             }else{
                                 formData.append(key, _this.profile[key])
                             }
                         }
+                        formData.append('avatar', _this.avatarFile)
                         apiUtil.api.upload(apiUtil.urls.user.setprofile, formData)
                             .then(res => {
                                 _this.loading = false

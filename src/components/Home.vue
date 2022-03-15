@@ -17,7 +17,7 @@
                     :style="{ height: `${elementHeight}px` }">
                 <el-menu-item index="/home/profile">
                     <el-icon><setting/></el-icon>
-                    <span>设置</span>
+                    <span>用户信息</span>
                 </el-menu-item>
             </el-menu>
         </el-col>

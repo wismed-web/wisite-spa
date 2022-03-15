@@ -114,7 +114,12 @@
                             _this.loading = false
                             console.log(data)
                             apiUtil.message.success('注册成功')
-                            _this.$router.push('/home')
+                            _this.$router.push({
+                                name: 'verify',
+                                params: {
+                                    uname: _this.verifyInfo.uname
+                                }
+                            })
                         }).catch(error => {
                             apiUtil.message.error(error)
                             _this.loading = false
