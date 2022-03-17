@@ -1,11 +1,43 @@
 <template>
+    <div id="changeLanguage">
+        <el-select size="small" v-model="locale" @change="changeLanguage"
+                   style="width:60px;position:absolute;right:5px;top:5px;">
+            <el-option v-for="lang in locales" :key="lang.event" :value="lang.event" :label="lang.text"></el-option>
+        </el-select>
+    </div>
     <router-view></router-view>
 </template>
 
 <script>
 
 export default {
-  name: 'App'
+  name: 'App',
+      data() {
+          return {
+              locales: [
+                  {event: 'zh', text: '中文'},
+                  {event: 'en', text: '英文'},
+              ],
+              locale: navigator.language
+          }
+      },
+    mounted() {
+        let lang = localStorage.getItem('lang')
+        if(lang){
+            this.$i18n.locale = lang
+            this.locale = lang
+        }else{
+            localStorage.setItem('lang', 'zh')
+            this.locale = 'zh'
+        }
+    },
+    methods: {
+    changeLanguage (lang) {
+        localStorage.setItem('lang', lang)
+        this.$i18n.locale = lang
+        this.locale = lang
+    }
+  }
 }
 </script>
 

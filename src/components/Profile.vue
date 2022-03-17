@@ -28,12 +28,22 @@
                         <el-input v-model="profile.regtime" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="地址">
-                        <el-input v-model="profile.addr" disabled></el-input>
+                        <el-input v-model="profile.addr"></el-input>
                     </el-form-item>
                     <el-form-item label="性别">
                         <el-select v-model="profile.gender" placeholder="--请选择--" style="width:100%;">
                             <el-option
                                     v-for="item in genders"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="官方身份">
+                        <el-select v-model="profile.official" placeholder="--请选择--" style="width:100%;">
+                            <el-option
+                                    v-for="item in officialStatus"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
@@ -62,7 +72,7 @@
                         <el-button type="primary" round>选择文件</el-button>
                     </el-upload>
                 </div>
-                <div class="block" style="text-align: left;padding:5px;height: 155px;padding-left:28px;">
+                <div class="block" style="text-align: left;padding:5px;height: 200px;padding-left:28px;">
                     <el-tag
                             :key="tag"
                             v-for="tag in tags"
@@ -166,6 +176,7 @@
                     "addr": "",
                     "role": "",
                     "level": "",
+                    "official": null,
                     "expire": "",
                     "nationalid": "",
                     "gender": "",
@@ -187,6 +198,10 @@
                 genders: [
                     {value: 'F', label: '男'},
                     {value: 'M', label: '女'}
+                ],
+                officialStatus: [
+                    {value: 'T', label: '是'},
+                    {value: 'F', label: '否'}
                 ],
                 rules: {
                     uname: [

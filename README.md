@@ -1,30 +1,16 @@
-# wisite-web
+# wisite-spa
 
+## windows
+1. run wisite-api/wisite-api-build/win64/server.exe
+2. unzip wisite-spa.zip
+3. cd wisite-spa/win64
+4. run nginx.exe
+5. access http://localhost
 
-## 运行
-运行nginx/nginx.exe，然后打开浏览器，输入http://localhost，前提是必须得先运行wisite-api
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-
+## linux
+1. run wisite-api-build\linux64\server
+2. unzip wisite-spa.zip
+3. cd wisite-spa/linux
+4. run ./configure && make && make install
+5. run nginx
+6. access http://localhost

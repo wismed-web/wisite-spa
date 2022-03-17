@@ -4,11 +4,13 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import router from './router'
 import store from './store'
+import i18n from './i18n/i18n'
 
 createApp(App)
     .use(store)
     .use(ElementPlus)
     .use(router)
+    .use(i18n)
     .mount('#app')
 
 router.beforeEach((to, from, next) => {

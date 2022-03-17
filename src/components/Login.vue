@@ -2,7 +2,7 @@
     <el-form style="margin:0 auto;background-color: #fff;width: 380px;padding: 42px;margin-top:100px;">
         <el-form-item>
             <div style="font-weight: bold;">
-                <h1>登录</h1>
+                <h1>{{ $t('message.signIn') }}</h1>
             </div>
         </el-form-item>
         <el-form-item>
@@ -10,7 +10,7 @@
                     v-model="uname"
                     class="w-50 m-2"
                     size="large"
-                    placeholder="用户名或邮箱"
+                    :placeholder="$t('message.loginUnameTip')"
             />
         </el-form-item>
         <el-form-item style="margin-bottom: 10px;">
@@ -19,7 +19,7 @@
                     size="large"
                     type="password"
                     class="w-50 m-2"
-                    placeholder="密码"/>
+                    placeholder="$t('message.password')"/>
         </el-form-item>
         <el-form-item style="margin-bottom: 0px;">
             <router-link :to="{name: 'register'}" style="color:red;">忘记密码?</router-link>
@@ -32,7 +32,7 @@
         </el-form-item>
         <el-form-item>
             <div style="font-size: 12px;width:100%;">
-                还没有帐号?&nbsp;&nbsp;<router-link :to="{name: 'register'}" style="color:red;">注册</router-link>
+                还没有帐号?&nbsp;&nbsp;<router-link :to="{name: 'register'}" style="color:red;">{{ $t('message.signUp') }}</router-link>
             </div>
         </el-form-item>
     </el-form>

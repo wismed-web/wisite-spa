@@ -5,11 +5,9 @@
              :rules="rules"
              :model="registerInfo"
              ref="registerForm">
-        <el-form-item>
-            <div style="font-weight: bold;">
-                <h1>注册帐号</h1>
-            </div>
-        </el-form-item>
+        <div style="font-weight: bold;text-align: left;">
+            <h1>注册帐号</h1>
+        </div>
         <el-form-item prop="uname" label="用户名">
             <el-input
                     v-model="registerInfo.uname"
@@ -117,7 +115,7 @@
                             _this.$router.push({
                                 name: 'verify',
                                 params: {
-                                    uname: _this.verifyInfo.uname
+                                    uname: _this.registerInfo.uname
                                 }
                             })
                         }).catch(error => {
