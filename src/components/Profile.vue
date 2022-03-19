@@ -2,7 +2,7 @@
     <el-card class="box-card">
         <template #header>
             <div class="card-header">
-                <span>用户信息</span>
+                <span>{{$t('message.userInfo')}}</span>
             </div>
         </template>
         <el-row>
@@ -12,26 +12,26 @@
                          :rules="rules"
                          :model="profile"
                          ref="profileForm">
-                    <el-form-item label="用户名" prop="uname">
+                    <el-form-item :label="$t('message.loginName')" prop="uname">
                         <el-input v-model="profile.uname" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="真实姓名" prop="name">
+                    <el-form-item :label="$t('message.realName')" prop="name">
                         <el-input v-model="profile.name" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="邮箱" prop="email">
+                    <el-form-item :label="$t('message.email')" prop="email">
                         <el-input v-model="profile.email" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号">
+                    <el-form-item :label="$t('message.phone')">
                         <el-input v-model="profile.phone"></el-input>
                     </el-form-item>
-                    <el-form-item label="注册时间">
+                    <el-form-item :label="$t('message.regtime')">
                         <el-input v-model="profile.regtime" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="地址">
+                    <el-form-item :label="$t('message.addr')">
                         <el-input v-model="profile.addr"></el-input>
                     </el-form-item>
-                    <el-form-item label="性别">
-                        <el-select v-model="profile.gender" placeholder="--请选择--" style="width:100%;">
+                    <el-form-item :label="$t('message.gender')">
+                        <el-select v-model="profile.gender" :placeholder="$t('message.select')" style="width:100%;">
                             <el-option
                                     v-for="item in genders"
                                     :key="item.value"
@@ -40,8 +40,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="官方身份">
-                        <el-select v-model="profile.official" placeholder="--请选择--" style="width:100%;">
+                    <el-form-item :label="$t('message.official')">
+                        <el-select v-model="profile.official" :placeholder="$t('message.select')" style="width:100%;">
                             <el-option
                                     v-for="item in officialStatus"
                                     :key="item.value"
@@ -52,7 +52,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="updateProfile('profileForm')" style="width:100%;"
-                                   :loading="loading">更新</el-button>
+                                   :loading="loading">{{$t('message.update')}}</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -69,7 +69,7 @@
                             :auto-upload="false"
                             :on-success="handleAvatarSuccess"
                             :on-change="beforeAvatarUpload">
-                        <el-button type="primary" round>选择文件</el-button>
+                        <el-button type="primary" round>{{$t('message.selectFile')}}</el-button>
                     </el-upload>
                 </div>
                 <div class="block" style="text-align: left;padding:5px;height: 200px;padding-left:28px;">
@@ -91,10 +91,10 @@
                             @blur="handleInputConfirm"
                     >
                     </el-input>
-                    <el-button v-else class="button-new-tag" size="small" @click="showInput">添加标签</el-button>
+                    <el-button v-else class="button-new-tag" size="small" @click="showInput">{{$t('message.addTag')}}</el-button>
                 </div>
                 <div>
-                    <el-button @click="logout" round type="danger">退出登录</el-button>
+                    <el-button @click="logout" round type="danger">{{$t('message.logout')}}</el-button>
                 </div>
             </el-col>
         </el-row>
@@ -196,12 +196,12 @@
                 imageUrl: null,
                 avatarFile: null,
                 genders: [
-                    {value: 'F', label: '男'},
-                    {value: 'M', label: '女'}
+                    {value: 'F', label: this.$t('message.female')},
+                    {value: 'M', label: this.$t('message.male')}
                 ],
                 officialStatus: [
-                    {value: 'T', label: '是'},
-                    {value: 'F', label: '否'}
+                    {value: 'T', label: this.$t('message.yes')},
+                    {value: 'F', label: this.$t('message.no')}
                 ],
                 rules: {
                     uname: [
@@ -240,11 +240,11 @@
                 apiUtil.api.get(apiUtil.urls.sign.signout)
                     .then(res => {
                         console.log(res)
-                        apiUtil.message.success('退出成功')
+                        apiUtil.message.success(_this.$t('message.logoutSuccess'))
                         apiUtil.util.clearToken()
                         _this.$router.push('/login')
                     }).catch(error => {
-                    apiUtil.message.error('退出失败，失败原因:'+error)
+                    apiUtil.message.error(_this.$t('message.logoutFail')+error)
                 })
             },
             handleClose(tag) {
@@ -312,7 +312,7 @@
                 let file = e.target.files[0]
                 if (!/\.(jpg|jpeg|png|JPG|PNG)$/.test(e.target.value)) {
                     this.$message({
-                        message: '图片类型要求：jpeg、jpg、png',
+                        message: this.$t('message.imageTypeLimit'),
                         type: "error"
                     });
                     return false
@@ -355,7 +355,7 @@
                             .then(res => {
                                 _this.loading = false
                                 console.log(res)
-                                apiUtil.message.success("更新成功")
+                                apiUtil.message.success(_this.$t('message.updateSuccess'))
                             }).catch(error => {
                                 apiUtil.message.error(error)
                                 _this.loading = false

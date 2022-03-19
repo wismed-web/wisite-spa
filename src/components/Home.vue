@@ -17,7 +17,7 @@
                     :style="{ height: `${elementHeight}px` }">
                 <el-menu-item index="/home/profile">
                     <el-icon><setting/></el-icon>
-                    <span>用户信息</span>
+                    <span>{{$t('message.userInfo')}}</span>
                 </el-menu-item>
             </el-menu>
         </el-col>
@@ -90,7 +90,7 @@
                 let file = e.target.files[0]
                 if (!/\.(jpg|jpeg|png|JPG|PNG)$/.test(e.target.value)) {
                     this.$message({
-                        message: '图片类型要求：jpeg、jpg、png',
+                        message: this.$t('message.imageTypeLimit'),
                         type: "error"
                     });
                     return false

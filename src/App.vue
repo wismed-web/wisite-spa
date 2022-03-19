@@ -1,7 +1,7 @@
 <template>
     <div id="changeLanguage">
         <el-select size="small" v-model="locale" @change="changeLanguage"
-                   style="width:60px;position:absolute;right:5px;top:5px;">
+                   style="width:60px;position:absolute;right:5px;top:5px;z-index: 10;">
             <el-option v-for="lang in locales" :key="lang.event" :value="lang.event" :label="lang.text"></el-option>
         </el-select>
     </div>
@@ -18,7 +18,7 @@ export default {
                   {event: 'zh', text: '中文'},
                   {event: 'en', text: '英文'},
               ],
-              locale: navigator.language
+              locale: 'zh'
           }
       },
     mounted() {

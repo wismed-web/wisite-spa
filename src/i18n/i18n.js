@@ -1,31 +1,109 @@
-import { createI18n } from 'vue-i18n' //引入vue-i18n组件
-const language = (
-    (navigator.language ? navigator.language : navigator.userLanguage) || "zh"
-).toLowerCase()
-console.log(language)
-const i18n = createI18n({
-    fallbackLocale: 'ch',
-    globalInjection:true,
-    legacy: false, // you must specify 'legacy: false' option
-    locale: language.split("-")[0] || "zh",
-    messages: {
-        zh: {
-            message: {
-                signIn: '登录',
-                loginUnameTip: '用户名/邮箱',
-                password: '密码',
-                signUp: '注册'
-            }
-        },
-        en: {
-            message: {
-                signIn: 'Sign in',
-                loginUnameTip: 'Uname/Email',
-                password: 'Password',
-                signUp: 'Sign up'
-            }
+import { createI18n } from 'vue-i18n'
+const messages = {
+    "zh": {
+        "message": {
+            "signIn": '登录',
+            "loginNameTip": '用户名/邮箱',
+            "loginName": '用户名',
+            "password": '密码',
+            "signUp": '注册',
+            "forgetPassword": '忘记密码',
+            "hasNoAccount": '还没有帐号',
+            "email": '邮箱',
+            "realName": '真实姓名',
+            "readAccept": '阅读并接受',
+            "userAgreementPrivacyStatement": "用户协议和隐私保护",
+            "hasAccount": '已有帐号',
+            siteName: 'Wisite',
+            userInfo: '用户信息',
+            update: '更新',
+            phone: '手机号',
+            regtime: '注册时间',
+            addr: '地址',
+            gender: '性别',
+            select: '--请选择--',
+            selectFile: '选择文件',
+            addTag: '添加标签',
+            logout: '退出登录',
+            official: '官方身份',
+            emailVerify: '邮箱验证',
+            verifyCode: '验证码',
+            verify: '验证',
+            loginNameRequireTip: '请输入用户名或邮箱',
+            passwordRequireTip: '请输入密码',
+            loginSuccess: '登录成功',
+            registerSuccess: '注册成功',
+            imageTypeLimit: '图片类型要求：jpeg、jpg、png',
+            female: '女',
+            male: '男',
+            yes: '是',
+            no: '否',
+            logoutSuccess: '退出成功',
+            logoutFail: '退出失败',
+            updateSuccess: '登录成功',
+            "userAgreementPrivacyStatementRequired": "请同意用户协议和隐私保护",
+            "emailRequired": "请输入邮箱",
+            loginNameRequired: '请输入用户名',
+            nameRequired: '请输入真实姓名',
+            sendMailVerifyTip: '我们已经向您的电子邮箱发送了验证码，您可以通过验证码激活您的帐号。请输入验证码。'
+
+        }
+    },
+    "en": {
+        "message": {
+            "signIn": 'Sign in',
+            "loginNameTip": 'Uname/Email',
+            "loginName": 'Login name',
+            "password": 'Password',
+            "signUp": 'Sign up',
+            "forgetPassword": 'Forget password',
+            "hasNoAccount": 'Has no account',
+            "email": 'Email',
+            "realName": 'Real name',
+            "readAccept": 'Read and accept',
+            "userAgreementPrivacyStatement": "User agreement & privacy statement",
+            "hasAccount": 'Has account',
+            siteName: 'Wisite',
+            userInfo: 'User profile',
+            update: 'Update',
+            phone: 'Phone',
+            regtime: 'Register time',
+            addr: 'Address',
+            gender: 'Gender',
+            select: '--Select--',
+            selectFile: 'Select file',
+            addTag: 'Add tag',
+            logout: 'Logout',
+            official: 'Official',
+            emailVerify: 'Email verify',
+            verifyCode: 'Verify code',
+            verify: 'Verify',
+            loginNameRequireTip: 'Please input login name or email',
+            passwordRequireTip: 'Please input password',
+            loginSuccess: 'Login success',
+            registerSuccess: 'Register success',
+            imageTypeLimit: 'Image type limit：jpeg、jpg、png',
+            female: 'Female',
+            male: 'Male',
+            yes: 'Yes',
+            no: 'No',
+            logoutSuccess: 'Logout success',
+            logoutFail: 'Logout fail',
+            updateSuccess: 'Update success',
+            "userAgreementPrivacyStatementRequired": "Please accept user agreement & privacy statement",
+            "emailRequired": "Please input email",
+            loginNameRequired: 'Please input login name',
+            nameRequired: 'Please input real name',
+            sendMailVerifyTip: 'We are sent you an e-mail with a security code so you can start activating Verification for your account. Please enter the code.'
         }
     }
-});
+}
+const i18n = createI18n({
+    fallbackLocale: 'zh',
+    globalInjection:true,
+    legacy: false,
+    locale: 'zh',
+    messages
+})
 
 export default i18n

@@ -1,16 +1,17 @@
 <template>
-    <el-form style="margin:0 auto;background-color: #fff;width: 380px;padding: 42px;margin-top:100px;"
+    <el-form style="margin:0 auto;background-color: #fff;width: 480px;padding: 42px;margin-top:100px;"
              :label-position="left"
-             label-width="80px"
+             label-width="100px"
              :rules="rules"
              :model="verifyInfo"
              ref="verifyForm">
-        <el-form-item>
-            <div style="font-weight: bold;">
-                <h1>邮箱验证</h1>
-            </div>
-        </el-form-item>
-        <el-form-item prop="uname" label="用户名">
+        <div style="font-weight: bold;text-align: left;">
+            <h1>{{$t('message.emailVerify')}}</h1>
+        </div>
+        <div style="margin-bottom: 10px;font-size: 14px;">
+            {{$t('message.sendMailVerifyTip')}}
+        </div>
+        <el-form-item prop="uname" :label="$t('message.loginName')">
             <el-input
                     v-model="verifyInfo.uname"
                     class="w-50 m-2"
@@ -18,16 +19,17 @@
                     disabled
             />
         </el-form-item>
-        <el-form-item prop="code" label="验证码">
+        <el-form-item prop="code" :label="$t('message.verifyCode')">
             <el-input
                     v-model="verifyInfo.code"
                     class="w-50 m-2"
                     size="large"
-                    placeholder="请输入邮箱收到的验证码"
+                    :placeholder="$t('message.verifyCode')"
             />
         </el-form-item>
         <el-form-item>
-            <el-button :loading="loading" type="danger" round v-on:click="verify('verifyForm')" style="width:100%;" size="large">校验</el-button>
+            <el-button :loading="loading" type="danger" round v-on:click="verify('verifyForm')" style="width:100%;" size="large">
+                {{$t('message.verify')}}</el-button>
         </el-form-item>
     </el-form>
 </template>
