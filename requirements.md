@@ -13,3 +13,7 @@ requirements
 4. 登陆成功后界面：参考 <https://webix.com/demos/admin-app/#!/main/forms>
    1. 实现左侧导航窗口，添加Profile选项。
    2. 内容区域实现风格模仿参考网址的顶部logo区域和'Profile information'区域。
+
+* updated 2022-03-23
+
+** 根据《注册协议.DOCX》，添加入注册时的链接。

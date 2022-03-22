@@ -9,7 +9,17 @@ issues 2022-03-14
 
 3. 左侧sidebar, setting（设置） 名称改为 profile（用户信息）。
 
-** updated 2022-03-15
+* updated 2022-03-15
   
 因GMAIL安全审查因素而导致的“可疑地区”发送邮件报错失败，后期测试时会购买GOOGLE WORKSPACE的域名邮箱加以解决。
 当前为了保证整体注册流程可正常进行，暂开放后门：若注册密码第一个字符为'*'，则邮箱验证码与设置密码一致即可。即，不用从填写邮箱内读取验证码，直接再次填写所设置的密码即可。（仅为当前方便开发调试使用）
+
+* updated 2022-03-22
+  
+** 待完善-P1： 在profile窗口内，提供更多内容。具体包括： 姓名(name),  性别(gender)， 出生年月(dob)， 电话(phone)， 国家(country), 城市(city)， 地址(addr), 身份ID(nationalID)，所在单位(employer)， 职位(position)， 职称(title)， 签名(bio)， 头像(avatar), 加入V成员时长(memberDays)。 除了加入V成员时长由系统计算后显示，其他均由用户个人自行设置，可更改。
+
+(在个人profile窗口, 不需提供标签功能。标签功能为管理员用户设置其他一般用户时所提供的功能)
+
+** Bug-P1:  profile的头像设置或更改后，保存退出。再次登入，没有自动加载。正确操作：Profile窗口在显示时要读取profile API的返回值进行显示刷新。头像需要调用avatar API进行显示。
+
+** Bug-P2:  登陆页面语言选择栏，“英语”改为“English”。
