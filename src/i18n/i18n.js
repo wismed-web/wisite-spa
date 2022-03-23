@@ -45,8 +45,12 @@ const messages = {
             "emailRequired": "请输入邮箱",
             loginNameRequired: '请输入用户名',
             nameRequired: '请输入真实姓名',
-            sendMailVerifyTip: '我们已经向您的电子邮箱发送了验证码，您可以通过验证码激活您的帐号。请输入验证码。'
-
+            sendMailVerifyTip: '我们已经向您的电子邮箱发送了验证码，您可以通过验证码激活您的帐号。请输入验证码。',
+            dob: '出生日期',
+            employer: '所在单位',
+            position: '职位',
+            title: '职称',
+            bio: '签名'
         }
     },
     "en": {
@@ -94,7 +98,12 @@ const messages = {
             "emailRequired": "Please input email",
             loginNameRequired: 'Please input login name',
             nameRequired: 'Please input real name',
-            sendMailVerifyTip: 'We are sent you an e-mail with a security code so you can start activating Verification for your account. Please enter the code.'
+            sendMailVerifyTip: 'We are sent you an e-mail with a security code so you can start activating Verification for your account. Please enter the code.',
+            dob: 'Birthday',
+            employer: 'Employer',
+            position: 'Position',
+            title: 'Title',
+            bio: 'Bio'
         }
     }
 }

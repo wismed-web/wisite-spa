@@ -21,15 +21,6 @@
                     <el-form-item :label="$t('message.email')" prop="email">
                         <el-input v-model="profile.email" disabled></el-input>
                     </el-form-item>
-                    <el-form-item :label="$t('message.phone')">
-                        <el-input v-model="profile.phone"></el-input>
-                    </el-form-item>
-                    <el-form-item :label="$t('message.regtime')">
-                        <el-input v-model="profile.regtime" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item :label="$t('message.addr')">
-                        <el-input v-model="profile.addr"></el-input>
-                    </el-form-item>
                     <el-form-item :label="$t('message.gender')">
                         <el-select v-model="profile.gender" :placeholder="$t('message.select')" style="width:100%;">
                             <el-option
@@ -39,6 +30,27 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.dob')" prop="dob">
+                        <el-date-picker v-model="profile.dob" type="date" style="width:100%;"/>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.phone')">
+                        <el-input v-model="profile.phone"></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.regtime')">
+                        <el-input v-model="profile.regtime" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.employer')">
+                        <el-input v-model="profile.employer"></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.position')">
+                        <el-input v-model="profile.position"></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.title')">
+                        <el-input v-model="profile.title"></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.addr')">
+                        <el-input v-model="profile.addr"></el-input>
                     </el-form-item>
                     <el-form-item :label="$t('message.official')">
                         <el-select v-model="profile.official" :placeholder="$t('message.select')" style="width:100%;">
@@ -50,12 +62,21 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item :label="$t('message.bio')">
+                        <el-input
+                                v-model="profile.bio"
+                                rows="5"
+                                type="textarea"/>
+                    </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="updateProfile('profileForm')" style="width:100%;"
+                        <el-button type="primary" round @click="updateProfile('profileForm')" style="width:100%;"
                                    :loading="loading">{{$t('message.update')}}</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
+<!--            <el-col :span="16">-->
+
+<!--            </el-col>-->
             <el-col :span="8">
                 <div class="block">
                     <el-avatar shape="square" :size="150" :src="avatarBase64">
@@ -72,28 +93,28 @@
                         <el-button type="primary" round>{{$t('message.selectFile')}}</el-button>
                     </el-upload>
                 </div>
-                <div class="block" style="text-align: left;padding:5px;height: 200px;padding-left:28px;">
-                    <el-tag
-                            :key="tag"
-                            v-for="tag in tags"
-                            closable
-                            :disable-transitions="false"
-                            @close="handleClose(tag)">
-                        {{tag}}
-                    </el-tag>
-                    <el-input
-                            class="input-new-tag"
-                            v-if="addTagFlag"
-                            v-model="inputValue"
-                            ref="saveTagInput"
-                            size="small"
-                            @keyup.enter="handleInputConfirm"
-                            @blur="handleInputConfirm"
-                    >
-                    </el-input>
-                    <el-button v-else class="button-new-tag" size="small" @click="showInput">{{$t('message.addTag')}}</el-button>
-                </div>
-                <div>
+<!--                <div class="block" style="text-align: left;padding:5px;height: 200px;padding-left:28px;">-->
+<!--                    <el-tag-->
+<!--                            :key="tag"-->
+<!--                            v-for="tag in tags"-->
+<!--                            closable-->
+<!--                            :disable-transitions="false"-->
+<!--                            @close="handleClose(tag)">-->
+<!--                        {{tag}}-->
+<!--                    </el-tag>-->
+<!--                    <el-input-->
+<!--                            class="input-new-tag"-->
+<!--                            v-if="addTagFlag"-->
+<!--                            v-model="inputValue"-->
+<!--                            ref="saveTagInput"-->
+<!--                            size="small"-->
+<!--                            @keyup.enter="handleInputConfirm"-->
+<!--                            @blur="handleInputConfirm"-->
+<!--                    >-->
+<!--                    </el-input>-->
+<!--                    <el-button v-else class="button-new-tag" size="small" @click="showInput">{{$t('message.addTag')}}</el-button>-->
+<!--                </div>-->
+                <div style="margin-top: 150px;">
                     <el-button @click="logout" round type="danger">{{$t('message.logout')}}</el-button>
                 </div>
             </el-col>
@@ -184,6 +205,7 @@
                     "title": "",
                     "employer": "",
                     "tags": "",
+                    "dob": null,
                     "avatartype": "",
                     "avatar": "https://webix.com/demos/admin-app/data/images/morgan_yu.jpg"
                 },

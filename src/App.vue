@@ -16,7 +16,7 @@ export default {
           return {
               locales: [
                   {event: 'zh', text: '中文'},
-                  {event: 'en', text: '英文'},
+                  {event: 'en', text: 'English'},
               ],
               locale: 'zh'
           }

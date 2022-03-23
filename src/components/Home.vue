@@ -119,13 +119,6 @@
                     context.innerHeight = context.elementHeight - 20
                 }
             })
-            let _this = this
-            apiUtil.api.get(apiUtil.urls.user.profile)
-                .then(res => {
-                    _this.profile = res
-                }).catch(error => {
-                apiUtil.message.error(error)
-            })
         }
     }
 </script>
