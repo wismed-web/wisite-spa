@@ -6,51 +6,36 @@
             </div>
         </template>
         <el-row>
-            <el-col :span="16">
-                <el-form label-position="right"
-                         label-width="100px"
-                         :rules="rules"
-                         :model="profile"
-                         ref="profileForm">
+            <el-form label-position="right"
+                     label-width="120px"
+                     :rules="rules"
+                     :model="profile"
+                     ref="profileForm"
+                     style="width:100%;">
+                <el-col :span="10" style="width:30%;">
                     <el-form-item :label="$t('message.loginName')" prop="uname">
-                        <el-input v-model="profile.uname" disabled></el-input>
+                        <el-input v-model="profile.uname" readonly></el-input>
                     </el-form-item>
-                    <el-form-item :label="$t('message.realName')" prop="name">
-                        <el-input v-model="profile.name" disabled></el-input>
-                    </el-form-item>
+
                     <el-form-item :label="$t('message.email')" prop="email">
-                        <el-input v-model="profile.email" disabled></el-input>
+                        <el-input v-model="profile.email" readonly></el-input>
                     </el-form-item>
-                    <el-form-item :label="$t('message.gender')">
-                        <el-select v-model="profile.gender" :placeholder="$t('message.select')" style="width:100%;">
-                            <el-option
-                                    v-for="item in genders"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
+
                     <el-form-item :label="$t('message.dob')" prop="dob">
                         <el-date-picker v-model="profile.dob" type="date" style="width:100%;"/>
                     </el-form-item>
-                    <el-form-item :label="$t('message.phone')">
-                        <el-input v-model="profile.phone"></el-input>
+
+                    <el-form-item :label="$t('message.country')">
+                        <el-input v-model="profile.country"></el-input>
                     </el-form-item>
-                    <el-form-item :label="$t('message.regtime')">
-                        <el-input v-model="profile.regtime" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item :label="$t('message.employer')">
-                        <el-input v-model="profile.employer"></el-input>
+                    <el-form-item :label="$t('message.addr')">
+                        <el-input v-model="profile.addr"></el-input>
                     </el-form-item>
                     <el-form-item :label="$t('message.position')">
                         <el-input v-model="profile.position"></el-input>
                     </el-form-item>
                     <el-form-item :label="$t('message.title')">
                         <el-input v-model="profile.title"></el-input>
-                    </el-form-item>
-                    <el-form-item :label="$t('message.addr')">
-                        <el-input v-model="profile.addr"></el-input>
                     </el-form-item>
                     <el-form-item :label="$t('message.official')">
                         <el-select v-model="profile.official" :placeholder="$t('message.select')" style="width:100%;">
@@ -62,62 +47,71 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item :label="$t('message.memberDays')">
+                        <el-input v-model="profile.memberDays" readonly></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="10" style="width:30%;">
+                    <el-form-item :label="$t('message.realName')" prop="name">
+                        <el-input v-model="profile.name" readonly></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.gender')">
+                        <el-select v-model="profile.gender" :placeholder="$t('message.select')" style="width:100%;">
+                            <el-option
+                                    v-for="item in genders"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item :label="$t('message.phone')">
+                        <el-input v-model="profile.phone"></el-input>
+                    </el-form-item>
+
+                    <el-form-item :label="$t('message.city')">
+                        <el-input v-model="profile.city"></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.nationalid')">
+                        <el-input v-model="profile.nationalid"></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.employer')">
+                        <el-input v-model="profile.employer"></el-input>
+                    </el-form-item>
+
                     <el-form-item :label="$t('message.bio')">
                         <el-input
                                 v-model="profile.bio"
-                                rows="5"
+                                rows="6"
                                 type="textarea"/>
                     </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" round @click="updateProfile('profileForm')" style="width:100%;"
-                                   :loading="loading">{{$t('message.update')}}</el-button>
-                    </el-form-item>
-                </el-form>
-            </el-col>
-<!--            <el-col :span="16">-->
+                </el-col>
+                <el-col :span="4" style="width:30%;">
+                    <div class="block">
+                        <el-avatar shape="square" :size="150" :src="avatarBase64">
 
-<!--            </el-col>-->
-            <el-col :span="8">
-                <div class="block">
-                    <el-avatar shape="square" :size="150" :src="avatarBase64">
+                        </el-avatar>
+                    </div>
+                    <div>
+                        <el-upload
+                                class="avatar-uploader"
+                                :show-file-list="false"
+                                :auto-upload="false"
+                                :on-success="handleAvatarSuccess"
+                                :on-change="beforeAvatarUpload">
+                            <el-button type="primary" round>{{$t('message.selectFile')}}</el-button>
+                        </el-upload>
+                    </div>
+                </el-col>
 
-                    </el-avatar>
-                </div>
-                <div>
-                    <el-upload
-                            class="avatar-uploader"
-                            :show-file-list="false"
-                            :auto-upload="false"
-                            :on-success="handleAvatarSuccess"
-                            :on-change="beforeAvatarUpload">
-                        <el-button type="primary" round>{{$t('message.selectFile')}}</el-button>
-                    </el-upload>
-                </div>
-<!--                <div class="block" style="text-align: left;padding:5px;height: 200px;padding-left:28px;">-->
-<!--                    <el-tag-->
-<!--                            :key="tag"-->
-<!--                            v-for="tag in tags"-->
-<!--                            closable-->
-<!--                            :disable-transitions="false"-->
-<!--                            @close="handleClose(tag)">-->
-<!--                        {{tag}}-->
-<!--                    </el-tag>-->
-<!--                    <el-input-->
-<!--                            class="input-new-tag"-->
-<!--                            v-if="addTagFlag"-->
-<!--                            v-model="inputValue"-->
-<!--                            ref="saveTagInput"-->
-<!--                            size="small"-->
-<!--                            @keyup.enter="handleInputConfirm"-->
-<!--                            @blur="handleInputConfirm"-->
-<!--                    >-->
-<!--                    </el-input>-->
-<!--                    <el-button v-else class="button-new-tag" size="small" @click="showInput">{{$t('message.addTag')}}</el-button>-->
-<!--                </div>-->
-                <div style="margin-top: 150px;">
-                    <el-button @click="logout" round type="danger">{{$t('message.logout')}}</el-button>
-                </div>
-            </el-col>
+            </el-form>
+        </el-row>
+        <el-row>
+            <el-form-item style="width: 100%;">
+                <el-button type="primary" round @click="updateProfile('profileForm')" style="width:60%;"
+                           :loading="loading">{{$t('message.update')}}</el-button>
+            </el-form-item>
         </el-row>
     </el-card>
 <!--    <el-dialog v-model="showAvatarFlag" title="更新头像">-->
@@ -192,7 +186,6 @@
                     "email": "admin@admin.com",
                     "name": "admin",
                     "password": "pa55w0rd@WISMED",
-                    "regtime": "2022-03-08T14:41:44Z",
                     "phone": "",
                     "addr": "",
                     "role": "",
@@ -201,12 +194,15 @@
                     "expire": "",
                     "nationalid": "",
                     "gender": "",
+                    "country": null,
+                    "city": null,
                     "position": "",
                     "title": "",
                     "employer": "",
                     "tags": "",
                     "dob": null,
                     "avatartype": "",
+                    "memberDays": null,
                     "avatar": "https://webix.com/demos/admin-app/data/images/morgan_yu.jpg"
                 },
                 tags: ['学习', '游泳', '看书'],
@@ -248,12 +244,21 @@
             apiUtil.api.get(apiUtil.urls.user.profile)
                 .then(res => {
                     _this.profile = res
+                    _this.profile['uname'] = 'admin'
+                    _this.profile['name'] = 'admin'
+                    _this.profile['email'] = 'admin@gmail.com'
                     _this.tags = []
                     if(res.tags){
                         _this.tags = res.tags.split(',')
                     }
                 }).catch(error => {
                 apiUtil.message.error(error)
+            })
+            apiUtil.api.get(apiUtil.urls.user.avatar)
+                .then(res => {
+                    console.log(res)
+                }).catch(error => {
+                    apiUtil.message.error(error)
             })
         },
         methods: {
@@ -434,7 +439,7 @@
     }
 
     .box-card {
-        width: 680px;
+        width: 90%;
     }
     .el-tag + .el-tag {
         margin-left: 10px;

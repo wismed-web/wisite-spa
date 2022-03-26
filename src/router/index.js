@@ -4,6 +4,7 @@ const home = () => import('../components/Home')
 const register = () => import('../components/Register')
 const profile = () => import('../components/Profile')
 const verify = () => import('../components/Verify')
+const tos = () => import('../components/Tos')
 
 const routes = [
     {
@@ -24,6 +25,11 @@ const routes = [
         path: '/verify',
         name: 'verify',
         component: verify
+    },
+    {
+        path: '/tos',
+        name: 'tos',
+        component: tos
     },
     {
         path: '/home',

@@ -28,6 +28,7 @@
 
 <!--                    </el-avatar>-->
 <!--                </el-col>-->
+                <el-button @click="logout" round type="danger" style="position: absolute;top:15px;right:90px;">{{$t('message.logout')}}</el-button>
             </el-row>
             <el-row :style="{ padding: '10px', marginBottom: '0px'}">
                 <router-view></router-view>
@@ -66,6 +67,18 @@
             }
         },
         methods: {
+            logout () {
+                let _this = this
+                apiUtil.api.get(apiUtil.urls.sign.signout)
+                    .then(res => {
+                        console.log(res)
+                        apiUtil.message.success(_this.$t('message.logoutSuccess'))
+                        apiUtil.util.clearToken()
+                        _this.$router.push('/login')
+                    }).catch(error => {
+                    apiUtil.message.error(_this.$t('message.logoutFail')+error)
+                })
+            },
             handleOpen () {
                 console.log('handleOpen.')
             },

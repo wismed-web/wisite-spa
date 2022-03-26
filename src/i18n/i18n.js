@@ -40,7 +40,7 @@ const messages = {
             no: '否',
             logoutSuccess: '退出成功',
             logoutFail: '退出失败',
-            updateSuccess: '登录成功',
+            updateSuccess: '更新成功',
             "userAgreementPrivacyStatementRequired": "请同意用户协议和隐私保护",
             "emailRequired": "请输入邮箱",
             loginNameRequired: '请输入用户名',
@@ -50,7 +50,13 @@ const messages = {
             employer: '所在单位',
             position: '职位',
             title: '职称',
-            bio: '签名'
+            bio: '签名',
+            tosTitle: '用户注册协议',
+            close: '关闭',
+            city: '城市',
+            country: '国家',
+            nationalid: '身份ID',
+            "memberDays": '加入V成员时长'
         }
     },
     "en": {
@@ -103,7 +109,13 @@ const messages = {
             employer: 'Employer',
             position: 'Position',
             title: 'Title',
-            bio: 'Bio'
+            bio: 'Bio',
+            tosTitle: 'User registration agreement',
+            close: 'Close',
+            city: 'City',
+            country: 'Country',
+            nationalid: 'national ID',
+            "memberDays": 'Member days'
         }
     }
 }
