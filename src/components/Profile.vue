@@ -12,7 +12,7 @@
                      :model="profile"
                      ref="profileForm"
                      style="width:100%;">
-                <el-col :span="10" style="width:30%;">
+                <el-col :span="10" style="width:100%;">
                     <el-form-item :label="$t('message.loginName')" prop="uname">
                         <el-input v-model="profile.uname" readonly></el-input>
                     </el-form-item>
@@ -51,7 +51,7 @@
                         <el-input v-model="profile.memberDays" readonly></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="10" style="width:30%;">
+                <el-col :span="10" style="width:100%;">
                     <el-form-item :label="$t('message.realName')" prop="name">
                         <el-input v-model="profile.name" readonly></el-input>
                     </el-form-item>
@@ -87,9 +87,9 @@
                                 type="textarea"/>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4" style="width:30%;">
+                <el-col :span="4" style="width:100%;">
                     <div class="block">
-                        <el-avatar shape="square" :size="150" :src="avatarBase64">
+                        <el-avatar shape="square" :size="150" :src="avatar">
 
                         </el-avatar>
                     </div>
@@ -98,7 +98,7 @@
                                 class="avatar-uploader"
                                 :show-file-list="false"
                                 :auto-upload="false"
-                                :on-success="handleAvatarSuccess"
+                                action=""
                                 :on-change="beforeAvatarUpload">
                             <el-button type="primary" round>{{$t('message.selectFile')}}</el-button>
                         </el-upload>
@@ -109,7 +109,7 @@
         </el-row>
         <el-row>
             <el-form-item style="width: 100%;">
-                <el-button type="primary" round @click="updateProfile('profileForm')" style="width:60%;"
+                <el-button type="primary" round @click="updateProfile('profileForm')" style="width:84%;"
                            :loading="loading">{{$t('message.update')}}</el-button>
             </el-form-item>
         </el-row>
@@ -205,6 +205,7 @@
                     "memberDays": null,
                     "avatar": "https://webix.com/demos/admin-app/data/images/morgan_yu.jpg"
                 },
+                avatar: null,
                 tags: ['学习', '游泳', '看书'],
                 addTagFlag: false,
                 inputValue: '',
@@ -223,22 +224,22 @@
                 ],
                 rules: {
                     uname: [
-                        { required: true, message: '请输入用户名', trigger: 'blur' },
+                        { required: true, message: this.$t('message.loginNameRequired'), trigger: 'blur' },
                     ],
                     email: [
-                        { required: true, message: '请输入邮箱', trigger: 'blur' }
+                        { required: true, message: this.$t('message.emailRequired'), trigger: 'blur' }
                     ],
                     name: [
-                        {required: true, message: '请输入真实姓名', trigger: 'blur' }
+                        {required: true, message: this.$t('message.nameRequired'), trigger: 'blur' }
                     ],
                 }
             }
         },
-        computed:{
-            avatarBase64() {
-                return 'data:'+this.profile.avatartype+';base64,' + this.profile.avatar
-            }
-        },
+        // computed:{
+        //     avatarBase64() {
+        //         return 'data:'+this.profile.avatartype+';base64,' + this.profile.avatar
+        //     }
+        // },
         mounted(){
             let _this = this
             apiUtil.api.get(apiUtil.urls.user.profile)
@@ -256,7 +257,8 @@
             })
             apiUtil.api.get(apiUtil.urls.user.avatar)
                 .then(res => {
-                    console.log(res)
+                    console.log(res.src)
+                    _this.avatar = res.src
                 }).catch(error => {
                     apiUtil.message.error(error)
             })
@@ -274,9 +276,9 @@
                     apiUtil.message.error(_this.$t('message.logoutFail')+error)
                 })
             },
-            handleClose(tag) {
-                this.tags.splice(this.tags.indexOf(tag), 1)
-            },
+            // handleClose(tag) {
+            //     this.tags.splice(this.tags.indexOf(tag), 1)
+            // },
             showInput() {
                 this.addTagFlag = true
                 this.$nextTick(() => {
