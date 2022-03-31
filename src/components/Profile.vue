@@ -96,6 +96,7 @@
                     <div>
                         <el-upload
                                 class="avatar-uploader"
+                                ref="avatarFile"
                                 :show-file-list="false"
                                 :auto-upload="false"
                                 action=""
@@ -104,14 +105,15 @@
                         </el-upload>
                     </div>
                 </el-col>
-
             </el-form>
         </el-row>
         <el-row>
-            <el-form-item style="width: 100%;">
-                <el-button type="primary" round @click="updateProfile('profileForm')" style="width:84%;"
-                           :loading="loading">{{$t('message.update')}}</el-button>
-            </el-form-item>
+            <el-form style="width:100%;">
+                <el-form-item style="width: 100%;">
+                    <el-button type="primary" round @click="updateProfile('profileForm')" style="width:84%;"
+                               :loading="loading">{{$t('message.update')}}</el-button>
+                </el-form-item>
+            </el-form>
         </el-row>
     </el-card>
 <!--    <el-dialog v-model="showAvatarFlag" title="更新头像">-->
@@ -180,6 +182,7 @@
         data() {
             return {
                 loading: false,
+                readonlyItems: ['uname', 'name', 'email'],
                 profile: {
                     "active": "T",
                     "uname": "admin",
@@ -245,9 +248,9 @@
             apiUtil.api.get(apiUtil.urls.user.profile)
                 .then(res => {
                     _this.profile = res
-                    _this.profile['uname'] = 'admin'
-                    _this.profile['name'] = 'admin'
-                    _this.profile['email'] = 'admin@gmail.com'
+                    // _this.profile['uname'] = 'admin'
+                    // _this.profile['name'] = 'admin'
+                    // _this.profile['email'] = 'admin@gmail.com'
                     _this.tags = []
                     if(res.tags){
                         _this.tags = res.tags.split(',')
@@ -257,7 +260,6 @@
             })
             apiUtil.api.get(apiUtil.urls.user.avatar)
                 .then(res => {
-                    console.log(res.src)
                     _this.avatar = res.src
                 }).catch(error => {
                     apiUtil.message.error(error)
@@ -321,7 +323,7 @@
                 // })
             },
             beforeAvatarUpload (file) {
-                let This = this
+                let _this = this
                 if (!/\.(jpg|jpeg|png|JPG|PNG)$/.test(file.name)) {
                     apiUtil.message.error('support image type:jpeg、jpg、png')
                     return false
@@ -329,12 +331,13 @@
                 //转化为blob
                 let reader = new FileReader()
                 reader.readAsDataURL(file.raw)
-                This.avatarFile = file
+                _this.avatarFile = file
                 reader.onload = () => {
-                    This.pic = String(reader.result)
-                    // This.avatarBase64 = This.pic
-                    This.profile.avatartype = file.name.substring(file.name.lastIndexOf('.')+1, file.name.length)
-                    This.profile.avatar=This.pic.substring(This.pic.indexOf(',')+1)
+                    _this.pic = String(reader.result)
+                    _this.avatar = _this.pic
+                    _this.avatarBase64 = _this.pic
+                    _this.profile.avatartype = file.name.substring(file.name.lastIndexOf('.')+1, file.name.length)
+                    _this.profile.avatar=_this.avatar
                 }
             },
             selectImg (e) {
@@ -372,10 +375,13 @@
                     if (valid) {
                         let formData = new FormData()
                         for(let key in _this.profile){
+                            if(_this.readonlyItems.indexOf(key) > -1) {
+                                continue
+                            }
                             if(key === 'tags'){
                                 formData.append('tags', this.tags.join(','))
-                            }else if(key === 'avatar'){
-                                formData.append('avatar', _this.avatarFile)
+                            }else if(key === 'avatar' && _this.avatarFile && _this.avatarFile.raw){
+                                formData.append('avatar', _this.avatarFile.raw)
                             }else{
                                 formData.append(key, _this.profile[key])
                             }

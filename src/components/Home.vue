@@ -76,7 +76,7 @@
                         apiUtil.util.clearToken()
                         _this.$router.push('/login')
                     }).catch(error => {
-                    apiUtil.message.error(_this.$t('message.logoutFail')+error)
+                        apiUtil.message.error(_this.$t('message.logoutFail')+error)
                 })
             },
             handleOpen () {
