@@ -43,6 +43,7 @@ const api = {
       activate: '/admin/activate',
       onlines: '/admin/onlines',
       users: '/admin/users',
+      menus: '/admin/spa/menu',
     },
     file: {
       fileitem: '/file/fileitem',

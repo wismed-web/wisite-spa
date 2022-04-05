@@ -14,11 +14,11 @@
                      style="width:100%;">
                 <el-col :span="10" style="width:100%;">
                     <el-form-item :label="$t('message.loginName')" prop="uname">
-                        <el-input v-model="profile.uname" readonly></el-input>
+                        <el-input v-model="profile.uname" disabled="true"></el-input>
                     </el-form-item>
 
                     <el-form-item :label="$t('message.email')" prop="email">
-                        <el-input v-model="profile.email" readonly></el-input>
+                        <el-input v-model="profile.email" disabled="true"></el-input>
                     </el-form-item>
 
                     <el-form-item :label="$t('message.dob')" prop="dob">
@@ -38,7 +38,7 @@
                         <el-input v-model="profile.title"></el-input>
                     </el-form-item>
                     <el-form-item :label="$t('message.official')">
-                        <el-select v-model="profile.official" :placeholder="$t('message.select')" style="width:100%;">
+                        <el-select v-model="profile.official" disabled="true" :placeholder="$t('message.select')" style="width:100%;">
                             <el-option
                                     v-for="item in officialStatus"
                                     :key="item.value"
@@ -48,12 +48,12 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item :label="$t('message.memberDays')">
-                        <el-input v-model="profile.memberDays" readonly></el-input>
+                        <el-input v-model="profile.memberDays" disabled="true"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="10" style="width:100%;">
                     <el-form-item :label="$t('message.realName')" prop="name">
-                        <el-input v-model="profile.name" readonly></el-input>
+                        <el-input v-model="profile.name" disabled="true"></el-input>
                     </el-form-item>
                     <el-form-item :label="$t('message.gender')">
                         <el-select v-model="profile.gender" :placeholder="$t('message.select')" style="width:100%;">
@@ -84,7 +84,9 @@
                         <el-input
                                 v-model="profile.bio"
                                 rows="6"
-                                type="textarea"/>
+                                type="textarea"
+                                maxlength="100"
+                                show-word-limit/>
                     </el-form-item>
                 </el-col>
                 <el-col :span="4" style="width:100%;">
@@ -116,57 +118,7 @@
             </el-form>
         </el-row>
     </el-card>
-<!--    <el-dialog v-model="showAvatarFlag" title="更新头像">-->
-<!--        <el-form>-->
-<!--            <el-form-item>-->
-<!--                <el-upload-->
-<!--                        class="avatar-uploader"-->
-<!--                        :show-file-list="false"-->
-<!--                        :auto-upload="false"-->
-<!--                        :on-success="handleAvatarSuccess"-->
-<!--                        :on-change="beforeAvatarUpload">-->
-<!--                    <el-button type="primary" round>选择文件</el-button>-->
-<!--                </el-upload>-->
-<!--&lt;!&ndash;                <el-button @click="cropperImage" round>裁剪</el-button>&ndash;&gt;-->
-<!--&lt;!&ndash;                <el-button @click="cropperConfirm" round>更新</el-button>&ndash;&gt;-->
-<!--            </el-form-item>-->
-<!--&lt;!&ndash;            <el-form-item>&ndash;&gt;-->
-
-<!--&lt;!&ndash;            </el-form-item>&ndash;&gt;-->
-<!--&lt;!&ndash;            <el-form-item>&ndash;&gt;-->
-<!--&lt;!&ndash;                <el-row>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <el-col :span="10">&ndash;&gt;-->
-<!--&lt;!&ndash;                        <vue-picture-cropper&ndash;&gt;-->
-<!--&lt;!&ndash;                        :boxStyle="{&ndash;&gt;-->
-<!--&lt;!&ndash;                          width: '400px',&ndash;&gt;-->
-<!--&lt;!&ndash;                          height: '400px',&ndash;&gt;-->
-<!--&lt;!&ndash;                          backgroundColor: '#f8f8f8',&ndash;&gt;-->
-<!--&lt;!&ndash;                          margin: 'auto'&ndash;&gt;-->
-<!--&lt;!&ndash;                        }"&ndash;&gt;-->
-<!--&lt;!&ndash;                        :img="pic"&ndash;&gt;-->
-<!--&lt;!&ndash;                        :options="{&ndash;&gt;-->
-<!--&lt;!&ndash;                          viewMode: 1,&ndash;&gt;-->
-<!--&lt;!&ndash;                          dragMode: 'crop',&ndash;&gt;-->
-<!--&lt;!&ndash;                          aspectRatio: 1,&ndash;&gt;-->
-<!--&lt;!&ndash;                          preview: preview,&ndash;&gt;-->
-<!--&lt;!&ndash;                        }"&ndash;&gt;-->
-<!--&lt;!&ndash;                        @ready="ready"&ndash;&gt;-->
-<!--&lt;!&ndash;                        />&ndash;&gt;-->
-<!--&lt;!&ndash;                    </el-col>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <el-col :span="10" :offset="3">&ndash;&gt;-->
-<!--&lt;!&ndash;                        <img v-if="imageUrl" width="400" height="400" :src="imageUrl" class="avatar" />&ndash;&gt;-->
-<!--&lt;!&ndash;                    </el-col>&ndash;&gt;-->
-<!--&lt;!&ndash;                </el-row>&ndash;&gt;-->
-<!--&lt;!&ndash;            </el-form-item>&ndash;&gt;-->
-<!--        </el-form>-->
-<!--        <template #footer>-->
-<!--            <span class="dialog-footer">-->
-<!--                <el-button @click="showAvatarFlag == false" round>关闭</el-button>-->
-<!--            </span>-->
-<!--        </template>-->
-<!--    </el-dialog>-->
 </template>
-
 <script>
     import { ElUpload } from 'element-plus'
     import VuePictureCropper, { cropper } from 'vue-picture-cropper'
@@ -248,9 +200,6 @@
             apiUtil.api.get(apiUtil.urls.user.profile)
                 .then(res => {
                     _this.profile = res
-                    // _this.profile['uname'] = 'admin'
-                    // _this.profile['name'] = 'admin'
-                    // _this.profile['email'] = 'admin@gmail.com'
                     _this.tags = []
                     if(res.tags){
                         _this.tags = res.tags.split(',')
@@ -262,7 +211,7 @@
                 .then(res => {
                     _this.avatar = res.src
                 }).catch(error => {
-                    apiUtil.message.error(error)
+                    console.log(error)
             })
         },
         methods: {
@@ -275,7 +224,7 @@
                         apiUtil.util.clearToken()
                         _this.$router.push('/login')
                     }).catch(error => {
-                    apiUtil.message.error(_this.$t('message.logoutFail')+error)
+                        apiUtil.message.error(_this.$t('message.logoutFail')+error)
                 })
             },
             // handleClose(tag) {

@@ -1,12 +1,4 @@
 <template>
-    <div id="changeLanguage">
-        <el-form ref="form">
-            <el-select size="small" v-model="locale" @change="changeLanguage"
-                       style="width:80px;position:absolute;right:5px;top:20px;z-index: 10;">
-                <el-option v-for="lang in locales" :key="lang.event" :value="lang.event" :label="lang.text"></el-option>
-            </el-select>
-        </el-form>
-    </div>
     <router-view></router-view>
 </template>
 

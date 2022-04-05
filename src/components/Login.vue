@@ -1,4 +1,12 @@
 <template>
+    <div id="changeLanguage">
+        <el-form ref="form">
+            <el-select size="small" v-model="locale" @change="changeLanguage"
+                       style="width:80px;position:absolute;right:0px;top:0px;z-index: 10;">
+                <el-option v-for="lang in locales" :key="lang.event" :value="lang.event" :label="lang.text"></el-option>
+            </el-select>
+        </el-form>
+    </div>
     <el-form style="margin:0 auto;background-color: #fff;width: 480px;padding: 42px;margin-top:100px;">
         <el-form-item>
             <div style="font-weight: bold;">
@@ -6,19 +14,29 @@
             </div>
         </el-form-item>
         <el-form-item>
+            <el-icon><Hide/></el-icon>
             <el-input
                     v-model="uname"
                     class="w-50 m-2"
                     size="large"
-                    :placeholder="$t('message.loginNameTip')"/>
+                    :placeholder="$t('message.loginNameTip')">
+            </el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 10px;">
             <el-input
                     v-model="pwd"
                     size="large"
-                    type="password"
+                    :type="passwordType"
                     class="w-50 m-2"
-                    :placeholder="$t('message.password')"/>
+                    :placeholder="$t('message.password')"
+                    :suffix-icon="View">
+                <template #suffix>
+                    <el-icon :size="large" class="el-input__icon" @click="passwordShow=!passwordShow">
+                        <View v-if="!passwordShow" style="cursor: pointer;"></View>
+                        <SemiSelect v-if="passwordShow" style="cursor: pointer;"></SemiSelect>
+                    </el-icon>
+                </template>
+            </el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 0px;">
             <router-link :to="{name: 'register'}" style="color:red;">{{ $t('message.forgetPassword') }}?</router-link>
@@ -41,16 +59,38 @@
 </template>
 
 <script>
+    import {View, SemiSelect} from '@element-plus/icons'
     import apiUtil from '../util/apiUtil'
     export default {
         name: "Login",
-        components: {},
+        components: {View, SemiSelect},
         data() {
             return {
                 uname: null,
                 pwd: null,
                 loginInfo: null,
-                loading: false
+                loading: false,
+                passwordShow: false,
+                locales: [
+                    {event: 'zh', text: '中文'},
+                    {event: 'en', text: 'English'},
+                ],
+                locale: 'zh'
+            }
+        },
+        computed: {
+            passwordType() {
+                return this.passwordShow ? 'text' : 'password'
+            }
+        },
+        mounted() {
+            let lang = localStorage.getItem('lang')
+            if(lang){
+                this.$i18n.locale = lang
+                this.locale = lang
+            }else{
+                localStorage.setItem('lang', 'zh')
+                this.locale = 'zh'
             }
         },
         beforeCreate () {
@@ -60,6 +100,11 @@
             document.querySelector('body').removeAttribute('class')
         },
         methods: {
+            changeLanguage (lang) {
+                localStorage.setItem('lang', lang)
+                this.$i18n.locale = lang
+                this.locale = lang
+            },
             login(event) {
                 let _this = this
                 _this.loading = true
@@ -85,7 +130,7 @@
                         if(redirect){
                             _this.$router.push(redirect)
                         }else{
-                            _this.$router.push('/home')
+                            _this.$router.push('/home/profile')
                         }
                     }).catch(error => {
                         _this.loading = false

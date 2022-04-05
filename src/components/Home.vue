@@ -2,7 +2,9 @@
     <el-row class="tac" style="margin-bottom: 0px;">
         <el-col :span="3" style="background-color: #565B67;">
             <el-row style="height: 68px;margin: 0px;">
-                <div style="color:white;width: 100%;line-height: 68px;font-size: 18px;font-weight: bold;">Wisite</div>
+                <div style="color:white;width: 100%;line-height: 68px;font-size: 18px;font-weight: bold;">
+                    <el-avatar size="large" :src="avatar" style="line-height: 56px;height:56px;margin-top:5px;"/>
+                </div>
             </el-row>
             <el-menu
                     active-text-color="#ffd04b"
@@ -10,15 +12,18 @@
                     class="el-menu-vertical-demo"
                     unique-opened="true"
                     router="true"
-                    default-active="2"
+                    default-active="/home/profile"
                     text-color="#fff"
                     @open="handleOpen"
                     @close="handleClose"
                     :style="{ height: `${elementHeight}px` }">
-                <el-menu-item index="/home/profile">
-                    <el-icon><setting/></el-icon>
-                    <span>{{$t('message.userInfo')}}</span>
+                <el-menu-item v-for="menu in menus" :index="menu.index" :key="menu.index" style="text-align: center;padding-left:80px;">
+                    <span>{{menu.name}}</span>
                 </el-menu-item>
+<!--                <el-menu-item index="/home/profile">-->
+<!--&lt;!&ndash;                    <el-icon><setting/></el-icon>&ndash;&gt;-->
+<!--                    <span>{{$t('message.userInfo')}}</span>-->
+<!--                </el-menu-item>-->
             </el-menu>
         </el-col>
         <el-col :span="21">
@@ -28,7 +33,7 @@
 
 <!--                    </el-avatar>-->
 <!--                </el-col>-->
-                <el-button @click="logout" round type="danger" style="position: absolute;top:15px;right:90px;">{{$t('message.logout')}}</el-button>
+                <el-button @click="logout" round type="danger" style="position: absolute;top:5px;right:5px;">{{$t('message.logout')}}</el-button>
             </el-row>
             <el-row :style="{ padding: '10px', marginBottom: '0px'}">
                 <router-view></router-view>
@@ -40,12 +45,13 @@
 
 <script>
     import apiUtil from '../util/apiUtil'
-    import {Setting} from '@element-plus/icons-vue'
+    import { ElMessageBox } from 'element-plus'
+    // import {Setting} from '@element-plus/icons-vue'
 
     export default {
         name: "Home",
         components: {
-            Setting,
+            // Setting,
         },
         props:['Name'],
         beforeCreate () {
@@ -62,25 +68,51 @@
                 showAvatarFlag: false,
                 image: null,
                 pic: null,
+                avatar: null,
                 profile: {
+                },
+                menus: [],
+                menuPath: {
+                    "profile": '/home/profile',
+                    "whats-new": '/home/whatsNew',
+                    "topic":  '/home/topic',
+                    "bookmark": '/home/bookmark',
+                    "sharing": '/home/sharing',
+                    "ask": '/home/ask',
+                    "assign": '/home/assign',
+                    "task": '/home/task',
+                    "audit": '/home/audit',
+                    "admin": '/home/admin',
+                    "wisite-green": '/home/wisiteGreen',
                 }
             }
         },
         methods: {
             logout () {
                 let _this = this
-                apiUtil.api.get(apiUtil.urls.sign.signout)
-                    .then(res => {
-                        console.log(res)
-                        apiUtil.message.success(_this.$t('message.logoutSuccess'))
-                        apiUtil.util.clearToken()
-                        _this.$router.push('/login')
-                    }).catch(error => {
+                ElMessageBox.confirm(
+                    this.$t('message.logoutConfirm'),
+                    this.$t('message.info'),
+                    {
+                        confirmButtonText: this.$t('message.ok'),
+                        cancelButtonText: this.$t('message.cancel'),
+                        type: 'warning',
+                    }
+                ).then(() => {
+                    apiUtil.api.get(apiUtil.urls.sign.signout)
+                        .then(res => {
+                            console.log(res)
+                            apiUtil.message.success(_this.$t('message.logoutSuccess'))
+                            apiUtil.util.clearToken()
+                            _this.$router.push('/login')
+                        }).catch(error => {
                         apiUtil.message.error(_this.$t('message.logoutFail')+error)
+                    })
+                }).catch(() => {
+
                 })
             },
             handleOpen () {
-                console.log('handleOpen.')
             },
             showAvatar () {
                 this.showAvatarFlag = true
@@ -123,7 +155,8 @@
             },
         },
         mounted:function () {
-            this.$nextTick(() => {
+            let _this = this
+            _this.$nextTick(() => {
                 this.elementHeight = window.innerHeight - 68
                 this.innerHeight = this.elementHeight - 20
                 let context = this;
@@ -132,6 +165,26 @@
                     context.innerHeight = context.elementHeight - 20
                 }
             })
+            apiUtil.api.get(apiUtil.urls.user.avatar)
+                .then(res => {
+                    _this.avatar = res.src
+                }).catch(error => {
+                    console.log(error)
+                    // apiUtil.message.error(error)
+            })
+            apiUtil.api.get(apiUtil.urls.admin.menus)
+                .then(res => {
+                    _this.menus = []
+                    for(let i in res){
+                        _this.menus.push({
+                            'name': _this.$t('message.'+res[i]),
+                            'index': _this.menuPath[res[i]]
+                        })
+                    }
+                })
+                .catch(error => {
+                    apiUtil.message.error(error)
+                })
         }
     }
 </script>
@@ -228,5 +281,12 @@
         width: 178px;
         height: 178px;
         display: block;
+    }
+    .el-menu-item{
+        font-size: 16px;
+        text-align: center;
+    }
+    .is-active {
+        font-weight: bold;
     }
 </style>
