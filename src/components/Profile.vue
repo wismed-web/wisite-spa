@@ -46,6 +46,9 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
+                        <div>
+                            <span>{{profile.official}}</span>
+                        </div>
                     </el-form-item>
                     <el-form-item :label="$t('message.memberDays')">
                         <el-input v-model="profile.memberDays" disabled="true"></el-input>

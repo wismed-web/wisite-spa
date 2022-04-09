@@ -24,7 +24,7 @@ const messages = {
             select: '--请选择--',
             selectFile: '选择文件',
             addTag: '添加标签',
-            logout: '退出登录',
+            logout: '退出',
             official: '官方认证用户',
             emailVerify: '邮箱验证',
             verifyCode: '验证码',
@@ -72,6 +72,7 @@ const messages = {
             "audit": '审核中心',
             "admin": '管理员',
             "wisite-green": 'V社区会员',
+            "vote": "发起投票"
         }
     },
     "en": {
@@ -146,6 +147,7 @@ const messages = {
             "audit": 'audit',
             "admin": 'admin',
             "wisite-green": 'wisite-green',
+            "vote": 'vote'
         }
     }
 }

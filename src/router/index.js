@@ -15,6 +15,7 @@ const task = () => import('../components/Task')
 const audit = () => import('../components/Audit')
 const admin = () => import('../components/Admin')
 const wisiteGreen = () => import('../components/WisiteGreen')
+const vote = () => import('../components/Vote')
 
 const routes = [
     {
@@ -103,6 +104,11 @@ const routes = [
                 name: 'wisiteGreen',
                 path: 'wisiteGreen',
                 component: wisiteGreen
+            },
+            {
+                name: 'vote',
+                path: 'vote',
+                component: vote
             }
         ]
     }

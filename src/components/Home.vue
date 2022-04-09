@@ -84,6 +84,7 @@
                     "audit": '/home/audit',
                     "admin": '/home/admin',
                     "wisite-green": '/home/wisiteGreen',
+                    "vote": '/home/vote'
                 }
             }
         },

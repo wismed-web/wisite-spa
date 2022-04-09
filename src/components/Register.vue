@@ -36,9 +36,17 @@
             <el-input
                     v-model="registerInfo.pwd"
                     size="large"
-                    type="password"
+                    :type="passwordType"
                     class="w-50 m-2"
-                    :placeholder="$t('message.password')"/>
+                    :placeholder="$t('message.password')"
+                    :suffix-icon="View">
+                <template #suffix>
+                    <el-icon :size="large" class="el-input__icon" @click="passwordShow=!passwordShow">
+                        <View v-if="!passwordShow" style="cursor: pointer;"></View>
+                        <SemiSelect v-if="passwordShow" style="cursor: pointer;"></SemiSelect>
+                    </el-icon>
+                </template>
+            </el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 20px;" prop="tosSelect">
             <div style="text-align: left;font-size: 12px;width:100%;">
@@ -140,10 +148,11 @@
 </template>
 
 <script>
+    import {View, SemiSelect} from '@element-plus/icons'
     import apiUtil from '../util/apiUtil'
     export default {
         name: "Login",
-        components: {},
+        components: {View, SemiSelect},
         data() {
             return {
                 registerInfo: {
@@ -157,6 +166,7 @@
                 loading: false,
                 loginInfo: null,
                 tosSelect: false,
+                passwordShow: false,
                 rules: {
                     uname: [
                         { required: true, message: this.$t('message.loginNameRequired'), trigger: 'blur' },
@@ -174,6 +184,11 @@
                         {required: true, message: this.$t('message.userAgreementPrivacyStatementRequired'), trigger: 'change' }
                     ],
                 }
+            }
+        },
+        computed: {
+            passwordType() {
+                return this.passwordShow ? 'text' : 'password'
             }
         },
         beforeCreate () {
