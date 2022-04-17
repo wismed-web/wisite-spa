@@ -56,6 +56,7 @@
             </div>
         </el-form-item>
     </el-form>
+    <div style="position: absolute;bottom: 20px;right: 20px;color:black;font-size: 10px;">{{apiVersion}}</div>
 </template>
 
 <script>
@@ -75,7 +76,8 @@
                     {event: 'zh', text: '中文'},
                     {event: 'en', text: 'English'},
                 ],
-                locale: 'zh'
+                locale: 'zh',
+                apiVersion: '1.0.0'
             }
         },
         computed: {
@@ -92,6 +94,13 @@
                 localStorage.setItem('lang', 'zh')
                 this.locale = 'zh'
             }
+            let _this = this
+            apiUtil.api.get(apiUtil.urls.system.version)
+                .then(data => {
+                    _this.apiVersion = data
+                }).catch(error => {
+                    console.log(error)
+            })
         },
         beforeCreate () {
             document.querySelector('body').setAttribute('style', 'display:block;')

@@ -38,17 +38,18 @@
                         <el-input v-model="profile.title"></el-input>
                     </el-form-item>
                     <el-form-item :label="$t('message.official')">
-                        <el-select v-model="profile.official" disabled="true" :placeholder="$t('message.select')" style="width:100%;">
-                            <el-option
-                                    v-for="item in officialStatus"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                        <div>
-                            <span>{{profile.official}}</span>
-                        </div>
+                        <el-input v-model="profile.official" disabled="true"></el-input>
+<!--                        <el-select v-model="profile.official" disabled="true" :placeholder="$t('message.select')" style="width:100%;">-->
+<!--                            <el-option-->
+<!--                                    v-for="item in officialStatus"-->
+<!--                                    :key="item.value"-->
+<!--                                    :label="item.label"-->
+<!--                                    :value="item.value">-->
+<!--                            </el-option>-->
+<!--                        </el-select>-->
+<!--                        <div>-->
+<!--                            <span>{{profile.official}}</span>-->
+<!--                        </div>-->
                     </el-form-item>
                     <el-form-item :label="$t('message.memberDays')">
                         <el-input v-model="profile.memberDays" disabled="true"></el-input>
@@ -343,6 +344,7 @@
                                 _this.loading = false
                                 console.log(res)
                                 apiUtil.message.success(_this.$t('message.updateSuccess'))
+                                _this.$emit('updateAvatar')
                             }).catch(error => {
                                 apiUtil.message.error(error)
                                 _this.loading = false

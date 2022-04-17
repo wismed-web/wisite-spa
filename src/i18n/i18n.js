@@ -72,7 +72,13 @@ const messages = {
             "audit": '审核中心',
             "admin": '管理员',
             "wisite-green": 'V社区会员',
-            "vote": "发起投票"
+            "vote": "发起投票",
+            messageTitle: '标题',
+            messageTitleTip: '请输入标题',
+            messageContent: '消息内容',
+            messageContentTip: '请输入消息内容',
+            confirm: '确认',
+            addMessage: '发布消息'
         }
     },
     "en": {
@@ -147,7 +153,9 @@ const messages = {
             "audit": 'audit',
             "admin": 'admin',
             "wisite-green": 'wisite-green',
-            "vote": 'vote'
+            "vote": 'vote',
+            confirm: 'Confirm',
+            addMessage: 'Publish message'
         }
     }
 }

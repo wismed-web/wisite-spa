@@ -60,6 +60,9 @@ const api = {
       avatar: '/user/avatar',
       profile: '/user/profile',
       setprofile: '/user/setprofile'
+    },
+    system: {
+      version: '/system/ver-tag'
     }
   },
   api: {
