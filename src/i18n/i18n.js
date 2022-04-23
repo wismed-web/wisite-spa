@@ -78,7 +78,13 @@ const messages = {
             messageContent: '消息内容',
             messageContentTip: '请输入消息内容',
             confirm: '确认',
-            addMessage: '发布消息'
+            addMessage: '发布消息',
+            onlineUser: '在线用户',
+            index: '序号',
+            operation: '操作',
+            edit: '编辑',
+            userManage: '用户管理',
+            editUserInfoTitle: '编辑用户信息'
         }
     },
     "en": {
@@ -155,7 +161,13 @@ const messages = {
             "wisite-green": 'wisite-green',
             "vote": 'vote',
             confirm: 'Confirm',
-            addMessage: 'Publish message'
+            addMessage: 'Publish message',
+            onlineUser: 'Online Users',
+            index: 'Order num',
+            operation: 'Operation',
+            edit: 'Edit',
+            userManage: 'User manage',
+            editUserInfoTitle: 'Edit user info'
         }
     }
 }

@@ -6,7 +6,14 @@
 
 <script>
     export default {
-        name: "Ask"
+        name: "Ask",
+        data() {
+            return {
+                onlines: [
+                    {index: 1, name: 'name'}
+                ],
+            }
+        },
     }
 </script>
 

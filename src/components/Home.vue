@@ -35,53 +35,20 @@
 <!--                </el-col>-->
                 <el-button @click="logout" round type="danger" style="position: absolute;top:5px;right:5px;">{{$t('message.logout')}}</el-button>
             </el-row>
-            <el-row :style="{ padding: '10px', marginBottom: '0px'}">
-                <router-view @updateAvatar="updateAvatar($event)"></router-view>
+            <el-row :style="{ padding: '10px', marginBottom: '0px', height: `${elementHeight}px`}">
+                <router-view @updateAvatar="updateAvatar($event)" @showAddMessage="showAddMessage($event)"></router-view>
             </el-row>
         </el-col>
     </el-row>
-    <div style="position: absolute;bottom: 10px;right: 10px;">
-        <el-button circle type="primary" style="width:80px;height:80px;">
-            <el-icon class="el-input__icon" :size="40" @click="addMessageVisible=!addMessageVisible">
-                <Plus style="cursor: pointer;"></Plus>
-            </el-icon>
-        </el-button>
-    </div>
-    <el-dialog v-model="addMessageVisible" :title="$t('message.addMessage')" center>
-        <el-form :model="message" label-width="120px">
-            <el-form-item :label="$t('message.messageTitle')">
-                <el-input v-model="message.title" autocomplete="off" :placeholder="$t('message.messageTitleTip')"/>
-            </el-form-item>
-            <el-form-item :label="$t('message.messageContent')">
-                <el-input
-                        v-model="message.content"
-                        rows="6"
-                        type="textarea"
-                        maxlength="100"
-                        show-word-limit
-                        :placeholder="$t('message.messageContentTip')"/>
-            </el-form-item>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="addMessageVisible = false">{{$t('message.cancel')}}</el-button>
-            <el-button type="primary" @click="addMessage">{{$t('message.confirm')}}</el-button>
-          </span>
-        </template>
-    </el-dialog>
 </template>
 
 <script>
     import apiUtil from '../util/apiUtil'
-    import {Plus} from '@element-plus/icons-vue'
     import { ElMessageBox } from 'element-plus'
-    // import {Setting} from '@element-plus/icons-vue'
 
     export default {
         name: "Home",
         components: {
-            // Setting,
-            Plus
         },
         props:['Name'],
         beforeCreate () {
@@ -94,6 +61,7 @@
         data() {
             return {
                 addMessageVisible: false,
+                addMessageVisibleBtn: false,
                 message: {
 
                 },
@@ -206,6 +174,12 @@
                     console.log(error)
                     // apiUtil.message.error(error)
                 })
+            },
+            showAddMessage() {
+                this.addMessageVisibleBtn = true
+            },
+            hiddenAddMessage() {
+                this.addMessageVisibleBtn = false
             },
         },
         mounted:function () {
