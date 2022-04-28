@@ -13,7 +13,7 @@
                             header-align="center"
                             align="center"
                             :border="true"
-                            style="width:60%;margin-left: 70px;"
+                            style="width:100%;"
                             :data="onlines">
                         <el-table-column
                                 prop="index"
@@ -38,7 +38,7 @@
                         <span style="font-weight: bold">{{$t('message.userManage')}}</span>
                     </div>
                 </template>
-                <el-row style="width:75%;margin-left: 120px;">
+                <el-row style="width:100%;">
                     <el-table
                             align="center"
                             stripe="true"

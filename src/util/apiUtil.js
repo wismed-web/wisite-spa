@@ -1,7 +1,7 @@
 import axios from 'axios'
 import router from "../router";
 import { ElMessage } from 'element-plus'
-let baseUrl = 'http://127.0.0.1:1323/api'
+let baseUrl = window.baseUrl
 axios.defaults.baseURL = baseUrl
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -63,7 +63,8 @@ const api = {
     },
     system: {
       version: '/system/ver-tag'
-    }
+    },
+    config: '/config.json'
   },
   api: {
     get (url, data) {

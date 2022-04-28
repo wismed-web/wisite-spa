@@ -84,7 +84,8 @@ const messages = {
             operation: '操作',
             edit: '编辑',
             userManage: '用户管理',
-            editUserInfoTitle: '编辑用户信息'
+            editUserInfoTitle: '编辑用户信息',
+            getConfigError: '获取配置文件错误'
         }
     },
     "en": {
@@ -167,7 +168,8 @@ const messages = {
             operation: 'Operation',
             edit: 'Edit',
             userManage: 'User manage',
-            editUserInfoTitle: 'Edit user info'
+            editUserInfoTitle: 'Edit user info',
+            getConfigError: 'Get Config Error'
         }
     }
 }
