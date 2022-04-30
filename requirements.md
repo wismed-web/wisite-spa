@@ -28,17 +28,17 @@ requirements
 
    返回内容为英文，中文翻译：
 
-   ["whats-new": "动态内容"],\
-   ["topic": "主题浏览"],\
+   ["whats-new": "主页"],\
+   ["topic": "主题"],\
    ["bookmark": "书签"],\
-   ["sharing": "我的分享"],\
-   ["ask": "我的求助"],\
+   ["sharing": "分享"],\
+   ["ask": "求助"],\
    ["assign": "任务分派"],\
    ["task": "任务接收"],\
-   ["audit": "审核中心"],\
+   ["audit": "审核"],\
    ["admin": "管理员"],\
    ["profile": "个人信息"], ---- 此项内容基本完成，剩下为测试，调整，局部修改。\
-   ["wisite-green": "V社区会员"]\
+   ["wisite-green": "社区会员"]\
 
 3. 登陆后，如登陆用户已有头像，在页面左上角显示用户头像。
 
@@ -68,3 +68,39 @@ requirements
    `用户管理`: 调用`/api/admin/users`，表格显示所有用户名，单元格可选定进行下一步编辑，其他显示内容待定。
 
 2. 添加按钮只在“动态信息”菜单下出现，其他菜单下隐藏。
+
+* updated 2022-04-30
+
+0. 任何API若返回'401 invalid or expired jwt'，则自动重定向到登陆界面。
+
+1. 用户成功登陆后，前段自动每隔10秒调用`/api/user/heartbeats`通知后端是否处于活跃状态。定时触发伴随整个session周期。
+
+2. 在用户管理页面的表格处，提供搜索窗口。搜索参数传入最新的`/api/admin/onlines` (1个参数) 及 `/api/admin/users`(3个参数)。具体参见此2个API的swagger。
+
+3. 在 updated 2022-04-05 第二项中文翻译有所更新，前端菜单名称对应更新。
+
+4. 在用户管理页面，注册用户表格某个用户选定后，弹出窗口按照下列要求显示。同时，提供保存更新按钮：
+
+    "uname": 只读
+    "email": 只读
+    "name": 只读
+    "phone": 只读
+    "country": 只读
+    "city": 只读
+    "addr": 只读
+    "personalidtype": 只读
+    "personalid": 只读
+    "gender": 只读
+    "dob": 只读
+    "position": 只读
+    "title": 只读
+    "employer": 只读
+    "bio": 只读
+    "regtime": 只读
+    "active": 读写 ( true/false 二选一, API 稍后提供 )
+    "certified": 读写 ( true/false 二选一，API 稍后提供 )
+    "official": 读写 ( true/false 二选一, API 稍后提供 )
+    "role": 只读
+    "level": 读写 ( 具体内容待定，API 稍后提供 )
+    "expire": 只读
+    "tags": 只读
