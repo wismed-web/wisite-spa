@@ -37,7 +37,7 @@ requirements
    ["task": "任务接收"],\
    ["audit": "审核"],\
    ["admin": "管理员"],\
-   ["profile": "个人信息"], ---- 此项内容基本完成，剩下为测试，调整，局部修改。\
+   ["profile": "个人信息"],\
    ["wisite-green": "社区会员"]\
 
 3. 登陆后，如登陆用户已有头像，在页面左上角显示用户头像。
@@ -75,7 +75,7 @@ requirements
 
 1. 用户成功登陆后，前段自动每隔10秒调用`/api/user/heartbeats`通知后端是否处于活跃状态。定时触发伴随整个session周期。
 
-2. 在用户管理页面的表格处，提供搜索窗口。搜索参数传入最新的`/api/admin/onlines` (1个参数) 及 `/api/admin/users`(3个参数)。具体参见此2个API的swagger。
+2. 在用户管理页面的表格处，提供搜索过滤输入框。搜索参数传入最新的`/api/admin/onlines` (1个参数) 及 `/api/admin/users`(3个参数)。具体参见此2个API的swagger。
 
 3. 在 updated 2022-04-05 第二项中文翻译有所更新，前端菜单名称对应更新。
 
