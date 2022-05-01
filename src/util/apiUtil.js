@@ -59,7 +59,8 @@ const api = {
     user: {
       avatar: '/user/avatar',
       profile: '/user/profile',
-      setprofile: '/user/setprofile'
+      setprofile: '/user/setprofile',
+      heartbeats: '/user/heartbeats'
     },
     system: {
       version: '/system/ver-tag'
@@ -109,35 +110,68 @@ const api = {
       })
     },
     ajax (url, method, data) {
-      return new Promise((resolve, reject) => {
-        axios.request({
-          url: url,
-          method: method,
-          data: data
-        }).then(response => {
-          if (response.status === 200) {
-            resolve(response.data)
-          } else {
-            reject('Network Error')
-          }
-        }).catch(error => {
-          if (error.response) {
-            if(error.response.status === 401) {
-              router.push('/login')
-              return
+      if (method == 'get' && data){
+        return new Promise((resolve, reject) => {
+          axios.request({
+            url: url,
+            method: method,
+            params: data
+          }).then(response => {
+            if (response.status === 200) {
+              resolve(response.data)
+            } else {
+              reject('Network Error')
             }
-            if(error.response.status === 400) {
-              if(error.response.data && error.response.data.message && error.response.data.message === 'missing or malformed jwt') {
+          }).catch(error => {
+            if (error.response) {
+              if(error.response.status === 401) {
                 router.push('/login')
                 return
               }
+              if(error.response.status === 400) {
+                if(error.response.data && error.response.data.message && error.response.data.message === 'missing or malformed jwt') {
+                  router.push('/login')
+                  return
+                }
+              }
+              reject(error.response.data)
+            } else {
+              reject(error.message)
             }
-            reject(error.response.data)
-          } else {
-            reject(error.message)
-          }
+          })
         })
-      })
+      }else{
+        return new Promise((resolve, reject) => {
+          axios.request({
+            url: url,
+            method: method,
+            data: data
+          }).then(response => {
+            if (response.status === 200) {
+              resolve(response.data)
+            } else {
+              reject('Network Error')
+            }
+          }).catch(error => {
+            if (error.response) {
+              if(error.response.status === 401) {
+                router.push('/login')
+                return
+              }
+              if(error.response.status === 400) {
+                if(error.response.data && error.response.data.message && error.response.data.message === 'missing or malformed jwt') {
+                  router.push('/login')
+                  return
+                }
+              }
+              reject(error.response.data)
+            } else {
+              reject(error.message)
+            }
+          })
+        })
+      }
+
     }
   },
   util: {

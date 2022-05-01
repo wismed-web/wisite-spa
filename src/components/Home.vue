@@ -87,7 +87,8 @@
                     "admin": '/home/admin',
                     "wisite-green": '/home/wisiteGreen',
                     "vote": '/home/vote'
-                }
+                },
+                heartbeatTimer: null
             }
         },
         methods: {
@@ -181,6 +182,31 @@
             hiddenAddMessage() {
                 this.addMessageVisibleBtn = false
             },
+            startHeartbeat(){
+                if(!this.heartbeatTimer){
+                    this.heartbeatTimer = window.setInterval(() => {
+                        setTimeout(() =>{
+                            this.heartbeat()
+                        }, 0)
+                    }, 10000)
+                }
+            },
+            heartbeat(){
+                apiUtil.api.get(apiUtil.urls.user.heartbeats)
+                    .then(res => {
+                        console.log(res)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
+        },
+        unmounted() {
+            if(this.heartbeatTimer){
+                window.clearInterval(this.heartbeatTimer)
+                this.heartbeatTimer = null
+            }
+
         },
         mounted:function () {
             let _this = this
@@ -207,6 +233,7 @@
                 .catch(error => {
                     apiUtil.message.error(error)
                 })
+            _this.startHeartbeat()
         }
     }
 </script>
