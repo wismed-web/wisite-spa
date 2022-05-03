@@ -25,19 +25,16 @@
                             header-align="center"
                             align="center"
                             :border="true"
-                            style="width:100%;"
                             :data="onlines">
                         <el-table-column
                                 prop="index"
                                 align="center"
-                                :label="$t('message.index')"
-                                width="60">
+                                :label="$t('message.index')">
                         </el-table-column>
                         <el-table-column
                                 prop="name"
                                 align="center"
-                                :label="$t('message.loginName')"
-                                width="180">
+                                :label="$t('message.loginName')">
                         </el-table-column>
                     </el-table>
                 </div>
@@ -79,36 +76,35 @@
                             stripe="true"
                             border="true"
                             header-align="center"
-                            style="width:100%;"
                             :data="allUsers">
                         <el-table-column
                                 prop="index"
                                 :label="$t('message.index')"
-                                align="center"
-                                width="60">
+                                align="center">
                         </el-table-column>
                         <el-table-column
                                 prop="uname"
                                 align="center"
-                                :label="$t('message.loginName')"
-                                width="180">
+                                :label="$t('message.loginName')">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                align="center"
+                                :label="$t('message.realName')">
                         </el-table-column>
                         <el-table-column
                                 prop="email"
                                 align="center"
-                                :label="$t('message.email')"
-                                width="200">
+                                :label="$t('message.email')">
                         </el-table-column>
                         <el-table-column
                                 prop="phone"
                                 align="center"
-                                :label="$t('message.phone')"
-                                width="180">
+                                :label="$t('message.phone')">
                         </el-table-column>
                         <el-table-column
                                 :label="$t('message.operation')"
-                                align="center"
-                                width="75">
+                                align="center">
                             <template #default="scope">
                                 <el-button size="small" @click="handleEdit(scope.$index, scope.row)">{{$t('message.edit')}}</el-button>
                             </template>
@@ -302,9 +298,7 @@
 
             },
             triggerSearchOnline () {
-                if(this.searchOnlineName){
-                    this.searchOnline(this.searchOnlineName)
-                }
+                this.searchOnline(this.searchOnlineName)
             },
             searchOnline (name) {
                 let _this = this

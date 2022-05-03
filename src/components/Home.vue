@@ -192,7 +192,7 @@
                 }
             },
             heartbeat(){
-                apiUtil.api.get(apiUtil.urls.user.heartbeats)
+                apiUtil.api.post(apiUtil.urls.user.heartbeats, null)
                     .then(res => {
                         console.log(res)
                     })
