@@ -22,7 +22,7 @@
                     :placeholder="$t('message.loginNameTip')">
             </el-input>
         </el-form-item>
-        <el-form-item style="margin-bottom: 10px;">
+        <el-form-item style="margin-bottom: 20px;">
             <el-input
                     v-model="pwd"
                     size="large"

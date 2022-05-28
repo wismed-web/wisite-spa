@@ -98,7 +98,12 @@ const messages = {
             searchOnlineNameTip: '输入用户名',
             searchUserNameTip: '输入姓名',
             searchUserUnameTip: '输入登录用户名',
-            searchUserActiveTip: '是否激活'
+            searchUserActiveTip: '是否激活',
+            selectMedia: '多媒体',
+            more: '增加',
+            publish: '发布',
+            wrapupTip: '总结',
+            timeline: '时间线'
         }
     },
     "en": {
@@ -195,7 +200,12 @@ const messages = {
             searchOnlineNameTip: 'Input name',
             searchUserNameTip: 'Input name',
             searchUserUnameTip: 'Input uname',
-            searchUserActiveTip: 'Active'
+            searchUserActiveTip: 'Active',
+            selectMedia: 'Media',
+            more: 'More',
+            publish: 'Publish',
+            wrapupTip: 'Wrapup',
+            timeline: 'Timeline'
         }
     }
 }

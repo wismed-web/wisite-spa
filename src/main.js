@@ -5,7 +5,7 @@ import 'element-plus/theme-chalk/index.css'
 import router from './router'
 import store from './store'
 import i18n from './i18n/i18n'
-import axios from "axios";
+import axios from "axios"
 axios.request({
     url: '/config.json',
     method: 'get',
