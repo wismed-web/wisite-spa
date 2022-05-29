@@ -103,7 +103,11 @@ const messages = {
             more: '增加',
             publish: '发布',
             wrapupTip: '总结',
-            timeline: '时间线'
+            timeline: '时间线',
+            editVideo: '视频编辑',
+            clip: '开始裁剪',
+            editImage: '图片编辑',
+            fileExceedsMaximum: '文件超出最大值(20M)'
         }
     },
     "en": {
@@ -205,7 +209,11 @@ const messages = {
             more: 'More',
             publish: 'Publish',
             wrapupTip: 'Wrapup',
-            timeline: 'Timeline'
+            timeline: 'Timeline',
+            editVideo: 'Edit video',
+            clip: 'Start clip',
+            editImage: 'Edit image',
+            fileExceedsMaximum: 'File exceeds maximum(20M)'
         }
     }
 }

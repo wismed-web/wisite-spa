@@ -6,6 +6,7 @@ import router from './router'
 import store from './store'
 import i18n from './i18n/i18n'
 import axios from "axios"
+import util from './util/util'
 axios.request({
     url: '/config.json',
     method: 'get',
@@ -13,12 +14,14 @@ axios.request({
 }).then(res => {
     if (res.status === 200) {
         window.baseUrl = res.data.baseUrl
-        createApp(App)
-            .use(store)
+        let appCommon = createApp(App)
+        appCommon.config.globalProperties.$util = util
+        appCommon.use(store)
             .use(ElementPlus)
             .use(router)
             .use(i18n)
             .mount('#app')
+
     } else {
         console.log(res)
     }
