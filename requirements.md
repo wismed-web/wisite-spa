@@ -135,3 +135,66 @@ requirements
 4. 添加 a.段落‘前进’，b.‘后退’按钮 及 c.总段落序号 和 d. 当前序号标注指示。
 
 5. 用户通过‘前进’，‘后退’ 更改段落时，a. 段落文字内容、b. 媒体文件内容 及 c. 当前序号 应有所对应变化。
+
+* updated 2022-06-04
+
+0. 后端 IP:PORT 使用 `http://13.55.91.185:1323/`，直接远程访问。
+
+1. `/api/user/heartbeats` 访问方式由 POST 改为 PATCH。
+
+2. 配合“POST说明.png” UI 内容, 将发布内容传送至后端。具体步骤如下：
+
+   a. 调用 `/api/post/template`, 获取发送模板。此API访问一次即可，模板固定，每次发布内容为填写不同JSON属性值。
+
+   b. `category` 暂时固定填写 `share`, 后期有其它类别。
+
+   c. `topic` 填写 "说明" UI 首行输入框内容，即 “发帖主题”。
+
+   d. `summary` 填写 "说明" UI 末行输入框内容，即 “发帖总结”。
+
+   e. `content` 为 “说明” UI 的段落内容 （黑色线框内，含若干段落）。 每个段落包含一段文字及一个对应的粘贴内容（图片，视频等类型），文字内容填写入一个 `content` 元素 的 `text`；`content` 元素 `path` 内容为 `api/file/upload-formfile` 或 `api/file/upload-bodydata` 的返回值。
+
+   注意  如果直接打开本地文件上传，则调用`api/file/upload-formfile`;
+        如果上传二进制数据块，则调用`api/file/upload-bodydata`, 把待上传的数据放入body。同时必须填写参数'fname', 值为上传资源名称。
+   
+   * 具体步骤：
+      1) 在整个内容发布调用 `/api/post/upload` 事件前，先依上下顺序将每个段落的待上传文件使用 `api/file/upload-formfile` 或 `api/file/upload-bodydata` 上传至后端。若上传成功，则返回该上传文件的对应path值, 将返回的path值填写入 `content` 的 `path` 属性。
+
+      2) 待每个段落的 `text` 及 `path` 都填写完成后（若某段落只有文字，则`path`保留为空），待上传的JSON内容样例为如下（包含3个段落，最后段落仅有文字）：
+    ```json
+    {
+      "category": "share",
+      "topic": "this is an example topic",
+      "content": [
+         {
+            "text": "this is the 1st paragraph text input",
+            "path": "attached stuff return path value, which should have been given from 'api/file/upload-formfile' or 'api/file/upload-bodydata'"
+         },
+         {
+            "text": "this is the 2nd paragraph text input",
+            "path": "attached stuff return path value, which should have been given from 'api/file/upload-formfile' or 'api/file/upload-bodydata'"
+         },
+         {
+            "text": "this is the 3rd paragraph text input",
+            "path": ""
+         }              
+      ],
+      "summary": "this is an example summary"
+   }
+   ```
+      3) 调用`/api/post/upload`, 将待上传的 JSON 放入请求的 body。如果上传成功，则返回事件记录的另一个 JSON，内容样例如下：
+      ```json
+      {
+         "ID": "e66d73f5-1df6-40f6-a117-b651e2e9b69e",
+         "Tm": "2022-06-04T06:02:56Z",
+         "Owner": "user",
+         "EvtType": "Post",
+         "MetaJSON": "{\"category\":\"post category AAA\",\"topic\":\"post topic\",\"content\":[{\"text\":\"some words for this attach\",\"path\":\"path/to/the/resource\"}],\"summary\":\"summarize your topic BBB\"}",
+         "Public": false
+      }
+      ```
+      其中，`MetaJSON`为发布的上传内容，`Owner`为发布者，其他字段暂时忽略。
+      至此，发布到后端的功能完毕。
+      
+   读取已发布内容任务，稍后继续...
+     
