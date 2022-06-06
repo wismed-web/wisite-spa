@@ -211,7 +211,7 @@ requirements
    ]
    ```
 
-1. 对应每个id， 使用`/api/post/one` 获取对应发布内容，其中，先注意`MetaJSON`及`Owner`。 `MetaJSON` 为内容，`Owner`为发布人(即，注册用户名)。
+1. 对应每个id， 使用`/api/post/one` 获取对应发布内容。对于其返回值JSON，其中，先注意`MetaJSON`及`Owner`。`MetaJSON` 为内容，`Owner`为发布人(即，注册用户名)。
 
    在一个发布内容中，使用`/api/admin/users`及根据`Owner`查询发布人其他信息(此处需要用户姓名)；使用`/api/admin/avatar`及根据`Owner`查询发布人头像avatar数据。
    其后将查询得到的 '姓名'，'用户名' 及 'avatar' 显示到内容发布区域，参考 “主页单条发布样式.png”。
