@@ -211,15 +211,16 @@ requirements
    ]
    ```
 
-1. 对应每个id， 使用`/api/post/one` 获取对应发布内容，其中，先注意`MetaJSON`及`Owner`。 `MetaJSON` 为内容，`Owner`为发布人。
+1. 对应每个id， 使用`/api/post/one` 获取对应发布内容，其中，先注意`MetaJSON`及`Owner`。 `MetaJSON` 为内容，`Owner`为发布人(即，注册用户名)。
 
-   在一个发布内容中，使用`/api/admin/users`及根据`Owner`查询发布人其他信息，将其 'avatar', '姓名' 及 '用户名' 显示到内容发布区域，参考 “主页单条发布样式.png”。
+   在一个发布内容中，使用`/api/admin/users`及根据`Owner`查询发布人其他信息(此处需要用户姓名)；使用`/api/admin/avatar`及根据`Owner`查询发布人头像avatar数据。
+   其后将查询得到的 '姓名'，'用户名' 及 'avatar' 显示到内容发布区域，参考 “主页单条发布样式.png”。
    
-   发布内容中，`MetaJSON`的 'topic' 写入 “样式.png” 的主题处；下方显示每个段落的文字。例如第一个段落，即"content.0.text", 再下方根据显示"content.0.path"显示媒体内容。
+   发布内容中，`MetaJSON`的 'topic' 写入 “样式.png” 的主题处；下方显示每个段落的文字。例如 第一个段落，即"content.0.text", 再下方根据显示"content.0.path"显示媒体内容。
 
    注意 1：根据"content.x.path"返回值的路径倒数第二段内容判将要展示的媒体类型，通常为'image'或'video';
 
-   注意 2：访问媒体源的方式，即src的设置方式为：`http://13.55.91.185:1323/[用户名]/[content.x.path]`;
+   注意 2：访问媒体源的方式，即 src 的设置方式为：`http://13.55.91.185:1323/[用户名]/[content.x.path]`;
 
 2. 处理`MetaJSON.content`的每个元素，即每个段落，即可得到一条发布内容的所有内容展示。样式及交互参考"主页单条发布样式.png"。暂时先忽略“点赞”，“转发”及“评论”功能。
 
