@@ -10,12 +10,11 @@
                     active-text-color="#ffd04b"
                     background-color="#4A4E58"
                     class="el-menu-vertical-demo"
-                    unique-opened="true"
+                    :unique-opened="uniqueOpened"
                     router="true"
                     default-active="/home/profile"
                     text-color="#fff"
                     @open="handleOpen"
-                    @close="handleClose"
                     :style="{ height: `${elementHeight}px` }">
                 <el-menu-item v-for="menu in menus" :index="menu.index" :key="menu.index" style="text-align: center;padding-left:80px;">
                     <span>{{menu.name}}</span>
@@ -60,6 +59,7 @@
         },
         data() {
             return {
+                uniqueOpened: true,
                 addMessageVisible: false,
                 addMessageVisibleBtn: false,
                 message: {
@@ -183,16 +183,18 @@
                 this.addMessageVisibleBtn = false
             },
             startHeartbeat(){
-                if(!this.heartbeatTimer){
-                    this.heartbeatTimer = window.setInterval(() => {
-                        setTimeout(() =>{
-                            this.heartbeat()
+                let _this = this
+                if(!_this.heartbeatTimer){
+                    _this.heartbeatTimer = window.setInterval(() => {
+                        setTimeout(()=>{
+                            _this.heartbeat()
                         }, 0)
-                    }, 10000)
+                    }, window.heartbeatsInterval * 1000)
                 }
             },
             heartbeat(){
-                apiUtil.api.post(apiUtil.urls.user.heartbeats, null)
+                console.log('heartbeat' + new Date().getSeconds())
+                apiUtil.api.patch(apiUtil.urls.user.heartbeats, null)
                     .then(res => {
                         console.log(res)
                     })

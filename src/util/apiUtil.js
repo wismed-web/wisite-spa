@@ -44,17 +44,26 @@ const api = {
       onlines: '/admin/onlines',
       users: '/admin/users',
       menus: '/admin/spa/menu',
+      avatar: '/admin/avatar'
     },
     file: {
       fileitem: '/file/fileitem',
       pathcontent: '/file/pathcontent',
       upload: '/file/upload',
+      uploadBodydata: '/file/upload-bodydata',
+      uploadFormFile: '/file/upload-formfile',
     },
     sign: {
       signout: '/sign-out/',
       signin: '/sign/in',
       new: '/sign/new',
       verifyEmail: '/sign/verify-email',
+    },
+    post: {
+      ids: '/post/ids',
+      one: '/post/one',
+      template: '/post/template',
+      upload: '/post/upload',
     },
     user: {
       avatar: '/user/avatar',
@@ -70,6 +79,9 @@ const api = {
   api: {
     get (url, data) {
       return this.ajax(url, 'get', data)
+    },
+    patch (url, data) {
+      return this.ajax(url, 'patch', data)
     },
     post (url, data) {
       return this.ajax(url, 'post', data)

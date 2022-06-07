@@ -101,6 +101,11 @@
                 }).catch(error => {
                     console.log(error)
             })
+            apiUtil.api.get(window.location.origin + '/ffmpeg-core.wasm').then(data=> {
+                console.log(data)
+            }).catch(error=>{
+                console.log(error)
+            })
         },
         beforeCreate () {
             document.querySelector('body').setAttribute('style', 'display:block;')

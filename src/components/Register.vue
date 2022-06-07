@@ -70,8 +70,7 @@
             v-model="tosVisible"
             :title="$t('message.tosTitle')"
             width="60%"
-            height="600px;"
-            :before-close="handleClose">
+            height="600px;">
         <div style="text-align: left;text-indent:2em;height: 500px;overflow-y: scroll;">
             <h2 style="text-align: center;">用户注册协议</h2>
             <p>

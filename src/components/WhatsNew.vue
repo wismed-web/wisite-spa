@@ -1,15 +1,56 @@
 <template>
-    <div  style="width: 100%;">
-        <h2>{{$t('message.whats-new')}}</h2>
+    <div style="width: 80%;margin: 0 auto;">
+        <el-card class="box-card" v-for="m in messages" v-bind:key="m.id">
+            <template #header>
+                <div class="card-header">
+                    <el-row>
+                        <el-col :span="1">
+                            <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;margin-top:5px;"/>
+                        </el-col>
+                        <el-col :span="2">
+                            <span style="line-height: 54px;">{{m.Owner}}@{{m.realName}}</span>
+                        </el-col>
+                        <el-col :span="4">
+                            <span style="line-height: 54px;">{{m.Tm}}</span>
+                        </el-col>
+                    </el-row>
+                </div>
+            </template>
+            <div class="block text-center" m="t-4">
+                <span class="demonstration"><h3>{{m.meta.topic}}</h3></span>
+                <el-carousel trigger="click" height="150px" :autoplay="autoplay">
+                    <el-carousel-item v-for="(item, index) in m.meta.content" :key="index" :label="index">
+                        <div>
+                            {{item.text}}
+                        </div>
+                        <div>
+                            <img v-if="!item.isVideo" width="400" height="400" :src="item.path" class="avatar"/>
+                            <video v-if="item.isVideo" class="my-video" style="width:400px;height:400px;" :src="originVideoUrl" controls></video>
+                        </div>
+                    </el-carousel-item>
+                </el-carousel>
+                <!--                <el-row>-->
+                <!--                    <el-col :span="2">-->
+                <!--                        <el-icon><ChatDotRound/></el-icon>-->
+                <!--                    </el-col>-->
+                <!--                    <el-col :span="2">-->
+                <!--                        <el-icon><Hide/></el-icon>-->
+                <!--                    </el-col>-->
+                <!--                    <el-col :span="2">-->
+                <!--                        <el-icon><Hide/></el-icon>-->
+                <!--                    </el-col>-->
+                <!--                </el-row>-->
+            </div>
+        </el-card>
     </div>
     <div class="message">
         <el-button circle type="primary" style="width:80px;height:80px;">
-            <el-icon class="el-input__icon" :size="40" @click="addMessageVisible=!addMessageVisible">
+            <el-icon class="el-input__icon" :size="40" @click="addMessageWindow">
                 <Plus style="cursor: pointer;"></Plus>
             </el-icon>
         </el-button>
     </div>
-    <el-dialog v-model="addMessageVisible" style="width:100%;height:600px;" :title="$t('message.addMessage')" center>
+    <el-dialog v-loading="uploadLoading" v-model="addMessageVisible" style="width:100%;height:600px;" :title="$t('message.addMessage')" center>
         <el-form :model="message" label-width="40px">
             <el-row>
                 <el-col :span="2">
@@ -17,13 +58,13 @@
                 </el-col>
                 <el-col :span="22">
                     <el-form-item>
-                        <el-input v-model="message.title" autocomplete="off" :placeholder="$t('message.messageTitleTip')"/>
+                        <el-input v-model="message.topic" autocomplete="off" :placeholder="$t('message.messageTopicTip')"/>
                     </el-form-item>
                     <el-form-item v-for="(graph, index) in graphs" :key="index">
                         <el-row style="width:100%;" :id="`upload-${index}`">
                             <el-col :span="20">
                                 <el-input type="textarea"
-                                          rows="2" v-model="graph.content" autocomplete="off" :placeholder="$t('message.messageTitleTip')"/>
+                                          rows="2" v-model="graph.text" autocomplete="off" :placeholder="$t('message.messageTitleTip')"/>
                             </el-col>
                             <el-col :span="1">
                                 <img v-if="graph.thumbnail" :src="graph.thumbnail" width="50" height="50"/>
@@ -47,18 +88,17 @@
                                 <el-button @click="addGraph" type="primary" round>{{$t('message.more')}}</el-button>
                             </el-col>
                         </el-row>
-
                     </el-form-item>
                     <el-form-item>
-                        <el-input v-model="message.wrapup" autocomplete="off" :placeholder="$t('message.wrapupTip')"/>
+                        <el-input v-model="message.summary" autocomplete="off" :placeholder="$t('message.wrapupTip')"/>
                     </el-form-item>
                 </el-col>
             </el-row>
         </el-form>
         <template #footer>
-          <span class="dialog-footer" style="margin-left: 700px;">
-            <el-button type="primary" size="large" round @click="addMessage">{{$t('message.publish')}}</el-button>
-          </span>
+                  <span class="dialog-footer" style="margin-left: 700px;">
+                    <el-button type="primary" size="large" round @click="addMessage">{{$t('message.publish')}}</el-button>
+                  </span>
         </template>
         <el-dialog @open="editVideoDialogOpen" @closed="editVideoDialogClosed" @opened="editVideoDialogOpened" v-model="editVideoVisible" :title="$t('message.editVideo')" style="width:100%;height:500px;" center>
             <el-row>
@@ -79,51 +119,110 @@
                 </el-col>
             </el-row>
             <template #footer>
-              <el-row>
-                  <el-col>
-                      <span class="dialog-footer">
-                        <el-button type="primary" size="large" round @click="editVideoConfirm">{{$t('message.confirm')}}</el-button>
-                        <el-button type="primary" size="large" round @click="editVideoComplete">{{$t('message.clip')}}</el-button>
-                      </span>
-                  </el-col>
-              </el-row>
+                <el-row>
+                    <el-col>
+                                  <span class="dialog-footer">
+                                    <el-button type="primary" size="large" round @click="editVideoConfirm">{{$t('message.confirm')}}</el-button>
+                                    <el-button type="primary" size="large" round @click="editVideoComplete">{{$t('message.clip')}}</el-button>
+                                  </span>
+                    </el-col>
+                </el-row>
             </template>
         </el-dialog>
-        <el-dialog v-model="editImageVisible" :title="$t('message.editImage')" style="width:100%;height:500px;" center>
+        <!--        <el-dialog v-model="editImageVisible" :title="$t('message.editImage')" style="width:100%;height:500px;" center>-->
+        <el-dialog ref="editImageDialog" v-model="editImageVisible" :title="$t('message.editImage')" style="width:100%;height:500px;" center>
             <el-row>
                 <el-col :span="10">
-                    <vue-picture-cropper
-                            :boxStyle="{
-                          width: '400px',
-                          height: '400px',
-                          backgroundColor: '#f8f8f8',
-                          margin: 'auto'
-                        }"
-                            :img="picUrl"
-                            :options="{
-                          viewMode: 1,
-                          dragMode: 'crop',
-                          aspectRatio: 1,
-                          preview: preview,
-                        }"
-                            @ready="ready"
-                    />
+                    <div class="cropper-content">
+                        <div class="cropper" style="text-align:center">
+                            <VuePictureCropper
+                                    :boxStyle="{
+                                      width: '400px',
+                                      height: '400px',
+                                      backgroundColor: '#f8f8f8',
+                                      margin: 'auto'
+                                    }"
+                                    :img="picUrl"
+                                    :options="{
+                                      viewMode: 1,
+                                      dragMode: 'crop',
+                                      aspectRatio: 1,
+                                      cropBoxResizable: false
+                                    }"
+                                    :presetMode="{
+                                        mode: 'fixedSize',
+                                        width: 100,
+                                        height: 100,
+                                    }"/>
+                            <!--                                <vueCropper-->
+                            <!--                                        ref="cropper"-->
+                            <!--                                        :img="picUrl"-->
+                            <!--                                        :outputSize="option.size"-->
+                            <!--                                        :outputType="option.outputType"-->
+                            <!--                                        :info="true"-->
+                            <!--                                        :full="option.full"-->
+                            <!--                                        :canMove="option.canMove"-->
+                            <!--                                        :canMoveBox="option.canMoveBox"-->
+                            <!--                                        :original="option.original"-->
+                            <!--                                        :autoCrop="option.autoCrop"-->
+                            <!--                                        :fixed="option.fixed"-->
+                            <!--                                        :fixedNumber="option.fixedNumber"-->
+                            <!--                                        :centerBox="option.centerBox"-->
+                            <!--                                        :infoTrue="option.infoTrue"-->
+                            <!--                                        :fixedBox="option.fixedBox"-->
+                            <!--                                ></vueCropper>-->
+                        </div>
+                    </div>
+                    <!--                        <div>-->
+                    <!--                            <VuePictureCropper-->
+                    <!--                                    :boxStyle="{-->
+                    <!--                                      width: '400px',-->
+                    <!--                                      height: '400px',-->
+                    <!--                                      backgroundColor: '#f8f8f8',-->
+                    <!--                                      margin: 'auto'-->
+                    <!--                                    }"-->
+                    <!--                                    :img="picUrl"-->
+                    <!--                                    :options="{-->
+                    <!--                                      viewMode: 1,-->
+                    <!--                                      dragMode: 'crop',-->
+                    <!--                                      aspectRatio: 1,-->
+                    <!--                                      cropBoxResizable: false-->
+                    <!--                                    }"-->
+                    <!--                                    :presetMode="{-->
+                    <!--                                        mode: 'fixedSize',-->
+                    <!--                                        width: 100,-->
+                    <!--                                        height: 100,-->
+                    <!--                                    }"/>-->
+                    <!--                        </div>-->
                 </el-col>
                 <el-col :span="10" :offset="3">
-                    <img width="400" height="400" :src="imageUrl" class="avatar" />
+                    <img width="400" height="400" :src="imageUrl" class="avatar" id="editImage"/>
                 </el-col>
             </el-row>
             <template #footer>
                 <el-row>
                     <el-col>
-                      <span class="dialog-footer">
-                        <el-button type="primary" size="large" round @click="cropperImage">{{$t('message.clip')}}</el-button>
-                        <el-button type="primary" size="large" round @click="editImageComplete">{{$t('message.confirm')}}</el-button>
-                      </span>
+                                  <span class="dialog-footer">
+                                    <el-button type="primary" size="large" round @click="cropperImage">{{$t('message.clip')}}</el-button>
+                                    <el-button type="primary" size="large" round @click="editImageComplete">{{$t('message.confirm')}}</el-button>
+                                  </span>
                     </el-col>
                 </el-row>
             </template>
         </el-dialog>
+    </el-dialog>
+    <el-dialog
+            v-model="updateDialog"
+            title="Tips"
+            width="30%"
+            :before-close="handleClose">
+        <span>{{$t('message.updateTip')}}</span>
+        <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="updateDialog=false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="updateMessage">{{$t('message.update')}}</el-button>
+      </span>
+        </template>
     </el-dialog>
 </template>
 
@@ -143,8 +242,19 @@
                 elementHeight: 50,
                 innerHeight: 30,
                 message: {
-
+                    "category": "share"
                 },
+                messages: [
+
+                ],
+                messageIds: [
+
+                ],
+                updateDialog: false,
+                avatars: {},
+                editImageStyle: 'z-index:-1',
+                autoplay: false,
+                uploadLoading: false,
                 addMessageVisible: false,
                 editVideoVisible: false,
                 editImageVisible: false,
@@ -161,7 +271,7 @@
                 imageUrl: null,
                 ffmpeg: null,
                 graphs: [
-                    {content: null, media: null, thumbnail: null}
+                    {text: null, media: null, thumbnail: null, path: null, isVideo: false}
                 ],
                 picUrl: null,
                 firstImageVideoUrl: null,
@@ -171,41 +281,53 @@
         methods: {
             addGraph () {
                 this.graphs.push({
-                    content: null, media: null
+                    text: null, media: null, path: null, isVideo: false
                 })
             },
-            // async cropperConfirm () {
-            //     const file = await cropper.getFile({
-            //         fileName: 'header',
-            //     })
-            //     this.avatarFile = file
-            //     this.showAvatarFlag = false
-            //     let _this = this
-            //     let formData = new FormData()
-            //     formData.append('note', '')
-            //     formData.append('group0', '')
-            //     formData.append('group1', '')
-            //     formData.append('group2', '')
-            //     formData.append('file', _this.avatarFile)
-            //     apiUtil.api.upload(apiUtil.urls.file.upload, formData)
-            //         .then(res => {
-            //             console.log(res)
-            //             apiUtil.message.success("更新成功")
-            //         }).catch(error => {
-            //         apiUtil.message.error(error)
-            //     })
-            // },
             editImageComplete() {
-                this.editImageVisible = false
+                this.editImageVisible=false
+            },
+            addMessageWindow(){
+                this.addMessageVisible=!this.addMessageVisible
+                this.message = {
+                    "category": "share"
+                }
+                this.messages = []
+                this.graphs = [
+                    {text: null, media: null, thumbnail: null, path: null, isVideo: false}
+                ]
+            },
+            updateMessage(){
+                this.batchGetIds(this.messageIds)
+            },
+            openUpdateConfirm (){
+                let _this = this
+                if(_this.updateDialog){
+                    setTimeout(()=>{
+                        _this.updateDialog = false
+                    }, 15*1000)
+                }
             },
             async cropperImage () {
+                let _this = this
+                let file = await cropper.getFile()
+                console.log(file)
+                file.raw = file
                 let base64 = cropper.getDataURL()
-                this.imageUrl = base64
-                this.graphs[this.currentIndex].thumbnail = base64
-                const file = await cropper.getFile({
-                    fileName: 'header',
-                })
-                this.graphs[this.currentIndex].media = file
+                _this.imageUrl = base64
+                _this.graphs[this.currentIndex].thumbnail = base64
+                //let file = await cropper.getFile()
+                _this.graphs[this.currentIndex].media = file
+                console.log(file)
+                if(!base64){
+                    let reader = new FileReader()
+                    reader.readAsDataURL(file)
+                    reader.onload = () =>{
+                        base64 = String(reader.result)
+                        _this.imageUrl=base64
+                        _this.graphs[this.currentIndex]['thumbnail'] = base64
+                    }
+                }
             },
             getFirstImageFromVideo () {
 
@@ -217,10 +339,36 @@
                 console.log('btnUpload'+index)
                 this.currentIndex = index
             },
-            addMessage () {
-                this.graphs = [
-                    {content: null, media: null, thumbnail: null}
-                ]
+            async addMessage () {
+                let _this = this
+                if(!_this.message.topic){
+                    apiUtil.message.error(_this.$t('message.topicRequired'))
+                    return
+                }
+                if(!_this.message.summary){
+                    apiUtil.message.error(_this.$t('message.summaryRequired'))
+                    return
+                }
+                _this.uploadLoading = true
+                await _this.uploadFiles()
+                _this.message.content = []
+                for(let i in _this.graphs){
+                    let graph = _this.graphs[i]
+                    _this.message.content.push({
+                        'text': graph.text,
+                        'path': graph.path,
+                        'isVideo': graph.isVideo
+                    })
+                }
+                apiUtil.api.post(apiUtil.urls.post.upload, _this.message)
+                    .then(res => {
+                        console.log(res)
+                        _this.uploadLoading = false
+                        apiUtil.message.success(_this.$t('message.publishSuccess'))
+                    }).catch(error => {
+                        _this.uploadLoading = false
+                        apiUtil.message.error(error)
+                    })
             },
             editVideoDialogOpen () {
                 console.log('editVideoDialogOpen')
@@ -242,6 +390,26 @@
                     this.firstVideoLoad = false
                 }
             },
+            async uploadFiles () {
+                let _this = this
+                if(_this.graphs.length>0){
+                    for(let i=0;i<_this.graphs.length;i++){
+                        let graph = _this.graphs[i]
+                        if(graph.media){
+                            graph['isVideo'] = _this.$util.isVideo(graph.media.name)
+                            let formData = new FormData()
+                            formData.append('file', graph.media.raw)
+                            await apiUtil.api.upload(apiUtil.urls.file.uploadFormFile, formData)
+                                .then(res => {
+                                    console.log(res)
+                                    graph.path = res
+                                }).catch(error => {
+                                apiUtil.message.error(error)
+                            })
+                        }
+                    }
+                }
+            },
             beforeAvatarUpload (file) {
                 this.firstVideoLoad = true
                 let _this = this
@@ -258,11 +426,11 @@
                     _this.graphs[_this.currentIndex].media = file
                     _this.originVideoUrl = window.webkitURL.createObjectURL(new Blob([file.raw]))
                 }else if(_this.$util.isImage(name)){
-                    _this.editImageVisible = true
                     let reader = new FileReader()
                     reader.readAsDataURL(file.raw)
                     reader.onload = () => {
                         _this.picUrl = String(reader.result)
+                        _this.editImageVisible = true
                     }
                 }
             },
@@ -312,6 +480,38 @@
                 this.firstImageVideoUrl = canvas.toDataURL('image/' + imgType);
                 this.graphs[this.currentIndex].thumbnail = this.firstImageVideoUrl
                 console.log('firstImageVideoUrl:' + this.firstImageVideoUrl)
+            },
+            async batchGetIds(ids) {
+                let _this = this
+                if(ids.length > 0){
+                    for(let i=ids.length - 1;i>=0;i--){
+                        await apiUtil.api.get(apiUtil.urls.post.one, {'id': ids[i]}).then(async res => {
+                            _this.messages.unshift(res)
+                            let meta = JSON.parse(res.MetaJSON)
+                            res.meta = meta
+                            if(meta.path){
+                                meta.path = res.Owner+'/' + meta.path
+                            }
+                            await _this.getAvatar(res.Owner, res)
+                        }).catch(error => {
+                            console.log(error)
+                        })
+                    }
+                }
+            },
+            async getAvatar(uname, message) {
+                let _this = this
+                if(uname in _this.avatars){
+                    message.avatar = _this.avatars[uname]
+                    return
+                }
+                await apiUtil.api.get(apiUtil.urls.admin.avatar, {'uname': uname})
+                    .then(res => {
+                        message.avatar = res.src
+                        _this.avatars[uname] = res.src
+                    }).catch(error => {
+                    console.log(error)
+                })
             }
         },
         mounted() {
@@ -325,6 +525,28 @@
                     context.innerHeight = context.elementHeight - 20
                 }
             })
+            apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': window.count}).then(res => {
+                _this.batchGetIds(res)
+                window.setInterval(()=>{
+                    apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': window.time}).then(ids => {
+                        if(ids.length>0){
+                            _this.messageIds = ids
+                            _this.updateDialog = true
+                            _this.openUpdateConfirm()
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    })
+                }, window.countDown * 1000)
+            }).catch(error => {
+                apiUtil.message.error(error)
+            })
+            apiUtil.api.get(apiUtil.urls.post.template).then(res => {
+                console.log(res)
+            }).catch(error => {
+                console.log(error)
+                // apiUtil.message.error(error)
+            })
             apiUtil.api.get(apiUtil.urls.user.avatar)
                 .then(res => {
                     _this.avatar = res.src
@@ -332,11 +554,15 @@
                 console.log(error)
                 // apiUtil.message.error(error)
             })
-            this.ffmpeg = createFFmpeg({
-                log: true,
-                // corePath: '/ffmpeg/ffmpeg-core.js',
-                corePath: '/ffmpeg-core.js'
-            });
+            try {
+                this.ffmpeg = createFFmpeg({
+                    log: true,
+                    // corePath: '/ffmpeg/ffmpeg-core.js',
+                    corePath: '/ffmpeg-core.js'
+                });
+            }catch (e) {
+                console.log(e)
+            }
         },
         unmounted() {
             this.ffmpeg.exit()
@@ -379,6 +605,22 @@
     .slider-demo-block {
         display: flex;
         align-items: center;
+    }
+    .el-card__header {
+        padding:0px;
+    }
+    .el-carousel__indicator {
+        padding: 2px 1px;
+        border: 2px solid blue;
+    }
+    .is-active {
+        font-weight: 800;
+    }
+    .show {
+        z-index: 2000;
+    }
+    .hidden {
+        z-index: -1;
     }
 
 </style>

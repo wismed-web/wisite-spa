@@ -7,6 +7,8 @@ import store from './store'
 import i18n from './i18n/i18n'
 import axios from "axios"
 import util from './util/util'
+import VueCropper from 'vue-cropper';
+import 'vue-cropper/next/dist/index.css'
 axios.request({
     url: '/config.json',
     method: 'get',
@@ -14,9 +16,13 @@ axios.request({
 }).then(res => {
     if (res.status === 200) {
         window.baseUrl = res.data.baseUrl
+        window.count = res.data.count
+        window.time = res.data.time
+        window.heartbeatsInterval = res.data.heartbeatsInterval
         let appCommon = createApp(App)
         appCommon.config.globalProperties.$util = util
         appCommon.use(store)
+            .use(VueCropper)
             .use(ElementPlus)
             .use(router)
             .use(i18n)

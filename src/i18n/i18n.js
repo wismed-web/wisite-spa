@@ -107,7 +107,12 @@ const messages = {
             editVideo: '视频编辑',
             clip: '开始裁剪',
             editImage: '图片编辑',
-            fileExceedsMaximum: '文件超出最大值(20M)'
+            fileExceedsMaximum: '文件超出最大值(20M)',
+            messageTopicTip: '主题',
+            topicRequired: '主题不能为空',
+            summaryRequired: '总结不能为空',
+            publishSuccess: '发布成功',
+            updateTip: '有新内容，需要更新嘛？',
         }
     },
     "en": {
@@ -213,7 +218,12 @@ const messages = {
             editVideo: 'Edit video',
             clip: 'Start clip',
             editImage: 'Edit image',
-            fileExceedsMaximum: 'File exceeds maximum(20M)'
+            fileExceedsMaximum: 'File exceeds maximum(20M)',
+            messageTopicTip: 'Topic',
+            topicRequired: 'Topic is required',
+            summaryRequired: 'Summary is required',
+            publishSuccess: 'Publish success',
+            updateTip: 'Has new content, update？'
         }
     }
 }
