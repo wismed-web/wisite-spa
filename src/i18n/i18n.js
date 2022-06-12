@@ -78,7 +78,7 @@ const messages = {
             messageContent: '消息内容',
             messageContentTip: '请输入消息内容',
             confirm: '确认',
-            addMessage: '发布消息',
+            addMessage: '发布新内容',
             onlineUser: '在线用户',
             index: '序号',
             operation: '操作',
@@ -99,8 +99,8 @@ const messages = {
             searchUserNameTip: '输入姓名',
             searchUserUnameTip: '输入登录用户名',
             searchUserActiveTip: '是否激活',
-            selectMedia: '多媒体',
-            more: '增加',
+            selectMedia: '图片/视频上传',
+            more: '+',
             publish: '发布',
             wrapupTip: '总结',
             timeline: '时间线',
@@ -113,6 +113,8 @@ const messages = {
             summaryRequired: '总结不能为空',
             publishSuccess: '发布成功',
             updateTip: '有新内容，需要更新嘛？',
+            paragraphTip: '请输入段落内容',
+            delete: '-'
         }
     },
     "en": {
@@ -210,8 +212,8 @@ const messages = {
             searchUserNameTip: 'Input name',
             searchUserUnameTip: 'Input uname',
             searchUserActiveTip: 'Active',
-            selectMedia: 'Media',
-            more: 'More',
+            selectMedia: 'Image/Video',
+            more: '+',
             publish: 'Publish',
             wrapupTip: 'Wrapup',
             timeline: 'Timeline',
@@ -223,7 +225,9 @@ const messages = {
             topicRequired: 'Topic is required',
             summaryRequired: 'Summary is required',
             publishSuccess: 'Publish success',
-            updateTip: 'Has new content, update？'
+            updateTip: 'Has new content, update？',
+            paragraphTip: 'Please input paragraph content',
+            delete: '-'
         }
     }
 }

@@ -86,6 +86,42 @@ const api = {
     post (url, data) {
       return this.ajax(url, 'post', data)
     },
+    postBody (url, data) {
+      return new Promise((resolve, reject) => {
+        let headers = {
+          "Content-Type": "application/json",
+          'accept': 'application/json'
+        }
+        axios.post(url, data,{
+          headers: headers,
+          transformRequest: data1 => {
+            return JSON.stringify(data1)
+          }
+        }).then(response => {
+          if (response.status === 200) {
+            resolve(response.data)
+          } else {
+            reject('Network Error')
+          }
+        }).catch(error => {
+          if (error.response) {
+            if(error.response.status === 401) {
+              router.push('/login')
+              return
+            }
+            if(error.response.status === 400) {
+              if(error.response.data && error.response.data.message && error.response.data.message === 'missing or malformed jwt') {
+                router.push('/login')
+                return
+              }
+            }
+            reject(error.response.data)
+          } else {
+            reject(error.message)
+          }
+        })
+      })
+    },
     delete (url, data) {
       return this.ajax(url, 'delete', data)
     },

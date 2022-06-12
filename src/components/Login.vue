@@ -144,7 +144,7 @@
                         if(redirect){
                             _this.$router.push(redirect)
                         }else{
-                            _this.$router.push('/home/profile')
+                            _this.$router.push('/home/whatsNew')
                         }
                     }).catch(error => {
                         _this.loading = false

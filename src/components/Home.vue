@@ -19,19 +19,10 @@
                 <el-menu-item v-for="menu in menus" :index="menu.index" :key="menu.index" style="text-align: center;padding-left:80px;">
                     <span>{{menu.name}}</span>
                 </el-menu-item>
-<!--                <el-menu-item index="/home/profile">-->
-<!--&lt;!&ndash;                    <el-icon><setting/></el-icon>&ndash;&gt;-->
-<!--                    <span>{{$t('message.userInfo')}}</span>-->
-<!--                </el-menu-item>-->
             </el-menu>
         </el-col>
         <el-col :span="21">
             <el-row style="height: 68px;margin: 0px;background-color: white;text-align: right;">
-<!--                <el-col :span="1" :offset="23" style="padding:7px;">-->
-<!--                    <el-avatar :size="50" :src="profile.avatar">-->
-
-<!--                    </el-avatar>-->
-<!--                </el-col>-->
                 <el-button @click="logout" round type="danger" style="position: absolute;top:5px;right:5px;">{{$t('message.logout')}}</el-button>
             </el-row>
             <el-row :style="{ padding: '10px', marginBottom: '0px', height: `${elementHeight}px`}">
@@ -186,9 +177,7 @@
                 let _this = this
                 if(!_this.heartbeatTimer){
                     _this.heartbeatTimer = window.setInterval(() => {
-                        setTimeout(()=>{
-                            _this.heartbeat()
-                        }, 0)
+                        _this.heartbeat()
                     }, window.heartbeatsInterval * 1000)
                 }
             },
