@@ -62,6 +62,7 @@ const api = {
     post: {
       ids: '/post/ids',
       one: '/post/one',
+      ownIds: '/post/own/ids',
       template: '/post/template',
       upload: '/post/upload',
     },

@@ -29,17 +29,6 @@
                         </div>
                     </el-carousel-item>
                 </el-carousel>
-                <!--                <el-row>-->
-                <!--                    <el-col :span="2">-->
-                <!--                        <el-icon><ChatDotRound/></el-icon>-->
-                <!--                    </el-col>-->
-                <!--                    <el-col :span="2">-->
-                <!--                        <el-icon><Hide/></el-icon>-->
-                <!--                    </el-col>-->
-                <!--                    <el-col :span="2">-->
-                <!--                        <el-icon><Hide/></el-icon>-->
-                <!--                    </el-col>-->
-                <!--                </el-row>-->
             </div>
         </el-card>
     </div>
@@ -550,23 +539,22 @@
                     context.innerHeight = context.elementHeight - 20
                 }
             })
-            _this.batchGetIds(['cf421c0b-cceb-4450-af2b-b7057805d217'])
-            // apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': window.count}).then(res => {
-            //     _this.batchGetIds(res)
-            //     _this.updateMessageTimer = window.setInterval(()=>{
-            //         apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'time', 'value': window.time}).then(ids => {
-            //             if(ids.length>0){
-            //                 _this.messageIds = ids
-            //                 _this.updateDialog = true
-            //                 _this.openUpdateConfirm()
-            //             }
-            //         }).catch(error => {
-            //             console.log(error)
-            //         })
-            //     }, window.updateMessageInterval * 1000)
-            // }).catch(error => {
-            //     apiUtil.message.error(error)
-            // })
+            apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': window.count}).then(res => {
+                _this.batchGetIds(res)
+                _this.updateMessageTimer = window.setInterval(()=>{
+                    apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'time', 'value': window.time}).then(ids => {
+                        if(ids.length>0){
+                            _this.messageIds = ids
+                            _this.updateDialog = true
+                            _this.openUpdateConfirm()
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    })
+                }, window.updateMessageInterval * 1000)
+            }).catch(error => {
+                apiUtil.message.error(error)
+            })
             // apiUtil.api.get(apiUtil.urls.post.template).then(res => {
             //     console.log(res)
             // }).catch(error => {

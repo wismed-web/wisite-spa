@@ -114,7 +114,8 @@ const messages = {
             publishSuccess: '发布成功',
             updateTip: '有新内容，需要更新嘛？',
             paragraphTip: '请输入段落内容',
-            delete: '-'
+            delete: '-',
+            loadMore: '加载更早内容'
         }
     },
     "en": {
@@ -227,7 +228,8 @@ const messages = {
             publishSuccess: 'Publish success',
             updateTip: 'Has new content, update？',
             paragraphTip: 'Please input paragraph content',
-            delete: '-'
+            delete: '-',
+            loadMore: 'Load more',
         }
     }
 }
