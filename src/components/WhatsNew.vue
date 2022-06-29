@@ -7,25 +7,29 @@
                         <el-col :span="1">
                             <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;margin-top:5px;"/>
                         </el-col>
-                        <el-col :span="2">
+                        <el-col :span="4" style="text-align: left;">
                             <span style="line-height: 54px;">{{m.realName}}@{{m.Owner}}</span>
                         </el-col>
-                        <el-col :span="4">
-                            <span style="line-height: 54px;">{{m.Tm}}</span>
+                        <el-col :span="4" style="text-align: left;">
+                            <span style="line-height: 54px;"><i>{{m.timestamp}}</i></span>
                         </el-col>
                     </el-row>
                 </div>
             </template>
             <div class="block text-center" m="t-4">
                 <span class="demonstration"><h3>{{m.topic}}</h3></span>
-                <el-carousel trigger="click" height="150px" :autoplay="autoplay">
-                    <el-carousel-item v-for="(item, index) in m.content" :key="index" :label="index" style="border: 2px solid black;">
+                <el-carousel v-if="m.content" trigger="click" height="160px" :autoplay="autoplay">
+                    <el-carousel-item  v-for="(item, index) in m.content" :key="index" :label="index">
                         <div>
                             {{item.text}}
                         </div>
                         <div v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
-                            <img v-if="item.isMultiMedia ==2" width="400" height="400" :src="item.path" class="avatar"/>
-                            <video v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.path" controls></video>
+                            <el-image crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path">
+                                <template #placeholder>
+                                    <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
+                                </template>
+                            </el-image>
+                            <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.path" controls></video>
                         </div>
                     </el-carousel-item>
                 </el-carousel>
@@ -353,6 +357,26 @@
                         console.log(res)
                         _this.uploadLoading = false
                         apiUtil.message.success(_this.$t('message.publishSuccess'))
+                        _this.addMessageVisible = false
+                        let meta = JSON.parse(res.RawJSON)
+                        meta['timestamp'] = res.Tm.replace('T', ' ').replace('Z', '')
+                        console.log(res.Tm +'+'+meta.timestamp)
+                        _this.messages.unshift(meta)
+                        meta.Tm = res.Tm
+                        meta.Owner = res.Owner
+                        res['meta'] = meta
+                        for(let j in meta.content){
+                            if(meta.content[j].path){
+                                meta.content[j].path = window.baseUrl.replace('/api', '')+'/'+res.Owner+'/' + meta.content[j].path
+                            }
+                            if(meta.content[j].path.indexOf('/video/')>0 ){
+                                meta.content[j].isMultiMedia = 1
+                            }else if(meta.content[j].path.indexOf('/image/')>0) {
+                                meta.content[j].isMultiMedia = 2
+                            }else{
+                                meta.content[j].isMultiMedia = 3
+                            }
+                        }
                     }).catch(error => {
                         _this.uploadLoading = false
                         apiUtil.message.error(error)
@@ -467,6 +491,7 @@
                 const imgType = "png"
                 this.firstImageVideoUrl = canvas.toDataURL('image/' + imgType);
                 this.graphs[this.currentIndex].thumbnail = this.firstImageVideoUrl
+                this.graphs[this.currentIndex].media.raw = this.videoFile
                 console.log('firstImageVideoUrl:' + this.firstImageVideoUrl)
             },
             async batchGetIds(ids) {
@@ -474,15 +499,16 @@
                 if(ids.length > 0){
                     for(let i=ids.length - 1;i>=0;i--){
                         await apiUtil.api.get(apiUtil.urls.post.one, {'id': ids[i]}).then(async res => {
-                            _this.messages.unshift(res)
-                            let meta = JSON.parse(res.MetaJSON)
-                            _this.messages.push(meta)
+                            let meta = JSON.parse(res.RawJSON)
+                            meta['timestamp'] = res.Tm.replace('T', ' ').replace('Z', '')
+                            console.log(res.Tm +'+'+meta.timestamp)
+                            _this.messages.unshift(meta)
                             meta.Tm = res.Tm
                             meta.Owner = res.Owner
                             res['meta'] = meta
                             for(let j in meta.content){
                                 if(meta.content[j].path){
-                                    meta.content[j].path = res.Owner+'/' + meta.content[j].path
+                                    meta.content[j].path = window.baseUrl.replace('/api', '')+'/'+res.Owner+'/' + meta.content[j].path
                                 }
                                 if(meta.content[j].path.indexOf('/video/')>0 ){
                                     meta.content[j].isMultiMedia = 1
@@ -555,12 +581,6 @@
             }).catch(error => {
                 apiUtil.message.error(error)
             })
-            // apiUtil.api.get(apiUtil.urls.post.template).then(res => {
-            //     console.log(res)
-            // }).catch(error => {
-            //     console.log(error)
-            //     // apiUtil.message.error(error)
-            // })
             apiUtil.api.get(apiUtil.urls.user.avatar)
                 .then(res => {
                     _this.avatar = res.src
@@ -579,7 +599,11 @@
             }
         },
         unmounted() {
-            this.ffmpeg.exit()
+            try {
+                this.ffmpeg.exit()
+            }catch (e) {
+                console.log(e)
+            }
             if(this.updateMessageTimer!=null){
                 window.clearInterval(this.updateMessageTimer)
                 this.updateMessageTimer = null
@@ -645,5 +669,18 @@
     .hidden {
         z-index: -1;
     }
-
+    .demo-image__placeholder.image-slot {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background: var(--el-fill-color-light);
+        color: var(--el-text-color-secondary);
+        font-size: 14px;
+    }
+    .demo-image__placeholder .dot {
+        animation: dot 2s infinite steps(3, start);
+        overflow: hidden;
+    }
 </style>

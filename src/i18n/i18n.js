@@ -115,7 +115,8 @@ const messages = {
             updateTip: '有新内容，需要更新嘛？',
             paragraphTip: '请输入段落内容',
             delete: '-',
-            loadMore: '加载更早内容'
+            loadMore: '加载更早内容',
+            loading: '加载中'
         }
     },
     "en": {
@@ -230,6 +231,7 @@ const messages = {
             paragraphTip: 'Please input paragraph content',
             delete: '-',
             loadMore: 'Load more',
+            loading: 'Loading'
         }
     }
 }

@@ -12,7 +12,7 @@
                     class="el-menu-vertical-demo"
                     :unique-opened="uniqueOpened"
                     router="true"
-                    default-active="/home/profile"
+                    default-active="/home/whatsNew"
                     text-color="#fff"
                     @open="handleOpen"
                     :style="{ height: `${elementHeight}px` }">
