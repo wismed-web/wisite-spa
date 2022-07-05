@@ -1,30 +1,34 @@
 <template>
     <el-row class="tac" style="margin-bottom: 0px;">
         <el-col :span="3" style="background-color: #565B67;">
-            <el-row style="height: 68px;margin: 0px;">
-                <div style="color:white;width: 100%;line-height: 68px;font-size: 18px;font-weight: bold;">
-                    <el-avatar size="large" :src="avatar" style="line-height: 56px;height:56px;margin-top:5px;"/>
-                </div>
-            </el-row>
-            <el-menu
-                    active-text-color="#ffd04b"
-                    background-color="#4A4E58"
-                    class="el-menu-vertical-demo"
-                    :unique-opened="uniqueOpened"
-                    router="true"
-                    default-active="/home/whatsNew"
-                    text-color="#fff"
-                    @open="handleOpen"
-                    :style="{ height: `${elementHeight}px` }">
-                <el-menu-item v-for="menu in menus" :index="menu.index" :key="menu.index" style="text-align: center;padding-left:80px;">
-                    <span>{{menu.name}}</span>
-                </el-menu-item>
-            </el-menu>
+            <el-affix :offset="0">
+                <el-row style="height: 68px;margin: 0px;">
+                    <div style="color:white;width: 100%;line-height: 68px;font-size: 18px;font-weight: bold;">
+                        <el-avatar size="large" :src="avatar" style="line-height: 56px;height:56px;margin-top:5px;"/>
+                    </div>
+                </el-row>
+                <el-menu
+                        active-text-color="#ffd04b"
+                        background-color="#4A4E58"
+                        class="el-menu-vertical-demo"
+                        :unique-opened="uniqueOpened"
+                        router="true"
+                        default-active="/home/whatsNew"
+                        text-color="#fff"
+                        @open="handleOpen"
+                        :style="{ height: `${elementHeight}px` }">
+                    <el-menu-item v-for="menu in menus" :index="menu.index" :key="menu.index" style="text-align: center;padding-left:80px;">
+                        <span>{{menu.name}}</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-affix>
         </el-col>
         <el-col :span="21">
-            <el-row style="height: 68px;margin: 0px;background-color: white;text-align: right;">
-                <el-button @click="logout" round type="danger" style="position: absolute;top:5px;right:5px;">{{$t('message.logout')}}</el-button>
-            </el-row>
+            <el-affix :offset="0">
+                <el-row style="height: 68px;margin: 0px;background-color: white;text-align: right;">
+                    <el-button @click="logout" round type="danger" style="position: absolute;top:5px;right:5px;">{{$t('message.logout')}}</el-button>
+                </el-row>
+            </el-affix>
             <el-row :style="{ padding: '10px', marginBottom: '0px', height: `${elementHeight}px`}">
                 <router-view @updateAvatar="updateAvatar($event)" @showAddMessage="showAddMessage($event)"></router-view>
             </el-row>

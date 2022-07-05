@@ -1,68 +1,36 @@
 <template>
     <div style="width: 80%;margin: 0 auto;">
-        <el-card class="box-card" v-for="m in messages" v-bind:key="m.id" style="padding:2px;">
-<!--            <template #header style="padding:0px;margin:0px;">-->
-<!--                <div class="card-header" style="margin-top:0px;padding:0px;height:54px;line-height: 54px;">-->
-<!--                    <el-row style="height: 54px;">-->
-<!--                        <el-col :span="1">-->
-<!--                            <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;"/>-->
-<!--                        </el-col>-->
-<!--                        <el-col :span="4" style="text-align: left;">-->
-<!--                            <span style="line-height: 54px;">{{m.realName}}@{{m.Owner}}</span>-->
-<!--                        </el-col>-->
-<!--                        <el-col :span="4" style="text-align: left;">-->
-<!--                            <span style="line-height: 54px;"><b>{{m.topic}}</b></span>-->
-<!--                        </el-col>-->
-<!--                        <el-col :span="4" style="text-align: left;">-->
-<!--                            <span style="line-height: 54px;"><i>{{m.timestamp}}</i></span>-->
-<!--                        </el-col>-->
-<!--                    </el-row>-->
-<!--                </div>-->
-<!--            </template>-->
-            <template #header style="padding:0px;margin:0px;">
-                <div class="card-header" style="margin-top:0px;padding:0px;height:54px;line-height: 54px;">
-                    <el-row style="height: 54px;">
+        <el-card class="box-card" v-for="m in messages" v-bind:key="m.id">
+            <template #header>
+                <div class="card-header">
+                    <el-row>
                         <el-col :span="1">
-                            <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;"/>
+                            <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;margin-top:5px;"/>
                         </el-col>
                         <el-col :span="4" style="text-align: left;">
-                            <el-row style="line-height: 24px;padding-left:5px;">
-                                <span style="line-height: 24px;"><b>{{m.realName}}</b></span>
-                            </el-row>
-                            <el-row style="line-height: 24px;padding-left:5px;">
-                                <span style="line-height: 24px;">@{{m.Owner}}</span>
-                            </el-row>
+                            <span style="line-height: 54px;">{{m.realName}}@{{m.Owner}}</span>
                         </el-col>
-                        <el-col :span="16" style="text-align: center;">
-                            <span style="line-height: 54px;"><b>{{m.topic}}</b></span>
-                        </el-col>
-                        <el-col :span="3" style="text-align: right;">
+                        <el-col :span="4" style="text-align: left;">
                             <span style="line-height: 54px;"><i>{{m.timestamp}}</i></span>
                         </el-col>
                     </el-row>
                 </div>
             </template>
             <div class="block text-center" m="t-4">
-<!--                <span class="demonstration"><h3>{{m.topic}}</h3></span>-->
-                <el-carousel v-if="m.content" trigger="click" height="240px" :autoplay="autoplay">
+                <span class="demonstration"><h3>{{m.topic}}</h3></span>
+                <el-carousel v-if="m.content" trigger="click" height="160px" :autoplay="autoplay">
                     <el-carousel-item  v-for="(item, index) in m.content" :key="index" :label="index">
-                        <el-row>
-                            <el-col :span="14">
-                                <div v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2" style="height: 200px;">
-                                    <el-image crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path" fit="cover" style="height: 200px;">
-                                        <template #placeholder>
-                                            <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
-                                        </template>
-                                    </el-image>
-                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.path" controls></video>
-                                </div>
-                            </el-col>
-                            <el-col :span="10" style="text-align: left;padding-left:10px;">
-                                <div>
-                                    {{item.text}}
-                                </div>
-                            </el-col>
-                        </el-row>
+                        <div>
+                            {{item.text}}
+                        </div>
+                        <div v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
+                            <el-image crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path">
+                                <template #placeholder>
+                                    <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
+                                </template>
+                            </el-image>
+                            <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.path" controls></video>
+                        </div>
                     </el-carousel-item>
                 </el-carousel>
             </div>
@@ -82,7 +50,7 @@
         <el-form :model="message" label-width="40px">
             <el-row>
                 <el-col :span="2">
-                    <el-avatar size="large" :src="avatar" style="line-height: 100px;height:100px;width:100px;margin-top:5px;"/>
+                    <el-avatar shape="square" size="large" :src="avatar" style="line-height: 100px;height:100px;width:100px;margin-top:5px;"/>
                 </el-col>
                 <el-col :span="22">
                     <el-form-item>
@@ -95,10 +63,9 @@
                                           rows="4" v-model="graph.text" autocomplete="off" :placeholder="$t('message.paragraphTip')"/>
                             </el-col>
                             <el-col :span="2" style="text-align: right;">
-                                <img v-if="graph.isMultiMedia == 2" :src="graph.thumbnail" width="50" height="50"/>
-                                <video v-if="graph.isMultiMedia == 1" class="my-video" style="width:50px;height:50px;" :src="graph.originVideoUrl" controls></video>
+                                <img v-if="graph.thumbnail" :src="graph.thumbnail" width="50" height="50"/>
                             </el-col>
-                            <el-col :span="4" style="position: relative;">
+                            <el-col :span="4">
                                 <el-upload
                                         class="avatar-uploader"
                                         :show-file-list="false"
@@ -108,7 +75,7 @@
                                         :on-change="beforeAvatarUpload">
                                     <el-button @click="btnUpload(index)" type="primary" round>{{$t('message.selectMedia')}}</el-button>
                                 </el-upload>
-                                <div style="text-align: right;align-items: flex-end;position: absolute;bottom: 0px;right: 0px;" >
+                                <div style="text-align: right">
                                     <el-button v-if="index>0" @click="deleteGraph(index)" type="primary" round><b>{{$t('message.delete')}}</b></el-button>
                                 </div>
                             </el-col>
@@ -142,66 +109,68 @@
                     <video v-on:canplay="canplay" id="videoDom" class="my-video" ref="videoDom" style="width:520px;height:520px;" :src="originVideoUrl" controls></video>
                 </el-col>
             </el-row>
-<!--            <el-row >-->
-<!--                <el-col :offset="5">-->
-<!--                    <div class="slider-demo-block" style="width: 520px;">-->
-<!--                        <el-slider show-stops @change="timelineChange" @input="timelineInput" v-model="videoTimeLine" :min="videoTimeLineMin" :max="videoTimeLineMax" range/>-->
-<!--                    </div>-->
-<!--                </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row  v-if="showProcess">-->
-<!--                <el-col :offset="5" :span="14">-->
-<!--                    <el-progress :text-inside="true" :stroke-width="14" :percentage="editVideoProcess"/>-->
-<!--                </el-col>-->
-<!--            </el-row>-->
-            <template #footer>
-                <el-row>
-                    <el-col>
-                      <span class="dialog-footer">
-                        <el-button type="primary" size="large" round @click="editVideoConfirm">{{$t('message.confirm')}}</el-button>
-<!--                        <el-button type="primary" size="large" round @click="editVideoComplete">{{$t('message.clip')}}</el-button>-->
-                      </span>
-                    </el-col>
-                </el-row>
-            </template>
-        </el-dialog>
-        <el-dialog ref="editImageDialog" v-model="editImageVisible" :title="$t('message.editImage')" style="width:100%;height:400px;" center>
-            <el-row style="margin: 0 auto;width:400px;height:400px;">
-                <div class="cropper-content" >
-                    <div class="cropper" style="text-align:center;">
-                        <VuePictureCropper
-                                :boxStyle="{
-                                      width: '400px',
-                                      height: '400px',
-                                      backgroundColor: '#f8f8f8',
-                                      margin: 'auto'
-                                    }"
-                                :img="picUrl"
-                                :options="{
-                                      viewMode: 1,
-                                      dragMode: 'crop',
-                                      // aspectRatio: 1,
-                                      cropBoxResizable: false
-                                    }"
-                                :presetMode="{
-                                        mode: 'fixedSize',
-                                        width: 100,
-                                        height: 100,
-                                    }"/>
+            <el-row >
+                <el-col :offset="5">
+                    <div class="slider-demo-block" style="width: 520px;">
+                        <el-slider show-stops @change="timelineChange" @input="timelineInput" v-model="videoTimeLine" :min="videoTimeLineMin" :max="videoTimeLineMax" range/>
                     </div>
-                </div>
-<!--                <el-col :span="10" :offset="3">-->
-<!--                    <div style="width:400px;height:400px;border:1px solid #ccc;">-->
-<!--                        <img v-if="imageUrl" width="400" height="400" :src="imageUrl" class="avatar" id="editImage"/>-->
-<!--                    </div>-->
-<!--                </el-col>-->
+                </el-col>
+            </el-row>
+            <el-row  v-if="showProcess">
+                <el-col :offset="5" :span="14">
+                    <el-progress :text-inside="true" :stroke-width="14" :percentage="editVideoProcess"/>
+                </el-col>
             </el-row>
             <template #footer>
                 <el-row>
                     <el-col>
                       <span class="dialog-footer">
-                        <el-button type="primary" size="large" round @click="cropperImage">{{$t('message.confirm')}}</el-button>
-                        <el-button type="primary" size="large" round @click="editImageComplete">{{$t('message.cancel')}}</el-button>
+                        <el-button type="primary" size="large" round @click="editVideoConfirm">{{$t('message.confirm')}}</el-button>
+                        <el-button type="primary" size="large" round @click="editVideoComplete">{{$t('message.clip')}}</el-button>
+                      </span>
+                    </el-col>
+                </el-row>
+            </template>
+        </el-dialog>
+        <el-dialog ref="editImageDialog" v-model="editImageVisible" :title="$t('message.editImage')" style="width:100%;height:500px;" center>
+            <el-row>
+                <el-col :span="10">
+                    <div class="cropper-content">
+                        <div class="cropper" style="text-align:center">
+                            <VuePictureCropper
+                                    :boxStyle="{
+                                      width: '400px',
+                                      height: '400px',
+                                      backgroundColor: '#f8f8f8',
+                                      margin: 'auto'
+                                    }"
+                                    :img="picUrl"
+                                    :options="{
+                                      viewMode: 1,
+                                      dragMode: 'crop',
+                                      // aspectRatio: 1,
+                                      cropBoxResizable: false
+                                    }"
+                                    :presetMode="{
+                                        mode: 'fixedSize',
+                                        width: 100,
+                                        height: 100,
+                                    }"/>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col :span="10" :offset="3">
+                    <div style="width:400px;height:400px;border:1px solid #ccc;">
+                        <img v-if="imageUrl" width="400" height="400" :src="imageUrl" class="avatar" id="editImage"/>
+                    </div>
+                </el-col>
+            </el-row>
+            <template #footer>
+                <el-row>
+                    <el-col>
+                      <span class="dialog-footer">
+                        <el-button type="primary" size="large" round @click="cropperImage">{{$t('message.clip')}}</el-button>
+                        <el-button type="primary" size="large" round @click="editImageComplete">{{$t('message.confirm')}}</el-button>
                       </span>
                     </el-col>
                 </el-row>
@@ -224,7 +193,7 @@
 </template>
 
 <script>
-    // import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg"
+    import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg"
     import {Plus} from '@element-plus/icons-vue'
     import apiUtil from "../util/apiUtil";
     import VuePictureCropper, { cropper } from 'vue-picture-cropper'
@@ -277,10 +246,7 @@
                 firstImageVideoUrl: null,
                 currentIndex: 0,
                 updateMessageTimer: null,
-                closeDialogTimer: null,
-                pageSize: 5,
-                currentPage: 1,
-                totalCount: null
+                closeDialogTimer: null
             }
         },
         methods: {
@@ -301,10 +267,6 @@
                     this.graphs = [
                         {text: null, media: null, thumbnail: null, path: null, isMultiMedia: 3}
                     ]
-                }else{
-                    this.graphs = [
-                        {text: null, media: null, thumbnail: null, path: null, isMultiMedia: 3}
-                    ]
                 }
                 if(!(this.messages && this.messages.length>0)){
                     this.messages = []
@@ -312,16 +274,8 @@
             },
             loadMore(){
                 let _this = this
-                // if(_this.totalCount< _this.pageSize * _this.currentPage){
-                //     return
-                // }
                 this.showMore = false
-
-                apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': _this.pageSize*(_this.currentPage+1)}).then(res => {
-                    // let subIds = res.slice(_this.totalCount - 1, res.length)
-                    // _this.totalCount += subIds.length
-                    _this.currentPage = _this.currentPage + 1
-                    _this.messages = []
+                apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': window.count}).then(res => {
                     _this.batchGetIds(res)
                 }).catch(error => {
                     apiUtil.message.error(error)
@@ -372,10 +326,8 @@
                         base64 = String(reader.result)
                         _this.imageUrl=base64
                         _this.graphs[this.currentIndex]['thumbnail'] = base64
-                        _this.editImageVisible=false
                     }
                 }
-                _this.editImageVisible=false
             },
             getFirstImageFromVideo () {
 
@@ -482,11 +434,8 @@
                 if(_this.$util.isMultiMedia(name) == 1){
                     _this.editVideoVisible = true
                     _this.graphs[_this.currentIndex].media = file
-                    _this.graphs[_this.currentIndex].isMultiMedia = 1
-                    _this.graphs[_this.currentIndex].originVideoUrl = window.webkitURL.createObjectURL(new Blob([file.raw]))
                     _this.originVideoUrl = window.webkitURL.createObjectURL(new Blob([file.raw]))
                 }else if(_this.$util.isMultiMedia(name) == 2){
-                    _this.graphs[_this.currentIndex].isMultiMedia = 2
                     let reader = new FileReader()
                     reader.readAsDataURL(file.raw)
                     reader.onload = () => {
@@ -511,38 +460,38 @@
                 let secondText = second<10 ? '0'+second : second
                 return hoursText+':'+minutesText+':'+secondText
             },
-            // async editVideoComplete () {
-            //     let _this = this
-            //     const { name } = _this.graphs[_this.currentIndex].media
-            //     let lastIndex = name.lastIndexOf('.')
-            //     let sourceName = new Date().getTime()+ lastIndex > -1 ? name.substring(lastIndex, name.length) : ''
-            //     let destName = 'out-'+sourceName
-            //     const startTime = _this.videoTimeLine[0]
-            //     const endTime = _this.videoTimeLine[1]
-            //     console.log('clipRange', startTime, endTime)
-            //     if (!_this.ffmpeg.isLoaded()) {
-            //         await _this.ffmpeg.load()
-            //     }
-            //     _this.ffmpeg.FS('writeFile', sourceName, await fetchFile(_this.graphs[_this.currentIndex].media.raw))
-            //     _this.ffmpeg.setProgress(({ ratio }) => {
-            //         _this.editVideoProcess = Math.floor(ratio * 100)
-            //     });
-            //     this.showProcess = true
-            //     await _this.ffmpeg.run('-i', sourceName, '-ss', _this.transformSecondToVideoFormat(startTime), '-to', _this.transformSecondToVideoFormat(endTime), destName)
-            //     const data = _this.ffmpeg.FS('readFile', destName)
-            //     _this.firstVideoLoad = true
-            //     _this.originVideoUrl = window.webkitURL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }))
-            //     let contentType = 'video/mp4'
-            //     _this.videoFile = new File([data.buffer], name, {type: contentType, lastModified: Date.now()})
-            //     const canvas = document.createElement('canvas')
-            //     let video = _this.$refs.videoDom
-            //     canvas.getContext('2d').drawImage(video, 0, 0, video.clientWidth, video.clientHeight);
-            //     const imgType = "png"
-            //     this.firstImageVideoUrl = canvas.toDataURL('image/' + imgType);
-            //     this.graphs[this.currentIndex].thumbnail = this.firstImageVideoUrl
-            //     this.graphs[this.currentIndex].media.raw = this.videoFile
-            //     console.log('firstImageVideoUrl:' + this.firstImageVideoUrl)
-            // },
+            async editVideoComplete () {
+                let _this = this
+                const { name } = _this.graphs[_this.currentIndex].media
+                let lastIndex = name.lastIndexOf('.')
+                let sourceName = new Date().getTime()+ lastIndex > -1 ? name.substring(lastIndex, name.length) : ''
+                let destName = 'out-'+sourceName
+                const startTime = _this.videoTimeLine[0]
+                const endTime = _this.videoTimeLine[1]
+                console.log('clipRange', startTime, endTime)
+                if (!_this.ffmpeg.isLoaded()) {
+                    await _this.ffmpeg.load()
+                }
+                _this.ffmpeg.FS('writeFile', sourceName, await fetchFile(_this.graphs[_this.currentIndex].media.raw))
+                _this.ffmpeg.setProgress(({ ratio }) => {
+                    _this.editVideoProcess = Math.floor(ratio * 100)
+                });
+                this.showProcess = true
+                await _this.ffmpeg.run('-i', sourceName, '-ss', _this.transformSecondToVideoFormat(startTime), '-to', _this.transformSecondToVideoFormat(endTime), destName)
+                const data = _this.ffmpeg.FS('readFile', destName)
+                _this.firstVideoLoad = true
+                _this.originVideoUrl = window.webkitURL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }))
+                let contentType = 'video/mp4'
+                _this.videoFile = new File([data.buffer], name, {type: contentType, lastModified: Date.now()})
+                const canvas = document.createElement('canvas')
+                let video = _this.$refs.videoDom
+                canvas.getContext('2d').drawImage(video, 0, 0, video.clientWidth, video.clientHeight);
+                const imgType = "png"
+                this.firstImageVideoUrl = canvas.toDataURL('image/' + imgType);
+                this.graphs[this.currentIndex].thumbnail = this.firstImageVideoUrl
+                this.graphs[this.currentIndex].media.raw = this.videoFile
+                console.log('firstImageVideoUrl:' + this.firstImageVideoUrl)
+            },
             async batchGetIds(ids) {
                 let _this = this
                 if(ids.length > 0){
@@ -567,8 +516,7 @@
                                     meta.content[j].isMultiMedia = 3
                                 }
                             }
-                            await _this.getAvatar(res.Owner, meta)
-                            await _this.getRealName(res.Owner, meta)
+                            _this.getAvatar(res.Owner, meta)
                         }).catch(error => {
                             console.log(error)
                         })
@@ -576,8 +524,12 @@
                     _this.showMore = true
                 }
             },
-            async getRealName(uname, message) {
+            async getAvatar(uname, message) {
                 let _this = this
+                if(uname in _this.avatars){
+                    message.avatar = _this.avatars[uname]
+                    return
+                }
                 if(uname in _this.nameMap){
                     message.realName = _this.nameMap[uname]
                     return
@@ -585,25 +537,19 @@
                 await apiUtil.api.get(apiUtil.urls.admin.users, {uname: uname})
                     .then(res => {
                         if(res && res.length>0){
-                            message.realName = res[0].name
-                            _this.nameMap[uname] = res[0].name
+                            message.realName = res.name
+                            _this.nameMap[uname] = res.name
                         }
                     }).catch(error => {
-                        apiUtil.message.error(error)
-                    })
-            },
-            async getAvatar(uname, message) {
-                let _this = this
-                if(uname in _this.avatars){
-                    message.avatar = _this.avatars[uname]
-                }
+                    apiUtil.message.error(error)
+                })
                 await apiUtil.api.get(apiUtil.urls.admin.avatar, {'uname': uname})
                     .then(res => {
                         message.avatar = res.src
                         _this.avatars[uname] = res.src
                     }).catch(error => {
-                        console.log(error)
-                    })
+                    console.log(error)
+                })
             }
         },
         mounted() {
@@ -618,8 +564,7 @@
                     context.innerHeight = context.elementHeight - 20
                 }
             })
-            apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': _this.pageSize}).then(res => {
-                _this.totalCount = res.length
+            apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': window.count}).then(res => {
                 _this.batchGetIds(res)
                 _this.updateMessageTimer = window.setInterval(()=>{
                     apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'time', 'value': window.time}).then(ids => {
@@ -642,22 +587,22 @@
                 console.log(error)
                 // apiUtil.message.error(error)
             })
-            // try {
-            //     this.ffmpeg = createFFmpeg({
-            //         log: true,
-            //         // corePath: '/ffmpeg/ffmpeg-core.js',
-            //         corePath: '/ffmpeg-core.js'
-            //     });
-            // }catch (e) {
-            //     console.log(e)
-            // }
+            try {
+                this.ffmpeg = createFFmpeg({
+                    log: true,
+                    // corePath: '/ffmpeg/ffmpeg-core.js',
+                    corePath: '/ffmpeg-core.js'
+                });
+            }catch (e) {
+                console.log(e)
+            }
         },
         unmounted() {
-            // try {
-            //     this.ffmpeg.exit()
-            // }catch (e) {
-            //     console.log(e)
-            // }
+            try {
+                this.ffmpeg.exit()
+            }catch (e) {
+                console.log(e)
+            }
             if(this.updateMessageTimer!=null){
                 window.clearInterval(this.updateMessageTimer)
                 this.updateMessageTimer = null
@@ -706,6 +651,9 @@
     .slider-demo-block {
         display: flex;
         align-items: center;
+    }
+    .el-card__header {
+        padding:0px;
     }
     button.el-carousel__button {
         padding: 2px 1px;

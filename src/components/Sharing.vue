@@ -8,9 +8,17 @@
                             <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;margin-top:5px;"/>
                         </el-col>
                         <el-col :span="4" style="text-align: left">
-                            <span style="line-height: 54px;">{{m.realName}}@{{m.Owner}}</span>
+                            <el-row style="line-height: 24px;padding-left:5px;">
+                                <span style="line-height: 24px;"><b>{{m.realName}}</b></span>
+                            </el-row>
+                            <el-row style="line-height: 24px;padding-left:5px;">
+                                <span style="line-height: 24px;">@{{m.Owner}}</span>
+                            </el-row>
                         </el-col>
-                        <el-col :span="4" style="text-align: left">
+                        <el-col :span="16" style="text-align: center;">
+                            <span style="line-height: 54px;"><b>{{m.topic}}</b></span>
+                        </el-col>
+                        <el-col :span="3" style="text-align: right">
                             <span style="line-height: 54px;"><i>{{m.timestamp}}</i></span>
                         </el-col>
                     </el-row>
@@ -18,19 +26,25 @@
             </template>
             <div class="block text-center" m="t-4">
                 <span class="demonstration"><h3>{{m.topic}}</h3></span>
-                <el-carousel trigger="click" height="160px" :autoplay="autoplay">
+                <el-carousel trigger="click" height="240px" :autoplay="autoplay">
                     <el-carousel-item v-for="(item, index) in m.content" :key="index" :label="index">
-                        <div>
-                            {{item.text}}
-                        </div>
-                        <div v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
-                            <el-image crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path">
-                                <template #placeholder>
-                                    <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
-                                </template>
-                            </el-image>
-                            <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.path" controls></video>
-                        </div>
+                        <el-row>
+                            <el-col :span="14">
+                                <div v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2" style="height: 200px;">
+                                    <el-image crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path" fit="cover" style="height: 200px;">
+                                        <template #placeholder>
+                                            <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
+                                        </template>
+                                    </el-image>
+                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.path" controls></video>
+                                </div>
+                            </el-col>
+                            <el-col :span="10" style="text-align: left;padding-left:10px;">
+                                <div>
+                                    {{item.text}}
+                                </div>
+                            </el-col>
+                        </el-row>
                     </el-carousel-item>
                 </el-carousel>
             </div>
@@ -152,6 +166,7 @@
                                 }
                             }
                             await _this.getAvatar(res.Owner, meta)
+                            await _this.getRealName(res.Owner, meta)
                         }).catch(error => {
                             console.log(error)
                         })
@@ -159,12 +174,8 @@
 
                 }
             },
-            async getAvatar(uname, message) {
+            async getRealName(uname, message) {
                 let _this = this
-                if(uname in _this.avatars){
-                    message.avatar = _this.avatars[uname]
-                    return
-                }
                 if(uname in _this.nameMap){
                     message.realName = _this.nameMap[uname]
                     return
@@ -172,12 +183,18 @@
                 await apiUtil.api.get(apiUtil.urls.admin.users, {uname: uname})
                     .then(res => {
                         if(res && res.length>0){
-                            message.realName = res.name
-                            _this.nameMap[uname] = res.name
+                            message.realName = res[0].name
+                            _this.nameMap[uname] = res[0].name
                         }
                     }).catch(error => {
                         apiUtil.message.error(error)
                     })
+            },
+            async getAvatar(uname, message) {
+                let _this = this
+                if(uname in _this.avatars){
+                    message.avatar = _this.avatars[uname]
+                }
                 await apiUtil.api.get(apiUtil.urls.admin.avatar, {'uname': uname})
                     .then(res => {
                         message.avatar = res.src
