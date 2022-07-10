@@ -1,37 +1,59 @@
 <template>
     <div style="width: 80%;margin: 0 auto">
         <el-card class="box-card" v-for="m in messages" v-bind:key="m.id">
-            <template #header>
-                <div class="card-header">
-                    <el-row>
+<!--            <template #header>-->
+<!--                <div class="card-header">-->
+<!--                    <el-row>-->
+<!--                        <el-col :span="1">-->
+<!--                            <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;margin-top:5px;"/>-->
+<!--                        </el-col>-->
+<!--                        <el-col :span="4" style="text-align: left;">-->
+<!--                            <el-row style="line-height: 18px;padding-left:5px;margin-bottom: 5px;">-->
+<!--                                <span style="line-height: 18px;"><b>{{m.realName}}</b></span>-->
+<!--                            </el-row>-->
+<!--                            <el-row style="line-height: 18px;padding-left:5px;">-->
+<!--                                <span style="line-height: 18px;">@{{m.Owner}}</span>-->
+<!--                            </el-row>-->
+<!--                        </el-col>-->
+<!--                        <el-col :span="16" style="text-align: center;">-->
+<!--                            <span style="line-height: 54px;"><b>{{m.topic}}</b></span>-->
+<!--                        </el-col>-->
+<!--                        <el-col :span="3" style="text-align: right">-->
+<!--                            <span style="line-height: 54px;"><i>{{m.timestamp}}</i></span>-->
+<!--                        </el-col>-->
+<!--                    </el-row>-->
+<!--                </div>-->
+<!--            </template>-->
+            <template #header style="padding:0px;margin:0px;height: 44px;">
+                <div class="card-header" style="margin-top:0px;padding:0px;height:54px;line-height: 54px;">
+                    <el-row style="height: 44px;">
                         <el-col :span="1">
-                            <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;margin-top:5px;"/>
+                            <el-avatar size="large" :src="m.avatar" style="line-height: 50px;height:50px;width:50px;"/>
                         </el-col>
-                        <el-col :span="4" style="text-align: left">
-                            <el-row style="line-height: 24px;padding-left:5px;">
-                                <span style="line-height: 24px;"><b>{{m.realName}}</b></span>
+                        <el-col :span="4" style="text-align: left;">
+                            <el-row style="line-height: 18px;padding-left:5px;margin-bottom: 5px;">
+                                <span style="line-height: 18px;"><b>{{m.realName}}</b></span>
                             </el-row>
-                            <el-row style="line-height: 24px;padding-left:5px;">
-                                <span style="line-height: 24px;">@{{m.Owner}}</span>
+                            <el-row style="line-height: 18px;padding-left:5px;">
+                                <span style="line-height: 18px;">@{{m.Owner}}</span>
                             </el-row>
                         </el-col>
-                        <el-col :span="16" style="text-align: center;">
-                            <span style="line-height: 54px;"><b>{{m.topic}}</b></span>
+                        <el-col :span="15" style="text-align: center;">
+                            <span style="line-height: 44px;"><b>{{m.topic}}</b></span>
                         </el-col>
-                        <el-col :span="3" style="text-align: right">
-                            <span style="line-height: 54px;"><i>{{m.timestamp}}</i></span>
+                        <el-col :span="4" style="text-align: right;">
+                            <span style="line-height: 44px;"><i>{{m.timestamp}}</i></span>
                         </el-col>
                     </el-row>
                 </div>
             </template>
             <div class="block text-center" m="t-4">
-                <span class="demonstration"><h3>{{m.topic}}</h3></span>
                 <el-carousel trigger="click" height="240px" :autoplay="autoplay">
                     <el-carousel-item v-for="(item, index) in m.content" :key="index" :label="index">
                         <el-row>
                             <el-col :span="14">
                                 <div v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2" style="height: 200px;">
-                                    <el-image crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path" fit="cover" style="height: 200px;">
+                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path" fit="cover" style="height: 200px;">
                                         <template #placeholder>
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
                                         </template>
@@ -239,5 +261,9 @@
     .demo-image__placeholder .dot {
         animation: dot 2s infinite steps(3, start);
         overflow: hidden;
+    }
+    div.el-card__header {
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 </style>
