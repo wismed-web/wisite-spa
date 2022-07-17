@@ -1,4 +1,7 @@
 const webpack = require("webpack");
+// const AutoImport = require('unplugin-auto-import/dist/webpack')
+// const Components = require('unplugin-vue-components/dist/webpack')
+// const { ElementPlusResolver } = require('unplugin-vue-components/dist/resolvers')
 module.exports = {
     configureWebpack: {
         plugins: [
@@ -6,7 +9,13 @@ module.exports = {
                 $:"jquery",
                 jQuery:"jquery",
                 "windows.jQuery":"jquery"
-            })
+            }),
+            // AutoImport({
+            //     resolvers: [ElementPlusResolver()]
+            // }),
+            // Components({
+            //     resolvers: [ElementPlusResolver()]
+            // })
         ]
     },
     devServer: {

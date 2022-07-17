@@ -74,7 +74,7 @@
                     "whats-new": '/home/whatsNew',
                     "topic":  '/home/topic',
                     "bookmark": '/home/bookmark',
-                    "sharing": '/home/sharing',
+                    "my-sharing": '/home/sharing',
                     "ask": '/home/ask',
                     "assign": '/home/assign',
                     "task": '/home/task',
