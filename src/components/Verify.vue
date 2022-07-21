@@ -74,8 +74,20 @@
                         apiUtil.api.post(apiUtil.urls.sign.verifyEmail, _this.verifyInfo).then(data => {
                             _this.loading = false
                             console.log(data)
-                            apiUtil.message.success('校验成功')
-                            _this.$router.push('/login')
+                            apiUtil.message.success(_this.$t('message.verifySuccess'))
+                            let pwd = localStorage.getItem('password')
+                            let username = localStorage.getItem('username')
+                            apiUtil.message.success(_this.$t('message.redirect'))
+                            apiUtil.api.post(apiUtil.urls.sign.signin, {uname: username, pwd: pwd})
+                                .then(data => {
+                                    _this.$store.dispatch('setToken', data.auth)
+                                    apiUtil.util.setToken(data.auth)
+                                    _this.$router.push('/home/whatsNew')
+                                }).catch(error => {
+                                    console.log(error)
+                                    _this.$router.push('/login')
+                            })
+
                         }).catch(error => {
                             apiUtil.message.error(error)
                             _this.loading = false

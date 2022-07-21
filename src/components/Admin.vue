@@ -311,7 +311,7 @@
                         _this.onlines = []
                         let index = 1
                         for(let i in res){
-                            _this.onlines.push({index: index++, name: res[i]})
+                            _this.onlines.push({index: index++, name: res[i]['Uname']})
                         }
                     }).catch(error => {
                     apiUtil.message.error(error)

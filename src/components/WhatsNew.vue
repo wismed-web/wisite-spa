@@ -46,9 +46,9 @@
 <!--                <span class="demonstration"><h3>{{m.topic}}</h3></span>-->
                 <el-carousel v-if="m.content" trigger="click" height="240px" :autoplay="autoplay">
                     <el-carousel-item  v-for="(item, index) in m.content" :key="index" :label="index">
-                        <el-row>
+                        <el-row v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
                             <el-col :span="14">
-                                <div v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2" style="height: 200px;">
+                                <div style="height: 200px;">
                                     <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path" fit="cover" style="height: 200px;">
                                         <template #placeholder>
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
@@ -63,23 +63,37 @@
                                 </div>
                             </el-col>
                         </el-row>
+                        <el-row v-if="item.isMultiMedia != 1 && item.isMultiMedia != 2" justify="center">
+                            <div>
+                                {{item.text}}
+                            </div>
+                        </el-row>
                     </el-carousel-item>
                 </el-carousel>
             </div>
         </el-card>
-        <div><el-button v-if="showMore" @click="loadMore" type="primary" round><b>{{$t('message.loadMore')}}</b></el-button></div>
+<!--        <div><el-button v-if="showMore" @click="loadMore" type="primary" round><b>{{$t('message.loadMore')}}</b></el-button></div>-->
     </div>
     <div class="message" :style="{ height: `${elementHeight}px` }">
         <el-affix :offset="`${elementHeightAffix}`">
-            <el-button circle type="primary" style="width:80px;height:80px;">
-                <el-icon class="el-input__icon" :size="40" @click="addMessageWindow">
-                    <Plus style="cursor: pointer;"></Plus>
-                </el-icon>
-            </el-button>
+            <div style="margin-bottom:10px;">
+                <el-button circle type="primary" style="width:80px;height:80px;">
+                    <el-icon class="el-input__icon" :size="40" @click="addMessageWindow">
+                        <Plus style="cursor: pointer;"></Plus>
+                    </el-icon>
+                </el-button>
+            </div>
+            <div>
+                <el-button circle type="primary" style="width:80px;height:80px;">
+                    <el-icon class="el-input__icon" :size="40" @click="loadMore">
+                        <Bottom style="cursor: pointer;"></Bottom>
+                    </el-icon>
+                </el-button>
+            </div>
         </el-affix>
     </div>
-    <el-dialog v-loading="uploadLoading" v-model="addMessageVisible" style="width:100%;height:600px;" :title="$t('message.addMessage')" center>
-        <el-form :model="message" label-width="40px">
+    <el-dialog v-loading="uploadLoading" v-model="addMessageVisible" style="width:100%;height:720px;" :title="$t('message.addMessage')" center>
+        <el-form :model="message" label-width="40px" style="height:500px;">
             <el-row>
                 <el-col :span="2">
                     <el-avatar size="large" :src="avatar" style="line-height: 100px;height:100px;width:100px;margin-top:5px;"/>
@@ -121,9 +135,9 @@
                             </el-col>
                         </el-row>
                     </el-form-item>
-                    <el-form-item>
-                        <el-input v-model="message.summary" autocomplete="off" :placeholder="$t('message.wrapupTip')"/>
-                    </el-form-item>
+<!--                    <el-form-item>-->
+<!--                        <el-input v-model="message.summary" autocomplete="off" :placeholder="$t('message.wrapupTip')"/>-->
+<!--                    </el-form-item>-->
                 </el-col>
             </el-row>
         </el-form>
@@ -225,13 +239,14 @@
 
 <script>
     // import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg"
-    import {Plus} from '@element-plus/icons-vue'
+    import {Plus,Bottom} from '@element-plus/icons-vue'
     import apiUtil from "../util/apiUtil";
     import VuePictureCropper, { cropper } from 'vue-picture-cropper'
     export default {
         name: "WhatsNew",
         components: {
             Plus,
+            Bottom,
             VuePictureCropper,
         },
         data() {
@@ -248,6 +263,7 @@
                 messageIds: [
 
                 ],
+                hasLoadIds:[],
                 showMore: false,
                 updateDialog: false,
                 avatars: {},
@@ -322,6 +338,7 @@
                     // _this.totalCount += subIds.length
                     _this.currentPage = _this.currentPage + 1
                     _this.messages = []
+                    _this.hasLoadIds = []
                     _this.batchGetIds(res)
                 }).catch(error => {
                     apiUtil.message.error(error)
@@ -393,17 +410,17 @@
                     apiUtil.message.error(_this.$t('message.topicRequired'))
                     return
                 }
-                if(!_this.message.summary){
-                    apiUtil.message.error(_this.$t('message.summaryRequired'))
-                    return
-                }
+                // if(!_this.message.summary){
+                //     apiUtil.message.error(_this.$t('message.summaryRequired'))
+                //     return
+                // }
                 _this.uploadLoading = true
                 await _this.uploadFiles()
                 _this.message.content = []
                 let body = {
                     'category': _this.message.category,
                     'topic': _this.message.topic,
-                    'summary': _this.message.summary,
+                    // 'summary': _this.message.summary,
                     'content': []
                 }
                 for(let i in _this.graphs){
@@ -547,8 +564,12 @@
                 let _this = this
                 if(ids.length > 0){
                     for(let i=ids.length - 1;i>=0;i--){
+                        if(_this.hasLoadIds.indexOf(ids[i])!=-1 ){
+                            continue
+                        }
                         await apiUtil.api.get(apiUtil.urls.post.one, {'id': ids[i]}).then(async res => {
                             let meta = JSON.parse(res.RawJSON)
+                            _this.hasLoadIds.push(res['ID'])
                             meta['timestamp'] = res.Tm.replace('T', ' ').replace('Z', '')
                             console.log(res.Tm +'+'+meta.timestamp)
                             _this.messages.unshift(meta)
@@ -611,7 +632,7 @@
             _this.$nextTick(() => {
                 this.elementHeight = window.innerHeight - 68
                 this.innerHeight = this.elementHeight - 20
-                _this.elementHeightAffix = _this.elementHeight - 20
+                _this.elementHeightAffix = _this.elementHeight - 20 - 90
                 let context = this;
                 window.onresize = () => {
                     context.elementHeight = window.innerHeight - 68

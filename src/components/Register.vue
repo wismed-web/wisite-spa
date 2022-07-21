@@ -206,6 +206,8 @@
                             _this.loading = false
                             console.log(data)
                             apiUtil.message.success(_this.$t('message.registerSuccess'))
+                            localStorage.setItem('password', _this.registerInfo.pwd)
+                            localStorage.setItem('username', _this.registerInfo.uname)
                             _this.$router.push({
                                 name: 'verify',
                                 params: {

@@ -50,9 +50,9 @@
             <div class="block text-center" m="t-4">
                 <el-carousel trigger="click" height="240px" :autoplay="autoplay">
                     <el-carousel-item v-for="(item, index) in m.content" :key="index" :label="index">
-                        <el-row>
+                        <el-row v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
                             <el-col :span="14">
-                                <div v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2" style="height: 200px;">
+                                <div style="height: 200px;">
                                     <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path" fit="cover" style="height: 200px;">
                                         <template #placeholder>
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
@@ -67,24 +67,43 @@
                                 </div>
                             </el-col>
                         </el-row>
+                        <el-row v-if="item.isMultiMedia != 1 && item.isMultiMedia != 2" justify="center">
+                            <div>
+                                {{item.text}}
+                            </div>
+                        </el-row>
                     </el-carousel-item>
                 </el-carousel>
             </div>
         </el-card>
-        <div><el-button v-if="showMore" @click="loadMore" type="primary" round><b>{{$t('message.loadMore')}} ({{currentYear+'-'+currentMonth}})</b></el-button></div>
+<!--        <div><el-button v-if="showMore" @click="loadMore" type="primary" round><b>{{$t('message.loadMore')}} ({{currentYear+'-'+currentMonth}})</b></el-button></div>-->
+    </div>
+    <div class="message" :style="{ height: `${elementHeight}px` }">
+        <el-affix :offset="`${elementHeightAffix}`">
+            <div>
+                <el-button circle type="primary" style="width:80px;height:80px;">
+                    <el-icon class="el-input__icon" :size="40" @click="loadMore">
+                        <Bottom style="cursor: pointer;"></Bottom>
+                    </el-icon>
+                </el-button>
+            </div>
+        </el-affix>
     </div>
 </template>
 
 <script>
     import apiUtil from "../util/apiUtil";
+    import {Bottom} from '@element-plus/icons-vue'
     export default {
         name: "Sharing",
         components: {
+            Bottom
         },
         data() {
             return {
                 elementHeight: 50,
                 innerHeight: 30,
+                elementHeightAffix: 50,
                 message: {
                     "category": "share"
                 },
@@ -231,6 +250,7 @@
             _this.$nextTick(() => {
                 this.elementHeight = window.innerHeight - 68
                 this.innerHeight = this.elementHeight - 20
+                _this.elementHeightAffix = _this.elementHeight - 20
                 let context = this;
                 window.onresize = () => {
                     context.elementHeight = window.innerHeight - 68

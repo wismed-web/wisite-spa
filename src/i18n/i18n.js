@@ -116,7 +116,9 @@ const messages = {
             paragraphTip: '请输入段落内容',
             delete: '-',
             loadMore: '加载更多',
-            loading: '加载中'
+            loading: '加载中',
+            verifySuccess: '验证成功',
+            redirect: '登录跳转中...'
         }
     },
     "en": {
@@ -231,7 +233,9 @@ const messages = {
             paragraphTip: 'Please input paragraph content',
             delete: '-',
             loadMore: 'Load more',
-            loading: 'Loading'
+            loading: 'Loading',
+            verifySuccess: 'Verify success',
+            redirect: 'Login and redirect...'
         }
     }
 }
