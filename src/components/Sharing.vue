@@ -185,12 +185,6 @@
                         await apiUtil.api.get(apiUtil.urls.post.one, {'id': ids[i]}).then(async res => {
                             let meta = JSON.parse(res.RawJSON)
                             meta['timestamp'] = res.Tm.replace('T', ' ').replace('Z', '')
-                            if(noFirst){
-                                _this.messages.push(meta)
-                            }else{
-                                _this.messages.unshift(meta)
-                            }
-
                             meta.Tm = res.Tm
                             meta.Owner = res.Owner
                             res['meta'] = meta
@@ -208,6 +202,11 @@
                             }
                             await _this.getAvatar(res.Owner, meta)
                             await _this.getRealName(res.Owner, meta)
+                            if(noFirst){
+                                _this.messages.push(meta)
+                            }else{
+                                _this.messages.unshift(meta)
+                            }
                         }).catch(error => {
                             console.log(error)
                         })
@@ -228,7 +227,8 @@
                             _this.nameMap[uname] = res[0].name
                         }
                     }).catch(error => {
-                        apiUtil.message.error(error)
+                        // apiUtil.message.error(error)
+                        console.log(error)
                     })
             },
             async getAvatar(uname, message) {

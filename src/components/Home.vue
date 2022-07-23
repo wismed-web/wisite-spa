@@ -1,9 +1,9 @@
 <template>
     <el-row class="tac" style="margin-bottom: 0px;">
-        <el-col :span="3" style="background-color: #565B67;">
-            <el-affix :offset="0">
-                <el-row style="height: 68px;margin: 0px;">
-                    <div style="color:white;width: 100%;line-height: 68px;font-size: 18px;font-weight: bold;">
+        <el-col :span="3" style="background-color: #565B67;z-index: 1000;">
+            <el-affix :offset="0" style="z-index: 1000;background-color: #565B67;">
+                <el-row style="height: 68px;margin: 0px;background-color: #565B67;">
+                    <div style="color:white;width: 100%;background-color: #565B67;line-height: 68px;font-size: 18px;font-weight: bold;">
                         <el-avatar size="large" :src="avatar" style="line-height: 56px;height:56px;margin-top:5px;"/>
                     </div>
                 </el-row>
@@ -25,7 +25,7 @@
         </el-col>
         <el-col :span="21">
             <el-affix :offset="0">
-                <el-row style="height: 68px;margin: 0px;background-color: white;text-align: right;">
+                <el-row style="height: 68px;margin: 0px;width:100%;background-color: white;text-align: right;">
                     <el-button @click="logout" round type="danger" style="position: absolute;top:5px;right:5px;">{{$t('message.logout')}}</el-button>
                 </el-row>
             </el-affix>

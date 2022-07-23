@@ -92,8 +92,8 @@
             </div>
         </el-affix>
     </div>
-    <el-dialog v-loading="uploadLoading" v-model="addMessageVisible" style="width:100%;height:720px;" :title="$t('message.addMessage')" center>
-        <el-form :model="message" label-width="40px" style="height:500px;">
+    <el-dialog v-loading="uploadLoading" top="6vh" v-model="addMessageVisible" style="width:100%;height:720px;margin-top:20px;" :title="$t('message.addMessage')" center>
+        <el-form :model="message" label-width="40px" style="height:600px;">
             <el-row>
                 <el-col :span="2">
                     <el-avatar size="large" :src="avatar" style="line-height: 100px;height:100px;width:100px;margin-top:5px;"/>
@@ -572,7 +572,6 @@
                             _this.hasLoadIds.push(res['ID'])
                             meta['timestamp'] = res.Tm.replace('T', ' ').replace('Z', '')
                             console.log(res.Tm +'+'+meta.timestamp)
-                            _this.messages.unshift(meta)
                             meta.Tm = res.Tm
                             meta.Owner = res.Owner
                             res['meta'] = meta
@@ -590,6 +589,7 @@
                             }
                             await _this.getAvatar(res.Owner, meta)
                             await _this.getRealName(res.Owner, meta)
+                            _this.messages.unshift(meta)
                         }).catch(error => {
                             console.log(error)
                         })
@@ -610,18 +610,20 @@
                             _this.nameMap[uname] = res[0].name
                         }
                     }).catch(error => {
-                        apiUtil.message.error(error)
+                        console.log(error)
+                        // apiUtil.message.error(error)
                     })
             },
             async getAvatar(uname, message) {
                 let _this = this
                 if(uname in _this.avatars){
                     message.avatar = _this.avatars[uname]
+                    return
                 }
                 await apiUtil.api.get(apiUtil.urls.admin.avatar, {'uname': uname})
                     .then(res => {
+                        message.$set('avatar', res.src)
                         message.avatar = res.src
-                        _this.avatars[uname] = res.src
                     }).catch(error => {
                         console.log(error)
                     })
