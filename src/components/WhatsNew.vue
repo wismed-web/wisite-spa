@@ -54,7 +54,7 @@
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
                                         </template>
                                     </el-image>
-                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.path" controls></video>
+                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:100%;height:100%;object-fit: fill;" :src="item.path" controls></video>
                                 </div>
                             </el-col>
                             <el-col :span="10" style="text-align: left;padding-left:10px;">
@@ -622,8 +622,9 @@
                 }
                 await apiUtil.api.get(apiUtil.urls.admin.avatar, {'uname': uname})
                     .then(res => {
-                        message.$set('avatar', res.src)
+                        // message.$set('avatar', res.src)
                         message.avatar = res.src
+                        _this.avatars[uname] = res.src
                     }).catch(error => {
                         console.log(error)
                     })

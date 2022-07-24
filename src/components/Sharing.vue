@@ -235,6 +235,7 @@
                 let _this = this
                 if(uname in _this.avatars){
                     message.avatar = _this.avatars[uname]
+                    return
                 }
                 await apiUtil.api.get(apiUtil.urls.admin.avatar, {'uname': uname})
                     .then(res => {
