@@ -289,4 +289,33 @@ requirements
 
 3. 任何有发布内容的窗口，发布内容均按照时间由近到远顺序，从上到下排列，最新发布的在最上端。(目前在前端暂不做修改，先只检查确保发布内容上下顺序与返回的ID集合前后顺序一致)
 
-   
+* updated 2022-07-31
+
+0. 最新 Swagger 参照 http://54.66.224.148:1323/swagger/index.html#/，同时 https://github.com/wismed-web/wisite-api/releases/tag/v0.0.9 有本地可执行二进制服务。上传日期为七月三十日。
+
+1. 在每个发布内容栏的右下角添加👍图标按钮，按钮旁边显示👍数量。
+   数量由 GET `/api/post/thumbsup/status/{id}`获取，`{id}`为当前发布事件内容的ID, 返回`ThumbsUp 及 Count`, `ThumbsUp`为当前登录用户是否已经👍过，如`true`,则👍按钮为实心略大，如`false`,则👍按钮为空心，略小。
+
+2. 在点击👍按钮时，调用 PATCH `/api/post/thumbsup/{id}`, `{id}`为当前发布事件内容的ID (注意参数为path，不是query), 返回`ThumbsUp 及 Count`, `ThumbsUp`为当前登录用户的👍状态，如`true`,则👍按钮显示为实心略大，如`false`,则👍按钮为空心，略小。 此API 是个 toggle 操作，用户可以控制👍及取消👍。
+
+3. 在每个发布内容栏的右下角👍按钮的旁边，添加评论图标按钮，可在google搜索comment icon找一款。评论图标旁边显示当前发布内容的评论数量。
+   由 GET `api/post/follower/ids`获取， 该API返回id的数组，在前端取得数组的数量，将数量显示在评论图标按钮的边上。
+
+4. 点击评论图标时，当前发布内容与下面的发布分割开，如![评论示意图](./comment%20style.png)。下端第一条为发布评论输入框。用户在此只可输入单段文本。输入内容后，将输入文本内容赋值如下发布内容模板的content->text，topic 为 `comment`,其他暂保留空。
+```json
+{
+  "category": "",
+  "topic": "comment",
+  "content": [
+    {
+      "text": "what is in the input box",
+      "path": ""
+    }
+  ]
+}
+```
+点击发表评论后，同样调用 POST `/api/post/upload`,此时将`followee`参数设为所评论的发布内容ID。如评论发布成功，立刻返回此事件JSON，如ID等，取出"RawJSON"字段的content->text内容，添加一条新的已有回复在回复输入框的下端，其他回复的上端。
+
+5. GET `api/post/follower/ids`获取若干回复内容的ID，针对每条ID，调用 `/api/post/one`，取出每个回复内容的content->text,依次如“已有回复1，2，3...”进行显示。
+
+6. 如在评论内容展开情况下，再次点击评论图标按钮，则不显示评论内容，只显示发布内容。每条发布内容恢复紧邻。
