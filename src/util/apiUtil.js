@@ -65,6 +65,8 @@ const api = {
       ownIds: '/post/own/ids',
       template: '/post/template',
       upload: '/post/upload',
+      thumbsupStatus: '/post/thumbsup/status/{id}',
+      thumbsup: '/post/thumbsup/{id}',
     },
     user: {
       avatar: '/user/avatar',
@@ -78,14 +80,14 @@ const api = {
     config: '/config.json'
   },
   api: {
-    get (url, data) {
-      return this.ajax(url, 'get', data)
+    get (url, data, pathParams) {
+      return this.ajax(url, 'get', data, pathParams)
     },
-    patch (url, data) {
-      return this.ajax(url, 'patch', data)
+    patch (url, data, pathParams) {
+      return this.ajax(url, 'patch', data, pathParams)
     },
-    post (url, data) {
-      return this.ajax(url, 'post', data)
+    post (url, data, pathParams) {
+      return this.ajax(url, 'post', data, pathParams)
     },
     postBody (url, data) {
       return new Promise((resolve, reject) => {
@@ -158,11 +160,11 @@ const api = {
         })
       })
     },
-    ajax (url, method, data) {
-      if (method == 'get' && data){
+    ajax (url, method, data, params) {
+      if ((method == 'get' && data) || (method == 'get' && params)){
         return new Promise((resolve, reject) => {
           axios.request({
-            url: url,
+            url: api.util.replacePathParam(url, params),
             method: method,
             params: data
           }).then(response => {
@@ -192,7 +194,7 @@ const api = {
       }else{
         return new Promise((resolve, reject) => {
           axios.request({
-            url: url,
+            url: api.util.replacePathParam(url, params),
             method: method,
             data: data
           }).then(response => {

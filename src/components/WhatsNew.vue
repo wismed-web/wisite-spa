@@ -71,6 +71,18 @@
                     </el-carousel-item>
                 </el-carousel>
             </div>
+            <div>
+                <el-row>
+                    <el-col :offset="21" :span="1">
+                        <el-icon @click="thumbsup(m)" :color="red" :size="12" v-if="m.ThumbsUp"><Help style="cursor: pointer;"/></el-icon>
+                        <el-icon @click="thumbsup(m)" v-if="!m.ThumbsUp"><Help style="cursor: pointer;"/></el-icon>
+                        <span>{{m.Count}}</span>
+                    </el-col>
+                    <el-col :span="1">
+                        <el-icon><ChatRound style="cursor: pointer;"/></el-icon>
+                    </el-col>
+                </el-row>
+            </div>
         </el-card>
 <!--        <div><el-button v-if="showMore" @click="loadMore" type="primary" round><b>{{$t('message.loadMore')}}</b></el-button></div>-->
     </div>
@@ -239,7 +251,7 @@
 
 <script>
     // import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg"
-    import {Plus,Bottom} from '@element-plus/icons-vue'
+    import {Plus,Bottom,ChatRound,Help} from '@element-plus/icons-vue'
     import apiUtil from "../util/apiUtil";
     import VuePictureCropper, { cropper } from 'vue-picture-cropper'
     export default {
@@ -247,6 +259,8 @@
         components: {
             Plus,
             Bottom,
+            ChatRound,
+            Help,
             VuePictureCropper,
         },
         data() {
@@ -340,6 +354,15 @@
                     _this.messages = []
                     _this.hasLoadIds = []
                     _this.batchGetIds(res)
+                }).catch(error => {
+                    apiUtil.message.error(error)
+                })
+            },
+            thumbsup (message) {
+                apiUtil.api.patch(apiUtil.urls.post.thumbsup, null, {id: message['id']}).then(res => {
+                    console.log(res)
+                    message['ThumbsUp'] = res['ThumbsUp']
+                    message['Count'] = res['Count']
                 }).catch(error => {
                     apiUtil.message.error(error)
                 })
@@ -573,6 +596,7 @@
                             meta['timestamp'] = res.Tm.replace('T', ' ').replace('Z', '')
                             console.log(res.Tm +'+'+meta.timestamp)
                             meta.Tm = res.Tm
+                            meta.id = res.ID
                             meta.Owner = res.Owner
                             res['meta'] = meta
                             for(let j in meta.content){
@@ -587,6 +611,7 @@
                                     meta.content[j].isMultiMedia = 3
                                 }
                             }
+                            await _this.getThumbsupStatus(res['ID'], meta)
                             await _this.getAvatar(res.Owner, meta)
                             await _this.getRealName(res.Owner, meta)
                             _this.messages.unshift(meta)
@@ -596,6 +621,17 @@
                     }
                     _this.showMore = true
                 }
+            },
+            async getThumbsupStatus(id, message){
+                await apiUtil.api.get(apiUtil.urls.post.thumbsupStatus, null,{id: id})
+                    .then(res => {
+                        if(res){
+                            message['ThumbsUp'] = res['ThumbsUp']
+                            message['Count'] = res['Count']
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    })
             },
             async getRealName(uname, message) {
                 let _this = this
