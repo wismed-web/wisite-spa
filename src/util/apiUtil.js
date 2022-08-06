@@ -67,6 +67,7 @@ const api = {
       upload: '/post/upload',
       thumbsupStatus: '/post/thumbsup/status/{id}',
       thumbsup: '/post/thumbsup/{id}',
+      folloerIds: '/post/follower/ids'
     },
     user: {
       avatar: '/user/avatar',

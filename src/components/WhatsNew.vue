@@ -1,6 +1,6 @@
 <template>
     <div style="width: 80%;margin: 0 auto;">
-        <el-card class="box-card" v-for="m in messages" v-bind:key="m.id" style="padding:2px;">
+        <el-card class="box-card" v-for="(m, messageIndex) in messages" v-bind:key="m.id" style="padding:2px;">
 <!--            <template #header style="padding:0px;margin:0px;">-->
 <!--                <div class="card-header" style="margin-top:0px;padding:0px;height:54px;line-height: 54px;">-->
 <!--                    <el-row style="height: 54px;">-->
@@ -74,13 +74,34 @@
             <div>
                 <el-row>
                     <el-col :offset="21" :span="1">
-                        <el-icon @click="thumbsup(m)" :color="red" :size="12" v-if="m.ThumbsUp"><Help style="cursor: pointer;"/></el-icon>
-                        <el-icon @click="thumbsup(m)" v-if="!m.ThumbsUp"><Help style="cursor: pointer;"/></el-icon>
+                        <img style="cursor: pointer;" @click="thumbsup(m)" src="../assets/hasThump.png" width="32" height="32" v-if="m.ThumbsUp"/>
+                        <img style="cursor: pointer;" @click="thumbsup(m)" src="../assets/noThump.png" width="32" height="32" v-if="!m.ThumbsUp"/>
+<!--                        <el-icon @click="thumbsup(m)" :color="red" :size="12" v-if="m.ThumbsUp"><Help style="cursor: pointer;"/></el-icon>-->
+<!--                        <el-icon @click="thumbsup(m)" v-if="!m.ThumbsUp"><Help style="cursor: pointer;"/></el-icon>-->
                         <span>{{m.Count}}</span>
                     </el-col>
                     <el-col :span="1">
-                        <el-icon><ChatRound style="cursor: pointer;"/></el-icon>
+                        <img style="cursor: pointer;" @click="getComments(m, messageIndex)" src="../assets/comments.png" width="32" height="32"/>
+                        <span>{{m.commentCount}}</span>
                     </el-col>
+                </el-row>
+                <el-row v-if="m.commentShow">
+                    <el-row style="width: 100%;">
+                        <el-col :offset="8" :span="14">
+                            <el-input v-model="m.comment" :placeholder="$t('message.commentTip')" />
+                        </el-col>
+                        <el-col :span="2">
+                            <el-button @click="submitComment(m)" type="primary">{{$t('message.comment')}}</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-row style="width:100%;" v-for="(comment, index) in m.comments" :key="index" :label="index">
+                        <el-col :offset="4" :span="14">
+                            <div style="line-height: 44px;" id="{{comment.id}}">{{comment.content[0].text}}</div>
+                        </el-col>
+                        <el-col :span="4" style="text-align: right;">
+                            <span style="line-height: 44px;"><i>{{comment.timestamp}}</i></span>
+                        </el-col>
+                    </el-row>
                 </el-row>
             </div>
         </el-card>
@@ -251,7 +272,7 @@
 
 <script>
     // import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg"
-    import {Plus,Bottom,ChatRound,Help} from '@element-plus/icons-vue'
+    import {Plus,Bottom} from '@element-plus/icons-vue'
     import apiUtil from "../util/apiUtil";
     import VuePictureCropper, { cropper } from 'vue-picture-cropper'
     export default {
@@ -259,8 +280,6 @@
         components: {
             Plus,
             Bottom,
-            ChatRound,
-            Help,
             VuePictureCropper,
         },
         data() {
@@ -321,6 +340,63 @@
             },
             editImageComplete() {
                 this.editImageVisible=false
+            },
+            submitComment (message) {
+                let _this = this
+                if(!message.comment){
+                    apiUtil.message.error(_this.$t('message.commentTip'))
+                    return
+                }
+                let body = {
+                    "category": "",
+                    "topic": "comment",
+                    "content": [
+                        {
+                            "text": "what is in the input box",
+                            "path": ""
+                        }
+                    ]
+                }
+                body.content[0].text = message.comment
+                _this.uploadLoading = true
+                apiUtil.api.postBody(apiUtil.urls.post.upload+'?followee='+message['id'], body)
+                    .then(async res => {
+                        console.log(res)
+                        _this.uploadLoading = false
+                        apiUtil.message.success(_this.$t('message.commentSuccess'))
+                        await _this.getCommentCount(message['id'], message)
+                        if('commentIds' in message){
+                            message['hasLoadIds'] = []
+                            message['comments'] = []
+                            let commentIds = message['commentIds']
+                            for(let index=0;index<commentIds.length;index++){
+                                await apiUtil.api.get(apiUtil.urls.post.one, {'id': commentIds[index]}).then(async res => {
+                                    let meta = JSON.parse(res.RawJSON)
+                                    if(!('hasLoadIds' in message)){
+                                        message['hasLoadIds'] = []
+                                    }
+                                    message.hasLoadIds.push(res['ID'])
+                                    meta['timestamp'] = res.Tm.replace('T', ' ').replace('Z', '')
+                                    console.log(res.Tm +'+'+meta.timestamp)
+                                    meta.Tm = res.Tm
+                                    meta.id = res.ID
+                                    meta.Owner = res.Owner
+                                    res['meta'] = meta
+                                    meta['commentShow'] = false
+                                    await _this.getCommentCount(res['ID'], meta)
+                                    if(!('comments' in message)){
+                                        message['comments'] = []
+                                    }
+                                    message['comments'].unshift(meta)
+                                }).catch(error => {
+                                    console.log(error)
+                                })
+                            }
+                        }
+                    }).catch(error => {
+                    _this.uploadLoading = false
+                    apiUtil.message.error(error)
+                })
             },
             addMessageWindow(){
                 this.addMessageVisible=!this.addMessageVisible
@@ -538,6 +614,44 @@
             timelineChange (value) {
                 this.$refs.videoDom.currentTime = value[0]
             },
+            async getComments (message) {
+                let _this = this
+                if(message['commentShow']){
+                    message['commentShow'] = false
+                    return
+                }
+                if('commentIds' in message){
+                    // message['hasLoadIds'] = []
+                    // message['comments'] = []
+                    let commentIds = message['commentIds']
+                    for(let index=0;index<commentIds.length;index++){
+                        await apiUtil.api.get(apiUtil.urls.post.one, {'id': commentIds[index]}).then(async res => {
+                            let meta = JSON.parse(res.RawJSON)
+                            if(!('hasLoadIds' in message)){
+                                message['hasLoadIds'] = []
+                            }
+                            message.hasLoadIds.push(res['ID'])
+                            meta['timestamp'] = res.Tm.replace('T', ' ').replace('Z', '')
+                            console.log(res.Tm +'+'+meta.timestamp)
+                            meta.Tm = res.Tm
+                            meta.id = res.ID
+                            meta.Owner = res.Owner
+                            res['meta'] = meta
+                            meta['commentShow'] = false
+                            await _this.getCommentCount(res['ID'], meta)
+                            if(!('comments' in message)){
+                                message['comments'] = []
+                            }
+                            message['comments'].unshift(meta)
+                        }).catch(error => {
+                            console.log(error)
+                        })
+                    }
+                    message['commentShow'] = true
+                }else{
+                    message['commentShow'] = true
+                }
+            },
             timelineInput (value) {
                 console.log('timelineInput:'+value)
             },
@@ -611,9 +725,11 @@
                                     meta.content[j].isMultiMedia = 3
                                 }
                             }
-                            await _this.getThumbsupStatus(res['ID'], meta)
+
                             await _this.getAvatar(res.Owner, meta)
                             await _this.getRealName(res.Owner, meta)
+                            await _this.getThumbsupStatus(res['ID'], meta)
+                            await _this.getCommentCount(res['ID'], meta)
                             _this.messages.unshift(meta)
                         }).catch(error => {
                             console.log(error)
@@ -622,12 +738,25 @@
                     _this.showMore = true
                 }
             },
+            async getCommentCount(id, message){
+                await apiUtil.api.get(apiUtil.urls.post.folloerIds, {followee: id})
+                    .then(res => {
+                        if(res && res.length>0){
+                            message['commentCount'] = res.length
+                            message['commentIds'] = res
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    })
+            },
             async getThumbsupStatus(id, message){
                 await apiUtil.api.get(apiUtil.urls.post.thumbsupStatus, null,{id: id})
                     .then(res => {
                         if(res){
                             message['ThumbsUp'] = res['ThumbsUp']
-                            message['Count'] = res['Count']
+                            if(res['Count'] > 0){
+                                message['Count'] = res['Count']
+                            }
                         }
                     }).catch(error => {
                         console.log(error)

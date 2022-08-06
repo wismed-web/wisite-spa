@@ -118,7 +118,10 @@ const messages = {
             loadMore: '加载更多',
             loading: '加载中',
             verifySuccess: '验证成功',
-            redirect: '登录跳转中...'
+            redirect: '登录跳转中...',
+            comment: '评论',
+            commentTip: '请输入评论',
+            commentSuccess: '评论成功',
         }
     },
     "en": {
@@ -235,7 +238,10 @@ const messages = {
             loadMore: 'Load more',
             loading: 'Loading',
             verifySuccess: 'Verify success',
-            redirect: 'Login and redirect...'
+            redirect: 'Login and redirect...',
+            comment: 'Comment',
+            commentTip: 'Please input comment',
+            commentSuccess: 'Comment success',
         }
     }
 }
