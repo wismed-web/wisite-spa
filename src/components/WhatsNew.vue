@@ -621,8 +621,8 @@
                     return
                 }
                 if('commentIds' in message){
-                    // message['hasLoadIds'] = []
-                    // message['comments'] = []
+                    message['hasLoadIds'] = []
+                    message['comments'] = []
                     let commentIds = message['commentIds']
                     for(let index=0;index<commentIds.length;index++){
                         await apiUtil.api.get(apiUtil.urls.post.one, {'id': commentIds[index]}).then(async res => {
