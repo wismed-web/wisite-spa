@@ -49,12 +49,12 @@
                         <el-row v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
                             <el-col :span="14">
                                 <div style="height: 200px;">
-                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path" fit="cover" style="height: 200px;">
+                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.attachment.path" fit="cover" style="height: 200px;">
                                         <template #placeholder>
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
                                         </template>
                                     </el-image>
-                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:100%;height:100%;object-fit: fill;" :src="item.path" controls></video>
+                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:100%;height:100%;object-fit: fill;" :src="item.attachment.path" controls></video>
                                 </div>
                             </el-col>
                             <el-col :span="10" style="text-align: left;padding-left:10px;">
@@ -88,14 +88,25 @@
                 <el-row v-if="m.commentShow">
                     <el-row style="width: 100%;">
                         <el-col :offset="8" :span="14">
-                            <el-input v-model="m.comment" :placeholder="$t('message.commentTip')" />
+                            <el-input autosize type="textarea" v-model="m.comment" :placeholder="$t('message.commentTip')" />
                         </el-col>
                         <el-col :span="2">
                             <el-button @click="submitComment(m)" type="primary">{{$t('message.comment')}}</el-button>
                         </el-col>
                     </el-row>
                     <el-row style="width:100%;" v-for="(comment, index) in m.comments" :key="index" :label="index">
-                        <el-col :offset="4" :span="14">
+                        <el-col :span="1">
+                            <el-avatar size="large" :src="comment.avatar" style="line-height: 50px;height:50px;width:50px;"/>
+                        </el-col>
+                        <el-col :span="4" style="text-align: left;">
+                            <el-row style="line-height: 18px;padding-left:5px;margin-bottom: 5px;">
+                                <span style="line-height: 18px;"><b>{{comment.realName}}</b></span>
+                            </el-row>
+                            <el-row style="line-height: 18px;padding-left:5px;">
+                                <span style="line-height: 18px;">@{{comment.Owner}}</span>
+                            </el-row>
+                        </el-col>
+                        <el-col :span="14">
                             <div style="line-height: 44px;" id="{{comment.id}}">{{comment.content[0].text}}</div>
                         </el-col>
                         <el-col :span="4" style="text-align: right;">
@@ -362,6 +373,7 @@
                 apiUtil.api.postBody(apiUtil.urls.post.upload+'?followee='+message['id'], body)
                     .then(async res => {
                         console.log(res)
+                        message['comment'] = null;
                         _this.uploadLoading = false
                         apiUtil.message.success(_this.$t('message.commentSuccess'))
                         await _this.getCommentCount(message['id'], message)
@@ -387,6 +399,7 @@
                                     if(!('comments' in message)){
                                         message['comments'] = []
                                     }
+                                    await _this.getAvatar(res.Owner, meta)
                                     message['comments'].unshift(meta)
                                 }).catch(error => {
                                     console.log(error)
@@ -538,7 +551,7 @@
                         _this.uploadLoading = false
                         apiUtil.message.success(_this.$t('message.publishSuccess'))
                         _this.addMessageVisible = false
-                        _this.batchGetIds([res['ID']])
+                        _this.batchGetIds(res)
                     }).catch(error => {
                         _this.uploadLoading = false
                         apiUtil.message.error(error)
@@ -642,6 +655,7 @@
                             if(!('comments' in message)){
                                 message['comments'] = []
                             }
+                            await _this.getAvatar(res.Owner, meta)
                             message['comments'].unshift(meta)
                         }).catch(error => {
                             console.log(error)
@@ -714,12 +728,12 @@
                             meta.Owner = res.Owner
                             res['meta'] = meta
                             for(let j in meta.content){
-                                if(meta.content[j].path){
-                                    meta.content[j].path = window.baseUrl.replace('/api', '')+'/'+res.Owner+'/' + meta.content[j].path
+                                if(meta.content[j].attachment.path){
+                                    meta.content[j].attachment.path = window.baseUrl.replace('/api', '')+'/'+res.Owner+'/' + meta.content[j].attachment.path
                                 }
-                                if(meta.content[j].path.indexOf('/video/')>0 ){
+                                if(meta.content[j].attachment.path.indexOf('/video/')>0 ){
                                     meta.content[j].isMultiMedia = 1
-                                }else if(meta.content[j].path.indexOf('/image/')>0) {
+                                }else if(meta.content[j].attachment.path.indexOf('/image/')>0) {
                                     meta.content[j].isMultiMedia = 2
                                 }else{
                                     meta.content[j].isMultiMedia = 3

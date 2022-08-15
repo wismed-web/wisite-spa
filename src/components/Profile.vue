@@ -57,7 +57,7 @@
                 </el-col>
                 <el-col :span="10" style="width:100%;">
                     <el-form-item :label="$t('message.realName')" prop="name">
-                        <el-input v-model="profile.name" disabled="true"></el-input>
+                        <el-input v-model="profile.name"></el-input>
                     </el-form-item>
                     <el-form-item :label="$t('message.gender')">
                         <el-select v-model="profile.gender" :placeholder="$t('message.select')" style="width:100%;">
@@ -138,7 +138,7 @@
         data() {
             return {
                 loading: false,
-                readonlyItems: ['uname', 'name', 'email'],
+                readonlyItems: ['uname', 'email'],
                 profile: {
                     "active": "T",
                     "uname": "admin",
