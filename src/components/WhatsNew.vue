@@ -540,8 +540,7 @@
                     let items = {
                         'text': graph.text,
                         'attachment': {
-                            'path': graph.path,
-                            'type': graph.isMultiMedia == 2 ? 'image': 'video'
+                            'path': graph.path
                         },
                         // 'path': graph.path,
                         'isMultiMedia': graph.isMultiMedia
