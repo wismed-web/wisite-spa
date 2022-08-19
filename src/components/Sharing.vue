@@ -53,12 +53,12 @@
                         <el-row v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
                             <el-col :span="14">
                                 <div style="height: 200px;">
-                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.path" fit="cover" style="height: 200px;">
+                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.attachment.path" fit="cover" style="height: 200px;">
                                         <template #placeholder>
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
                                         </template>
                                     </el-image>
-                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.path" controls></video>
+                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:400px;height:400px;" :src="item.attachment.path" controls></video>
                                 </div>
                             </el-col>
                             <el-col :span="10" style="text-align: left;padding-left:10px;">
@@ -189,12 +189,12 @@
                             meta.Owner = res.Owner
                             res['meta'] = meta
                             for(let j in meta.content){
-                                if(meta.content[j].path){
-                                    meta.content[j].path = window.baseUrl.replace('/api', '')+'/'+res.Owner+'/' + meta.content[j].path
+                                if(meta.content[j].attachment.path){
+                                    meta.content[j].attachment.path = window.baseUrl.replace('/api', '')+'/'+res.Owner+'/' + meta.content[j].attachment.path
                                 }
-                                if(meta.content[j].path.indexOf('/video/')>0 ){
+                                if(meta.content[j].attachment.path.indexOf('/video/')>0 ){
                                     meta.content[j].isMultiMedia = 1
-                                }else if(meta.content[j].path.indexOf('/image/')>0) {
+                                }else if(meta.content[j].attachment.path.indexOf('/image/')>0) {
                                     meta.content[j].isMultiMedia = 2
                                 }else{
                                     meta.content[j].isMultiMedia = 3

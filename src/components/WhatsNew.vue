@@ -49,7 +49,7 @@
                         <el-row v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
                             <el-col :span="14">
                                 <div style="height: 200px;">
-                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.attachment.path" fit="cover" style="height: 200px;">
+                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.attachment.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.attachment.path" fit="cover" style="height: 200px;">
                                         <template #placeholder>
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
                                         </template>
@@ -539,6 +539,10 @@
                     let graph = _this.graphs[i]
                     let items = {
                         'text': graph.text,
+                        // 'attachment': {
+                        //     'path': graph.path,
+                        //     'type': graph.isMultiMedia == 2 ? 'image': 'video'
+                        // },
                         'path': graph.path,
                         'isMultiMedia': graph.isMultiMedia
                     }
@@ -551,7 +555,7 @@
                         _this.uploadLoading = false
                         apiUtil.message.success(_this.$t('message.publishSuccess'))
                         _this.addMessageVisible = false
-                        _this.batchGetIds(res)
+                        _this.batchGetIds([res])
                     }).catch(error => {
                         _this.uploadLoading = false
                         apiUtil.message.error(error)
@@ -821,6 +825,7 @@
                     context.innerHeight = context.elementHeight - 20
                 }
             })
+
             apiUtil.api.get(apiUtil.urls.post.ids, {'fetchby': 'count', 'value': _this.pageSize}).then(res => {
                 _this.totalCount = res.length
                 _this.batchGetIds(res)
@@ -837,6 +842,13 @@
                 }, window.updateMessageInterval * 1000)
             }).catch(error => {
                 apiUtil.message.error(error)
+            })
+            apiUtil.api.get(apiUtil.urls.post.template)
+                .then(res => {
+                    console.log(res)
+                }).catch(error => {
+                console.log(error)
+                // apiUtil.message.error(error)
             })
             apiUtil.api.get(apiUtil.urls.user.avatar)
                 .then(res => {
