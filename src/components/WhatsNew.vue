@@ -539,11 +539,11 @@
                     let graph = _this.graphs[i]
                     let items = {
                         'text': graph.text,
-                        // 'attachment': {
-                        //     'path': graph.path,
-                        //     'type': graph.isMultiMedia == 2 ? 'image': 'video'
-                        // },
-                        'path': graph.path,
+                        'attachment': {
+                            'path': graph.path,
+                            'type': graph.isMultiMedia == 2 ? 'image': 'video'
+                        },
+                        // 'path': graph.path,
                         'isMultiMedia': graph.isMultiMedia
                     }
                     body.content.push(items)
