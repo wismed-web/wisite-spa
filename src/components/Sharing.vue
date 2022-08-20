@@ -190,7 +190,7 @@
                             res['meta'] = meta
                             for(let j in meta.content){
                                 if(meta.content[j].attachment.path){
-                                    meta.content[j].attachment.path = window.baseUrl.replace('/api', '')+'/'+res.Owner+'/' + meta.content[j].attachment.path
+                                    meta.content[j].attachment.path = window.baseUrl.replace('/api', '')+'/' + meta.content[j].attachment.path
                                 }
                                 if(meta.content[j].attachment.path.indexOf('/video/')>0 ){
                                     meta.content[j].isMultiMedia = 1

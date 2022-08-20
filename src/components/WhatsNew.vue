@@ -197,7 +197,8 @@
         <el-dialog @open="editVideoDialogOpen" @closed="editVideoDialogClosed" @opened="editVideoDialogOpened" v-model="editVideoVisible" :title="$t('message.editVideo')" style="width:100%;height:500px;" center>
             <el-row>
                 <el-col :offset="5">
-                    <video v-on:canplay="canplay" id="videoDom" class="my-video" ref="videoDom" style="width:520px;height:520px;" :src="originVideoUrl" controls></video>
+                    <video @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove" v-on:canplay="canplay" id="videoDom" class="my-video" ref="videoDom" :src="originVideoUrl" controls></video>
+                    <canvas style="z-index:999;" id="selectVideo" ref="selectVideo"></canvas>
                 </el-col>
             </el-row>
 <!--            <el-row >-->
@@ -340,7 +341,16 @@
                 closeDialogTimer: null,
                 pageSize: 5,
                 currentPage: 1,
-                totalCount: null
+                totalCount: null,
+                selectFlag: false,
+                x: null,
+                y: null,
+                width: null,
+                height: null,
+                videoWidth: null,
+                videoHeight: null,
+                videoDomWidth: null,
+                videoDomHeight: null
             }
         },
         methods: {
@@ -348,6 +358,35 @@
                 this.graphs.push({
                     text: null, media: null, path: null, isMultiMedia: 3
                 })
+            },
+            mousedown (e) {
+                this.selectFlag = true
+                this.x = e.offsetX
+                this.y = e.offsetY
+
+            },
+            mouseup (e) {
+                console.log(e)
+                if(this.selectFlag){
+                    this.graphs[this.currentIndex].note = 'crop:'+this.x+','+this.y+','+this.width+','+this.height
+
+                }
+                this.selectFlag = false
+
+            },
+            mousemove (e) {
+                if(this.selectFlag){
+                    let cancas = this.$refs.selectVideo
+                    let ctx = cancas.getContext('2d')
+                    ctx.clearRect(0, 0, this.videoDomWidth, this.videoDomHeight)
+                    ctx.beginPath()
+                    ctx.strokeStyle = 'red'
+                    ctx.lineWidth = 1
+                    this.width = e.offsetX - this.x
+                    this.height = e.offsetY - this.y
+                    ctx.strokeRect(this.x, this.y, this.width, this.height)
+
+                }
             },
             editImageComplete() {
                 this.editImageVisible=false
@@ -486,6 +525,8 @@
             async cropperImage () {
                 let _this = this
                 let file = await cropper.getFile()
+                let round = cropper.getData([true])
+                console.log(round)
                 console.log(file)
                 file.raw = file
                 let base64 = cropper.getDataURL()
@@ -493,6 +534,7 @@
                 _this.graphs[this.currentIndex].thumbnail = base64
                 //let file = await cropper.getFile()
                 _this.graphs[this.currentIndex].media = file
+                _this.graphs[this.currentIndex].note = 'crop:'+round.x+','+round.y+','+round.width+','+round.height
                 console.log(file)
                 if(!base64){
                     let reader = new FileReader()
@@ -572,6 +614,27 @@
                 console.log('editVideoDialogClosed')
             },
             canplay () {
+                this.videoWidth = this.$refs.videoDom.videoWidth
+                this.videoHeight = this.$refs.videoDom.videoHeight
+                let width = this.videoWidth
+                let height = this.videoHeight
+                if(this.videoHeight>500 && this.videoWidth<500){
+                    height = 500
+                    width = 500 * this.videoWidth/this.videoHeight
+                }else if(this.videoHeight>500 && this.videoWidth>500){
+                    height = 500
+                    width = 500 * this.videoWidth/this.videoHeight
+                }else if(this.videoHeight<400 && this.videoWidth>500){
+                    width = 500
+                    height = 500 * this.videoHeight/this.videoWidth
+                }
+                this.$refs.videoDom.width = width
+                this.$refs.videoDom.height = height
+                this.$refs.selectVideo.style.marginLeft = -width+'px';
+                this.$refs.selectVideo.width = width;
+                this.$refs.selectVideo.height = height;
+                this.videoDomWidth = width
+                this.videoDomHeight = height
                 if(this.firstVideoLoad) {
                     let videoMaxTime = Math.floor(this.$refs.videoDom.duration)
                     console.log('video:[0, '+videoMaxTime+']')
@@ -585,10 +648,11 @@
                 if(_this.graphs.length>0){
                     for(let i=0;i<_this.graphs.length;i++){
                         let graph = _this.graphs[i]
-                        if(graph.media){
-                            graph['isMultiMedia'] = _this.$util.isMultiMedia(graph.media.name)
+                        if(graph.source){
+                            graph['isMultiMedia'] = _this.$util.isMultiMedia(graph.source.name)
                             let formData = new FormData()
-                            formData.append('file', graph.media.raw)
+                            formData.append('note', graph.note)
+                            formData.append('file', graph.source.raw)
                             await apiUtil.api.upload(apiUtil.urls.file.uploadFormFile, formData)
                                 .then(res => {
                                     console.log(res)
@@ -613,12 +677,14 @@
                 const { name } = file
                 if(_this.$util.isMultiMedia(name) == 1){
                     _this.editVideoVisible = true
+                    _this.graphs[_this.currentIndex].source = file
                     _this.graphs[_this.currentIndex].media = file
                     _this.graphs[_this.currentIndex].isMultiMedia = 1
                     _this.graphs[_this.currentIndex].originVideoUrl = window.webkitURL.createObjectURL(new Blob([file.raw]))
                     _this.originVideoUrl = window.webkitURL.createObjectURL(new Blob([file.raw]))
                 }else if(_this.$util.isMultiMedia(name) == 2){
                     _this.graphs[_this.currentIndex].isMultiMedia = 2
+                    _this.graphs[_this.currentIndex].source = file
                     let reader = new FileReader()
                     reader.readAsDataURL(file.raw)
                     reader.onload = () => {
@@ -732,7 +798,7 @@
                             res['meta'] = meta
                             for(let j in meta.content){
                                 if(meta.content[j].attachment.path){
-                                    meta.content[j].attachment.path = window.baseUrl.replace('/api', '')+'/'+res.Owner+'/' + meta.content[j].attachment.path
+                                    meta.content[j].attachment.path = window.baseUrl.replace('/api', '')+'/' + meta.content[j].attachment.path
                                 }
                                 if(meta.content[j].attachment.path.indexOf('/video/')>0 ){
                                     meta.content[j].isMultiMedia = 1
