@@ -1,6 +1,6 @@
 <template>
     <div style="width: 80%;margin: 0 auto;">
-        <el-card class="box-card" v-for="(m, messageIndex) in messages" v-bind:key="m.id" style="padding:2px;">
+        <el-card class="box-card" v-for="(m, messageIndex) in messages" v-bind:key="m.id" style="padding:2px;" :height="m.vfx.height">
 <!--            <template #header style="padding:0px;margin:0px;">-->
 <!--                <div class="card-header" style="margin-top:0px;padding:0px;height:54px;line-height: 54px;">-->
 <!--                    <el-row style="height: 54px;">-->
@@ -44,17 +44,18 @@
             </template>
             <div class="block text-center" m="t-4">
 <!--                <span class="demonstration"><h3>{{m.topic}}</h3></span>-->
-                <el-carousel v-if="m.content" trigger="click" height="240px" :autoplay="autoplay">
+                <el-carousel v-if="m.content" trigger="click" :height="m.seeHeight" :autoplay="autoplay" :style="{height: m.seeHeight+'px'}">
                     <el-carousel-item  v-for="(item, index) in m.content" :key="index" :label="index">
                         <el-row v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
                             <el-col :span="14">
-                                <div style="height: 200px;">
-                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.attachment.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.attachment.path" fit="cover" style="height: 200px;">
+                                <div>
+                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.attachment.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.attachment.path" fit="cover"
+                                              :width="item.attachment.seeWidth" :height="item.attachment.seeHeight">
                                         <template #placeholder>
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
                                         </template>
                                     </el-image>
-                                    <video crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="width:100%;height:100%;object-fit: fill;" :src="item.attachment.path" controls></video>
+                                    <video :width="m.seeWidth" :height="m.seeHeight" crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="object-fit: fill;" :src="item.attachment.path" controls></video>
                                 </div>
                             </el-col>
                             <el-col :span="10" style="text-align: left;padding-left:10px;">
@@ -73,7 +74,11 @@
             </div>
             <div>
                 <el-row>
-                    <el-col :offset="21" :span="1">
+                    <el-col :offset="20" :span="1">
+                        <img style="cursor: pointer;" @click="collect(m)" src="../assets/uncollect.png" width="32" height="32"/>
+                        <span>{{m.commentCount}}</span>
+                    </el-col>
+                    <el-col :span="1">
                         <img style="cursor: pointer;" @click="thumbsup(m)" src="../assets/hasThump.png" width="32" height="32" v-if="m.ThumbsUp"/>
                         <img style="cursor: pointer;" @click="thumbsup(m)" src="../assets/noThump.png" width="32" height="32" v-if="!m.ThumbsUp"/>
 <!--                        <el-icon @click="thumbsup(m)" :color="red" :size="12" v-if="m.ThumbsUp"><Help style="cursor: pointer;"/></el-icon>-->
@@ -796,9 +801,44 @@
                             meta.id = res.ID
                             meta.Owner = res.Owner
                             res['meta'] = meta
+
                             for(let j in meta.content){
                                 if(meta.content[j].attachment.path){
                                     meta.content[j].attachment.path = window.baseUrl.replace('/api', '')+'/' + meta.content[j].attachment.path
+                                }
+                                if('size' in meta.content[j].attachment){
+                                    let widthHeight = meta.content[j].attachment.size.split(',')
+                                    meta.content[j].attachment.mediaFileWidth = widthHeight[0]
+                                    meta.content[j].attachment.mediaFileHeight = widthHeight[1]
+                                    if(!('seeWidth' in meta)){
+                                        let seeWidth = 600
+                                        let seeHeight
+                                        if(widthHeight[0]>600 && widthHeight[1]<600){
+                                            seeWidth = 600
+                                            seeHeight = 600 * widthHeight[1]/widthHeight[0]
+                                        }else if(widthHeight[0]>600 && widthHeight[1]>600){
+                                            if(widthHeight[0]>widthHeight[1]){
+                                                seeWidth = 600
+                                                seeHeight = 600 * widthHeight[1]/widthHeight[0]
+                                            }else{
+                                                seeHeight = 600
+                                                seeWidth = 600 * widthHeight[0]/widthHeight[1]
+                                            }
+                                        }else if(widthHeight[0]<600 && widthHeight[1]>600){
+                                            seeHeight = 600
+                                            seeWidth = 600 * widthHeight[0]/widthHeight[1]
+                                        }else{
+                                            if(widthHeight[0]>widthHeight[1]){
+                                                seeWidth = 600
+                                                seeHeight = 600 * widthHeight[1]/widthHeight[0]
+                                            }else{
+                                                seeHeight = 600
+                                                seeWidth = 600 * widthHeight[0]/widthHeight[1]
+                                            }
+                                        }
+                                        meta['seeHeight'] = seeHeight
+                                        meta['seeWidth'] = seeWidth
+                                    }
                                 }
                                 if(meta.content[j].attachment.path.indexOf('/video/')>0 ){
                                     meta.content[j].isMultiMedia = 1
