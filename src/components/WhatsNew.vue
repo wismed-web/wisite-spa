@@ -289,9 +289,10 @@
 
 <script>
     // import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg"
-    import {Plus,Bottom} from '@element-plus/icons-vue'
+    import {Bottom, Plus} from '@element-plus/icons-vue'
     import apiUtil from "../util/apiUtil";
-    import VuePictureCropper, { cropper } from 'vue-picture-cropper'
+    import VuePictureCropper, {cropper} from 'vue-picture-cropper'
+
     export default {
         name: "WhatsNew",
         components: {
@@ -373,8 +374,15 @@
             mouseup (e) {
                 console.log(e)
                 if(this.selectFlag){
-                    this.graphs[this.currentIndex].note = 'crop:'+this.x+','+this.y+','+this.width+','+this.height
-
+                    let scaleX = this.graphs[this.currentIndex]['videoWidth']/this.graphs[this.currentIndex]['width']
+                    let scaleY = this.graphs[this.currentIndex]['videoHeight']/this.graphs[this.currentIndex]['height']
+                    let x = this.x * scaleX
+                    let y = this.y * scaleY
+                    let width = this.width * scaleX
+                    let height = this.height * scaleY
+                    this.graphs[this.currentIndex].note = 'crop:'+x.toFixed(2)+','+y.toFixed(2)+','+width.toFixed(2)+','+height.toFixed(2)
+                    console.log('videoWidth:'+this.graphs[this.currentIndex]['videoWidth']+',videoHeight:'+this.graphs[this.currentIndex]['videoHeight']+',width:'+this.graphs[this.currentIndex]['width']+',height:'+this.graphs[this.currentIndex]['height'])
+                    console.log(this.graphs[this.currentIndex].note)
                 }
                 this.selectFlag = false
 
@@ -536,10 +544,20 @@
                 file.raw = file
                 let base64 = cropper.getDataURL()
                 _this.imageUrl = base64
-                _this.graphs[this.currentIndex].thumbnail = base64
+                _this.graphs[_this.currentIndex].thumbnail = base64
                 //let file = await cropper.getFile()
-                _this.graphs[this.currentIndex].media = file
-                _this.graphs[this.currentIndex].note = 'crop:'+round.x+','+round.y+','+round.width+','+round.height
+                _this.graphs[_this.currentIndex].media = file
+                const imageData = cropper.getImageData()
+                console.log(imageData)
+                _this.graphs[_this.currentIndex].imageWidth = imageData['naturalWidth']
+                _this.graphs[_this.currentIndex].imageHeight = imageData['naturalHeight']
+                // let scaleX = imageData['naturalWidth']/imageData['width']
+                // let scaleY = imageData['naturalHeight']/imageData['height']
+                // let x = round.x * scaleX
+                // let y = round.y * scaleY
+                // let width = round.width * scaleX
+                // let height = round.height * scaleY
+                _this.graphs[_this.currentIndex].note = 'crop:'+round.x+','+round.y+','+round.width+','+round.height
                 console.log(file)
                 if(!base64){
                     let reader = new FileReader()
@@ -558,6 +576,7 @@
             },
             editVideoConfirm() {
                 this.editVideoVisible = false
+
             },
             btnUpload(index) {
                 console.log('btnUpload'+index)
@@ -621,6 +640,8 @@
             canplay () {
                 this.videoWidth = this.$refs.videoDom.videoWidth
                 this.videoHeight = this.$refs.videoDom.videoHeight
+                this.graphs[this.currentIndex]['videoWidth'] = this.videoWidth
+                this.graphs[this.currentIndex]['videoHeight'] =this.videoHeight
                 let width = this.videoWidth
                 let height = this.videoHeight
                 if(this.videoHeight>500 && this.videoWidth<500){
@@ -635,6 +656,8 @@
                 }
                 this.$refs.videoDom.width = width
                 this.$refs.videoDom.height = height
+                this.graphs[this.currentIndex]['width'] = width
+                this.graphs[this.currentIndex]['height'] =height
                 this.$refs.selectVideo.style.marginLeft = -width+'px';
                 this.$refs.selectVideo.width = width;
                 this.$refs.selectVideo.height = height;
@@ -695,6 +718,16 @@
                     reader.onload = () => {
                         _this.picUrl = String(reader.result)
                         _this.editImageVisible = true
+                        //加载图片获取图片真实宽度和高度
+                        // let image = new Image();
+                        // image.onload=function(){
+                        //     let width = image.width
+                        //     let height = image.height
+                        //     _this.graphs[_this.currentIndex].imageWidth = width
+                        //     _this.graphs[_this.currentIndex].imageHeight = height
+                        //
+                        // }
+                        // image.src= _this.picUrl;
                     }
                 }
             },
