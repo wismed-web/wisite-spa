@@ -380,7 +380,7 @@
                     let y = this.y * scaleY
                     let width = this.width * scaleX
                     let height = this.height * scaleY
-                    this.graphs[this.currentIndex].note = 'crop:'+x.toFixed(2)+','+y.toFixed(2)+','+width.toFixed(2)+','+height.toFixed(2)
+                    this.graphs[this.currentIndex].note = 'crop:'+parseInt(x)+','+parseInt(y)+','+parseInt(width)+','+parseInt(height)
                     console.log('videoWidth:'+this.graphs[this.currentIndex]['videoWidth']+',videoHeight:'+this.graphs[this.currentIndex]['videoHeight']+',width:'+this.graphs[this.currentIndex]['width']+',height:'+this.graphs[this.currentIndex]['height'])
                     console.log(this.graphs[this.currentIndex].note)
                 }
