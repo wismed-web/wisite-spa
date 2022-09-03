@@ -45,7 +45,7 @@
             <div class="block text-center" m="t-4">
 <!--                <span class="demonstration"><h3>{{m.topic}}</h3></span>-->
                 <el-carousel v-if="m.content" trigger="click" :height="m.seeHeight" :autoplay="autoplay" :style="{height: m.seeHeight+'px'}">
-                    <el-carousel-item  v-for="(item, index) in m.content" :key="index" :label="index">
+                    <el-carousel-item  v-for="(item, index) in m.content" :key="index" :label="index" :height="m.seeHeight" :style="{height: m.seeHeight+'px'}">
                         <el-row v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
                             <el-col :span="14">
                                 <div>
