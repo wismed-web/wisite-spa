@@ -334,3 +334,14 @@ requirements
 4. 用户回复内容一旦成功提交，则将输入框的已有内容清空。
 
 5. 在每个已有回复栏内，显示回复者的头像，用户名及姓名。样式同发布栏。
+
+
+* updated 2022-09-05
+
+0. 最新 Swagger 参照 http://54.66.224.148:1323/swagger/index.html#/，同时 https://github.com/wismed-web/wisite-api/releases/tag/v0.0.13 有本地可执行二进制服务。上传日期为9月5日。
+
+1. 用户点击书签收藏图标后，调用`/api/post/bookmark/{id}`，id 为发布Post ID。该API为toggle功能，没有加入书签的加入书签；已加入书签的再次调用则取消书签。
+
+2. 在每个发布内容显示时，调用`/api/post/bookmark/status/{id}`，id 为发布Post ID，返回该发布是否被当前用户加入了书签。 如果为true则高亮显示，为false则普通显示。
+
+3. 在左侧“书签”菜单中，调用`/api/post/bookmark/bookmarked`，获取当前用户所有加入书签收藏的发布ID，根据每个ID，获取具体内容（每个发布的本身回复内容不用获取）,在该菜单内进行列表显示。注意，“书签”页面显示风格与“主页”，“我的分享”要保持一致。
