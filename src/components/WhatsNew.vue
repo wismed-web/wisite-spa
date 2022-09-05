@@ -75,8 +75,8 @@
             <div>
                 <el-row>
                     <el-col :offset="20" :span="1">
-                        <img style="cursor: pointer;" @click="collect(m)" src="../assets/uncollect.png" width="32" height="32"/>
-                        <span>{{m.commentCount}}</span>
+                        <img style="cursor: pointer;" @click="bookmark(m)" src="../assets/collect.png" width="32" height="32" v-if="m.bookmark"/>
+                        <img style="cursor: pointer;" @click="bookmark(m)" src="../assets/uncollect.png" width="32" height="32" v-if="!m.bookmark"/>
                     </el-col>
                     <el-col :span="1">
                         <img style="cursor: pointer;" @click="thumbsup(m)" src="../assets/hasThump.png" width="32" height="32" v-if="m.ThumbsUp"/>
@@ -254,11 +254,6 @@
                                     }"/>
                     </div>
                 </div>
-<!--                <el-col :span="10" :offset="3">-->
-<!--                    <div style="width:400px;height:400px;border:1px solid #ccc;">-->
-<!--                        <img v-if="imageUrl" width="400" height="400" :src="imageUrl" class="avatar" id="editImage"/>-->
-<!--                    </div>-->
-<!--                </el-col>-->
             </el-row>
             <template #footer>
                 <el-row>
@@ -499,6 +494,14 @@
                     apiUtil.message.error(error)
                 })
             },
+            bookmark (message) {
+                apiUtil.api.patch(apiUtil.urls.post.bookmark, null, {id: message['id']}).then(res => {
+                    console.log(res)
+                    message['bookmark'] = res
+                }).catch(error => {
+                    apiUtil.message.error(error)
+                })
+            },
             thumbsup (message) {
                 apiUtil.api.patch(apiUtil.urls.post.thumbsup, null, {id: message['id']}).then(res => {
                     console.log(res)
@@ -642,17 +645,18 @@
                 this.videoHeight = this.$refs.videoDom.videoHeight
                 this.graphs[this.currentIndex]['videoWidth'] = this.videoWidth
                 this.graphs[this.currentIndex]['videoHeight'] =this.videoHeight
+                let maxWidth = 600
                 let width = this.videoWidth
                 let height = this.videoHeight
-                if(this.videoHeight>500 && this.videoWidth<500){
-                    height = 500
-                    width = 500 * this.videoWidth/this.videoHeight
-                }else if(this.videoHeight>500 && this.videoWidth>500){
-                    height = 500
-                    width = 500 * this.videoWidth/this.videoHeight
-                }else if(this.videoHeight<400 && this.videoWidth>500){
-                    width = 500
-                    height = 500 * this.videoHeight/this.videoWidth
+                if(this.videoHeight>maxWidth && this.videoWidth<maxWidth){
+                    width = maxWidth
+                    height = maxWidth * this.videoHeight/this.videoWidth
+                }else if(this.videoHeight>maxWidth && this.videoWidth>maxWidth){
+                    width = maxWidth
+                    height = maxWidth * this.videoHeight/this.videoWidth
+                }else if(this.videoHeight<maxWidth && this.videoWidth>maxWidth){
+                    width = maxWidth
+                    height = maxWidth * this.videoHeight/this.videoWidth
                 }
                 this.$refs.videoDom.width = width
                 this.$refs.videoDom.height = height
@@ -718,16 +722,6 @@
                     reader.onload = () => {
                         _this.picUrl = String(reader.result)
                         _this.editImageVisible = true
-                        //加载图片获取图片真实宽度和高度
-                        // let image = new Image();
-                        // image.onload=function(){
-                        //     let width = image.width
-                        //     let height = image.height
-                        //     _this.graphs[_this.currentIndex].imageWidth = width
-                        //     _this.graphs[_this.currentIndex].imageHeight = height
-                        //
-                        // }
-                        // image.src= _this.picUrl;
                     }
                 }
             },
@@ -885,6 +879,7 @@
                             await _this.getAvatar(res.Owner, meta)
                             await _this.getRealName(res.Owner, meta)
                             await _this.getThumbsupStatus(res['ID'], meta)
+                            await _this.getBookmarkStatus(res['ID'], meta)
                             await _this.getCommentCount(res['ID'], meta)
                             _this.messages.unshift(meta)
                         }).catch(error => {
@@ -913,6 +908,16 @@
                             if(res['Count'] > 0){
                                 message['Count'] = res['Count']
                             }
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    })
+            },
+            async getBookmarkStatus(id, message){
+                await apiUtil.api.get(apiUtil.urls.post.bookmarkStatus, null,{id: id})
+                    .then(res => {
+                        if(res){
+                            message['bookmark'] = res
                         }
                     }).catch(error => {
                         console.log(error)

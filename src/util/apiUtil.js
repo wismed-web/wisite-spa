@@ -67,7 +67,10 @@ const api = {
       upload: '/post/upload',
       thumbsupStatus: '/post/thumbsup/status/{id}',
       thumbsup: '/post/thumbsup/{id}',
-      folloerIds: '/post/follower/ids'
+      folloerIds: '/post/follower/ids',
+      bookmark: '/post/bookmark/{id}',
+      bookmarkStatus: '/post/bookmark/status/{id}',
+      bookmarked: '/post/bookmark/bookmarked'
     },
     user: {
       avatar: '/user/avatar',
