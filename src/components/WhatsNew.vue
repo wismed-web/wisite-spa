@@ -1029,67 +1029,70 @@
     }
 </script>
 
-<style scoped lang="scss">
-    .cropper-content{
-        display: flex;
-        display: -webkit-flex;
-        justify-content: flex-end;
-    .cropper-box{
-        flex: 1;
-        width: 100%;
-    .cropper{
-        width: auto;
-        height: 300px;
-    }
-    }
+<style scoped>
+    /*.cropper-content{*/
+    /*    display: flex;*/
+    /*    display: -webkit-flex;*/
+    /*    justify-content: flex-end;*/
+    /*.cropper-box{*/
+    /*    flex: 1;*/
+    /*    width: 100%;*/
+    /*.cropper{*/
+    /*    width: auto;*/
+    /*    height: 300px;*/
+    /*}*/
+    /*}*/
 
-    .show-preview{
-        flex: 1;
-        -webkit-flex: 1;
-        display: flex;
-        display: -webkit-flex;
-        justify-content: center;
-    .preview{
-        overflow: hidden;
-        border:1px solid #67c23a;
-        background: #cccccc;
-    }
-    }
-    }
-    .message {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-    }
-    .slider-demo-block {
-        display: flex;
-        align-items: center;
-    }
-    button.el-carousel__button {
-        padding: 2px 1px;
-        border: 2px solid blue;
-    }
-    .is-active {
-        font-weight: 800;
-    }
-    .show {
-        z-index: 2000;
-    }
-    .hidden {
-        z-index: -1;
-    }
-    .demo-image__placeholder.image-slot {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        background: var(--el-fill-color-light);
-        color: var(--el-text-color-secondary);
-        font-size: 14px;
-    }
-    .demo-image__placeholder .dot {
-        animation: dot 2s infinite steps(3, start);
-        overflow: hidden;
+    /*.show-preview{*/
+    /*    flex: 1;*/
+    /*    -webkit-flex: 1;*/
+    /*    display: flex;*/
+    /*    display: -webkit-flex;*/
+    /*    justify-content: center;*/
+    /*.preview{*/
+    /*    overflow: hidden;*/
+    /*    border:1px solid #67c23a;*/
+    /*    background: #cccccc;*/
+    /*}*/
+    /*}*/
+    /*}*/
+    /*.message {*/
+    /*    position: absolute;*/
+    /*    bottom: 10px;*/
+    /*    right: 10px;*/
+    /*}*/
+    /*.slider-demo-block {*/
+    /*    display: flex;*/
+    /*    align-items: center;*/
+    /*}*/
+    /*button.el-carousel__button {*/
+    /*    padding: 2px 1px;*/
+    /*    border: 2px solid blue;*/
+    /*}*/
+    /*.is-active {*/
+    /*    font-weight: 800;*/
+    /*}*/
+    /*.show {*/
+    /*    z-index: 2000;*/
+    /*}*/
+    /*.hidden {*/
+    /*    z-index: -1;*/
+    /*}*/
+    /*.demo-image__placeholder.image-slot {*/
+    /*    display: flex;*/
+    /*    justify-content: center;*/
+    /*    align-items: center;*/
+    /*    width: 100%;*/
+    /*    height: 100%;*/
+    /*    background: var(--el-fill-color-light);*/
+    /*    color: var(--el-text-color-secondary);*/
+    /*    font-size: 14px;*/
+    /*}*/
+    /*.demo-image__placeholder .dot {*/
+    /*    animation: dot 2s infinite steps(3, start);*/
+    /*    overflow: hidden;*/
+    /*}*/
+    .el-carousel >>> .el-carousel__container {
+        height: 100% !important;
     }
 </style>
