@@ -45,17 +45,17 @@
             <div class="block text-center" m="t-4">
 <!--                <span class="demonstration"><h3>{{m.topic}}</h3></span>-->
                 <el-carousel v-if="m.content" trigger="click" :height="m.seeHeight" :autoplay="autoplay" :style="{height: m.seeHeight+'px'}">
-                    <el-carousel-item  v-for="(item, index) in m.content" :key="index" :label="index" :height="m.seeHeight" :style="{height: m.seeHeight+'px'}">
+                    <el-carousel-item  v-for="(item, index) in m.content" :key="index" :label="index" :height="m.seeHeight" :style="{height: m.seeHeight+'px', 'line-height': m.seeHeight+'px'}">
                         <el-row v-if="item.isMultiMedia == 1 || item.isMultiMedia == 2">
                             <el-col :span="14">
                                 <div>
-                                    <el-image close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.attachment.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.attachment.path" fit="cover"
-                                              :width="item.attachment.seeWidth" :height="item.attachment.seeHeight">
+                                    <el-image :style="{'vertical-align':'middle'}" close-on-press-escape="true" preview-teleported="true" :preview-src-list="[item.attachment.path]" crossOrigin="anonymous" v-if="item.isMultiMedia ==2" :src="item.attachment.path"
+                                              :width="item.attachment.seeWidth"  :height="item.attachment.seeHeight">
                                         <template #placeholder>
                                             <div class="image-slot" style="font-size: 10px;">{{$t('message.loading')}}<span class="dot">...</span></div>
                                         </template>
                                     </el-image>
-                                    <video :width="m.seeWidth" :height="m.seeHeight" crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="object-fit: fill;" :src="item.attachment.path" controls></video>
+                                    <video :width="item.attachment.seeWidth" :height="item.attachment.seeHeight" crossOrigin="anonymous" v-if="item.isMultiMedia ==1" class="my-video" style="object-fit: fill;" :src="item.attachment.path" controls></video>
                                 </div>
                             </el-col>
                             <el-col :span="10" style="text-align: left;padding-left:10px;">
@@ -447,6 +447,7 @@
                                         message['comments'] = []
                                     }
                                     await _this.getAvatar(res.Owner, meta)
+                                    await _this.getRealName(res.Owner, meta)
                                     message['comments'].unshift(meta)
                                 }).catch(error => {
                                     console.log(error)
@@ -757,6 +758,7 @@
                                 message['comments'] = []
                             }
                             await _this.getAvatar(res.Owner, meta)
+                            await _this.getRealName(res.Owner, meta)
                             message['comments'].unshift(meta)
                         }).catch(error => {
                             console.log(error)
@@ -828,7 +830,7 @@
                             meta.id = res.ID
                             meta.Owner = res.Owner
                             res['meta'] = meta
-
+                            let maxHeight,maxWidth
                             for(let j in meta.content){
                                 if(meta.content[j].attachment.path){
                                     meta.content[j].attachment.path = window.baseUrl.replace('/api', '')+'/' + meta.content[j].attachment.path
@@ -863,8 +865,19 @@
                                                 seeWidth = 600 * widthHeight[0]/widthHeight[1]
                                             }
                                         }
-                                        meta['seeHeight'] = seeHeight
-                                        meta['seeWidth'] = seeWidth
+                                        if(!maxWidth){
+                                            maxWidth = seeWidth
+                                            maxHeight = seeHeight
+                                        }else{
+                                            if(maxWidth<seeWidth){
+                                                maxWidth = seeWidth
+                                            }
+                                            if(maxHeight<seeHeight){
+                                                maxHeight = seeHeight
+                                            }
+                                        }
+                                        meta.content[j].attachment['seeHeight'] = seeHeight
+                                        meta.content[j].attachment['seeWidth'] = seeWidth
                                     }
                                 }
                                 if(meta.content[j].attachment.path.indexOf('/video/')>0 ){
@@ -875,7 +888,8 @@
                                     meta.content[j].isMultiMedia = 3
                                 }
                             }
-
+                            meta['seeHeight'] = maxHeight
+                            meta['seeWidth'] = maxWidth
                             await _this.getAvatar(res.Owner, meta)
                             await _this.getRealName(res.Owner, meta)
                             await _this.getThumbsupStatus(res['ID'], meta)
@@ -1092,7 +1106,10 @@
     /*    animation: dot 2s infinite steps(3, start);*/
     /*    overflow: hidden;*/
     /*}*/
-    .el-carousel >>> .el-carousel__container {
+    .el-carousel /deep/ .el-carousel__container {
         height: 100% !important;
+    }
+    .el-image /deep/ .el-image__inner{
+        vertical-align: middle !important;
     }
 </style>
